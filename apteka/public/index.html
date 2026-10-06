@@ -1,0 +1,1267 @@
+<!DOCTYPE html>
+<html lang="uz">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>OMBOR â€” Sklad boshqaruv dasturi</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0;font-family:"Segoe UI",Inter,sans-serif}
+:root{--b:#1d4ed8;--b2:#3b82f6;--ok:#16a34a;--w:#d97706;--r:#dc2626;--ink:#0f172a;--mut:#64748b;--ln:#e2e8f0;--bg:#f1f5f9}
+body{background:var(--bg);color:var(--ink)}
+.top{background:linear-gradient(120deg,#0f172a,#1e3a8a);color:#fff;padding:0;position:sticky;top:0;z-index:50;box-shadow:0 3px 14px rgba(0,0,0,.18)}
+.wrap{max-width:1400px;margin:0 auto;padding:0 14px}
+.trow{display:flex;align-items:center;gap:14px;height:56px}
+.logo{font-weight:800;font-size:18px;display:flex;align-items:center;gap:8px;cursor:pointer}
+.logo i{width:34px;height:34px;border-radius:9px;background:rgba(255,255,255,.16);display:grid;place-items:center;font-style:normal}
+.who{font-size:12px;opacity:.85;text-align:right;line-height:1.3}
+.bar{background:#fff;border-bottom:1px solid var(--ln);position:sticky;top:56px;z-index:45}
+.tabs{display:flex;gap:2px;overflow:auto;padding:0 0 0 0}
+.tab{padding:11px 14px;font-size:13.5px;font-weight:600;color:var(--mut);cursor:pointer;white-space:nowrap;border-bottom:3px solid transparent}
+.tab:hover{color:var(--b)}
+.tab.on{color:var(--b);border-bottom-color:var(--b);background:#f8fafc}
+main{padding:16px 0 70px}
+.pan{display:none}.pan.on{display:block}
+.box{background:#fff;border:1px solid var(--ln);border-radius:12px;padding:14px;margin-bottom:14px}
+h3{font-size:15.5px;margin-bottom:11px;display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+h3 .r{margin-left:auto;display:flex;gap:6px;flex-wrap:wrap}
+.kpi{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:10px;margin-bottom:14px}
+.k{background:#fff;border:1px solid var(--ln);border-radius:12px;padding:12px;border-left:4px solid var(--b)}
+.k b{display:block;font-size:21px}
+.k span{font-size:11.5px;color:var(--mut)}
+.k.g{border-left-color:var(--ok)}.k.y{border-left-color:var(--w)}.k.r{border-left-color:var(--r)}
+.f{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:9px}
+.f.s2{grid-template-columns:repeat(auto-fit,minmax(110px,1fr))}
+label{font-size:11.5px;font-weight:600;color:var(--mut);display:block;margin-bottom:3px}
+input,select,textarea{width:100%;padding:8px 10px;border:1px solid var(--ln);border-radius:8px;font-size:13.5px;background:#fff;outline:none}
+input:focus,select:focus,textarea:focus{border-color:var(--b2);box-shadow:0 0 0 3px rgba(59,130,246,.12)}
+.btn{padding:8px 14px;border:none;border-radius:8px;background:var(--b);color:#fff;font-weight:600;cursor:pointer;font-size:13px;white-space:nowrap}
+.btn:hover{filter:brightness(1.08)}
+.btn.o{background:var(--ok)}.btn.w{background:var(--w)}.btn.r{background:var(--r)}.btn.d{background:#475569}
+.btn.s{padding:5px 9px;font-size:12px}
+table{width:100%;border-collapse:collapse;font-size:12.8px}
+th{text-align:left;padding:8px;background:#f8fafc;border-bottom:2px solid var(--ln);font-size:11.5px;color:var(--mut);text-transform:uppercase;position:sticky;top:0}
+td{padding:7px 8px;border-bottom:1px solid #f1f5f9;vertical-align:middle}
+tr:hover td{background:#fafcff}
+.sc{max-height:520px;overflow:auto;border:1px solid var(--ln);border-radius:8px}
+.t{font-size:11px;font-weight:700;padding:2px 7px;border-radius:5px;white-space:nowrap;display:inline-block}
+.t.g{background:#dcfce7;color:#15803d}.t.y{background:#fef9c3;color:#a16207}.t.r{background:#fee2e2;color:#b91c1c}
+.t.b{background:#dbeafe;color:#1d4ed8}.t.s{background:#f1f5f9;color:#475569}
+.low{color:var(--r);font-weight:700}
+.mono{font-family:Consolas,monospace;font-size:12px}
+.thumb{width:36px;height:36px;border-radius:7px;background:#f1f5f9;display:grid;place-items:center;overflow:hidden;font-size:17px;flex:0 0 auto}
+.thumb img{width:100%;height:100%;object-fit:cover}
+.loc{border:1px solid var(--ln);border-radius:11px;padding:9px;background:#fff}
+.loc h4{font-size:12.5px;margin-bottom:6px;display:flex;justify-content:space-between;align-items:center;gap:6px}
+.cells{display:grid;gap:4px}
+.cell{border:1px solid var(--ln);border-radius:6px;padding:3px 4px;font-size:9.5px;min-height:46px;background:#f8fafc;position:relative}
+.cell.bosh{background:#f1f5f9;border-style:dashed;color:#94a3b8}
+.cell.normal{background:#dcfce7;border-color:#86efac}
+.cell.kam{background:#fef9c3;border-color:#fde047}
+.cell.full{background:#fee2e2;border-color:#fca5a5}
+.cell b{display:block;font-size:9.5px;line-height:1.1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.cell .cl{position:absolute;top:1px;right:3px;font-size:8.5px;color:#64748b;font-weight:700}
+.cell .q{font-weight:800;font-size:10px}
+.bar2{height:4px;border-radius:2px;background:rgba(0,0,0,.1);margin-top:2px;overflow:hidden}
+.bar2 div{height:100%}
+#toast{position:fixed;top:70px;right:16px;z-index:99;display:flex;flex-direction:column;gap:7px}
+.tst{background:var(--ink);color:#fff;padding:10px 15px;border-radius:9px;font-size:13px;max-width:380px;box-shadow:0 8px 20px rgba(0,0,0,.25)}
+.login{max-width:370px;margin:100px auto}
+.g2{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.g3{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}
+@media(max-width:820px){.g2,.g3{grid-template-columns:1fr}}
+.picker{max-height:280px;overflow:auto;border:1px solid var(--ln);border-radius:8px;margin-top:6px}
+.pick{display:flex;gap:8px;padding:7px;cursor:pointer;border-bottom:1px solid #f1f5f9;align-items:center}
+.pick:hover{background:#eff6ff}
+.doc{border:1px solid var(--ln);border-radius:10px;padding:12px;background:#fff;font-size:12.5px}
+.sheet{border:1px solid #cbd5e1;border-radius:8px;padding:10px;margin:10px 0;background:#fff;break-inside:auto}
+.sh-head{display:flex;justify-content:space-between;align-items:baseline;gap:10px;border-bottom:2px solid #0f172a;padding-bottom:5px;margin-bottom:8px;flex-wrap:wrap}
+.sh-grid{display:grid;gap:5px}
+.sh-cell{border:1px dashed #cbd5e1;border-radius:5px;padding:5px;font-size:11px;min-height:52px;background:#f8fafc}
+.sh-cell.f{border-style:solid;border-color:#86efac;background:#f0fdf4}
+.sh-cell .t{font-size:10px;font-weight:700;color:var(--mut);margin-bottom:2px}
+.sh-cell .it{line-height:1.35}
+/* ---------- 3D izometrik ombor ---------- */
+.v3{position:relative;height:660px;border-radius:12px;overflow:hidden;cursor:grab;
+  background:radial-gradient(120% 90% at 50% 8%,#f8fafc 0%,#e8edf3 55%,#dde4ec 100%);border:1px solid var(--ln);user-select:none}
+.v3.drag{cursor:grabbing}
+.v3 .world{position:absolute;left:50%;top:52%;width:0;height:0;transform-style:preserve-3d}
+.v3 .bx,.v3 .pl,.v3 .lb{position:absolute;transform-style:preserve-3d;left:0;top:0;width:0;height:0}
+.v3 .f{position:absolute;left:0;top:0;transform-origin:0 0}
+.v3 .bx{cursor:pointer}
+.v3 .bx:hover .f{filter:brightness(1.18)}
+.v3 .bx.sel .f{outline:2px solid #2563eb;outline-offset:-2px}
+.v3 .lb div{position:absolute;transform:rotateX(-90deg) rotateZ(0deg);background:#0f172a;color:#fff;font-size:13px;font-weight:700;
+  padding:2px 7px;border-radius:4px;white-space:nowrap;box-shadow:0 2px 6px rgba(0,0,0,.3)}
+.v3 .fl-z{position:absolute;transform-style:preserve-3d;left:0;top:0;width:0;height:0}
+.v3 .fl-z div{position:absolute;transform:rotateX(-90deg);font-size:112px;font-weight:900;color:rgba(15,23,42,.13);
+  letter-spacing:4px;line-height:1;white-space:nowrap;text-shadow:0 2px 0 rgba(255,255,255,.5)}
+.v3 .hint{position:absolute;left:12px;bottom:10px;font-size:11.5px;color:#475569;background:rgba(255,255,255,.85);padding:4px 9px;border-radius:6px}
+.v3 .side{position:absolute;right:12px;top:12px;width:290px;background:rgba(255,255,255,.95);border:1px solid var(--ln);border-radius:10px;padding:11px;font-size:12.5px;box-shadow:0 6px 22px rgba(15,23,42,.13);max-height:600px;overflow:auto}
+.w3d-ctl{display:flex;gap:9px;align-items:center;flex-wrap:wrap;font-size:12.5px}
+.w3d-ctl label{display:flex;align-items:center;gap:5px;color:var(--mut)}
+.w3d-ctl input[type=range]{width:105px}
+
+/* --- 2D rejasi --- */
+.v3 #w_plan{position:absolute;inset:0;overflow:auto;padding:12px 314px 64px 12px;
+  background:linear-gradient(180deg,#f8fafc 0%,#eef2f7 100%);user-select:text}
+.v3.m2d{cursor:default}
+.v3 #w_plan .p-room{margin-bottom:13px;border:1px solid var(--ln);border-radius:10px;background:#fff;padding:10px}
+.v3 #w_plan .p-rh{font-weight:800;font-size:14.5px;display:flex;gap:9px;align-items:baseline;margin-bottom:7px}
+.v3 #w_plan .p-rh span{font-weight:400;font-size:11.5px;color:var(--mut)}
+.v3 #w_plan .p-zone{margin-top:10px}
+.v3 #w_plan .p-zh{font-weight:800;font-size:13px;border-left:6px solid;padding-left:8px;margin-bottom:7px;
+  display:flex;gap:9px;align-items:baseline}
+.v3 #w_plan .p-zh span{font-weight:400;color:var(--mut);font-size:11.5px}
+.v3 #w_plan .p-racks{display:flex;gap:12px;flex-wrap:wrap}
+.v3 #w_plan .p-rack{border:1px solid #cbd5e1;border-radius:8px;padding:7px;background:#f8fafc}
+.v3 #w_plan .p-rn{font-size:12px;font-weight:800;margin-bottom:6px;display:flex;gap:6px;align-items:baseline}
+.v3 #w_plan .p-rn span{font-weight:400;color:var(--mut);font-size:10.5px}
+.v3 #w_plan .p-cells{display:grid;gap:3px}
+.v3 .pcell{width:47px;height:39px;border-radius:5px;border:1px solid #cbd5e1;background:#fff;
+  display:flex;flex-direction:column;align-items:center;justify-content:center;font-size:9.5px;
+  cursor:pointer;line-height:1.15;transition:filter .1s}
+.v3 .pcell span{color:var(--mut)}
+.v3 .pcell b{font-size:11.5px}
+.v3 .pcell i{color:#94a3b8;font-style:normal}
+.v3 .pcell.normal{background:#dcfce7;border-color:#86efac}
+.v3 .pcell.kam{background:#fef9c3;border-color:#fde047}
+.v3 .pcell.full{background:#fee2e2;border-color:#fca5a5}
+.v3 .pcell.bosh{background:#f1f5f9;border-color:#e2e8f0}
+.v3 .pcell:hover{filter:brightness(.95)}
+.v3 .pcell.sel{outline:3px solid #2563eb;outline-offset:1px;box-shadow:0 0 0 3px rgba(37,99,235,.28)}
+
+@media print{.sheet{page-break-after:always;break-after:page}.sheet:last-child{page-break-after:auto;break-after:auto}
+  .sh-cell{min-height:44px}.sheet{border-color:#94a3b8}.v3{display:none!important}}
+@media print{
+  body{background:#fff}
+  .top,.bar,.noprint,#toast,#login{display:none!important}
+  .pan{display:none!important}
+  .pan.on{display:block!important}
+  main{padding:0;max-width:none}
+  .box{border:1px solid #cbd5e1;break-inside:avoid;page-break-inside:avoid}
+  table{font-size:10.5px}th{background:#f1f5f9!important;-webkit-print-color-adjust:exact;print-color-adjust:exact}
+  .cell,.t,.low,.sc>div{-webkit-print-color-adjust:exact;print-color-adjust:exact}
+  h3{break-after:avoid}
+}
+</style>
+</head>
+<body>
+
+<div id="login" class="login box noprint">
+  <h3>ðŸ” Ombor dasturiga kirish</h3>
+  <label>Login</label><input id="lg" value="admin" style="margin-bottom:8px">
+  <label>Parol</label><input id="pw" type="password" value="1234" style="margin-bottom:10px">
+  <button class="btn" style="width:100%;padding:11px" onclick="sign()">Kirish</button>
+  <p id="lerr" style="color:var(--r);font-size:13px;margin-top:8px"></p>
+</div>
+
+<div id="app" style="display:none">
+<div class="top"><div class="wrap trow">
+  <div class="logo" onclick="go('dash')"><i>ðŸ­</i> OMBOR <span style="font-size:11px;opacity:.7;font-weight:500">Sklad boshqaruvi</span></div>
+  <div class="bar" style="position:static;border:none;background:none;flex:1;overflow:hidden;padding:0"><input id="gsearch" placeholder="ðŸ” Shtrix skanerlash yoki nom/SKU/qidirish â€” Enter" onkeydown="if(event.key==='Enter')globalSearch(this.value)" style="max-width:420px"></div>
+  <div class="who" id="who"></div>
+  <button class="btn r s" onclick="logout()">Chiqish</button>
+</div></div>
+<div class="bar"><div class="wrap tabs" id="tabs"></div></div>
+<main class="wrap">
+
+<div class="pan on" id="dash"></div>
+<div class="pan" id="items"></div>
+<div class="pan" id="locs"></div>
+<div class="pan" id="w3d"></div>
+<div class="pan" id="stocks"></div>
+<div class="pan" id="doc" data-type="kirish"></div>
+<div class="pan" id="docs"></div>
+<div class="pan" id="counts"></div>
+<div class="pan" id="moves"></div>
+<div class="pan" id="rep"></div>
+<div class="pan" id="place"></div>
+<div class="pan" id="sup"></div>
+<div class="pan" id="print" style="display:none"></div>
+
+</main>
+</div>
+<div id="toast"></div>
+
+<script>
+let T=localStorage.getItem('om_t')||'', ME={}, LOC=[], IT=[], STOCKS=[], SUP=[];
+const $=id=>document.getElementById(id);
+const money=n=>Number(n||0).toLocaleString('uz-UZ')+" so'm";
+const num=n=>Number(n||0).toLocaleString('uz-UZ');
+const dt=s=>s?s.slice(0,16).replace('T',' '):'';
+function toast(t,ms=2800){const d=document.createElement('div');d.className='tst';d.textContent=t;$('toast').appendChild(d);setTimeout(()=>d.remove(),ms)}
+const api=async(p,o={})=>{const r=await fetch(p,{...o,headers:{'Content-Type':'application/json',...(o.headers?o.headers:{'Authorization':'Bearer '+T})}});const d=await r.json().catch(()=>({}));if(!r.ok){if(r.status===401){localStorage.removeItem('om_t');location.reload()}throw new Error(d.error||'Xatolik')}return d};
+
+const TABS=[['dash','ðŸ“Š Boshqaruv paneli'],['items','ðŸ“¦ Nomenklatura'],['stocks','ðŸ·ï¸ Pozitsiyalar'],['locs','ðŸ—ï¸ Stelyajlar'],['w3d','ðŸ§Š Ombor rejasi'],['doc','ðŸ“¥ Hujjat yaratish'],['docs','ðŸ—‚ï¸ Hujjatlar'],['counts','ðŸ§® Inventarizatsiya'],['moves','ðŸ”„ Harakatlar'],['rep','ðŸ“ˆ Hisobotlar'],['place','ðŸ“ Joylashuv ro\'yxati'],['sup','ðŸšš Yetkazib beruvchilar']];
+let cur='dash';
+function go(p){
+  cur=p;
+  document.querySelectorAll('.tab').forEach(t=>t.classList.toggle('on',t.dataset.p===p));
+  document.querySelectorAll('.pan').forEach(s=>s.classList.toggle('on',s.id===p));
+  ({dash:loadDash,items:loadItems,stocks:loadStocks,locs:loadLocs,w3d:loadW3D,doc:()=>loadDoc($('dtype').value),docs:loadDocs,counts:loadCounts,moves:loadMoves,rep:loadRep,place:loadPlace,sup:loadSup})[p]();
+}
+
+async function sign(){
+  try{
+    const r=await fetch('/api/login',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({login:$('lg').value,pass:$('pw').value})});
+    const d=await r.json(); if(!r.ok)throw new Error(d.error||'Xato');
+    T=d.token;localStorage.setItem('om_t',T);boot(d.user);
+  }catch(e){$('lerr').textContent=e.message}
+}
+function logout(){localStorage.removeItem('om_t');location.reload()}
+async function boot(u){
+  ME=u;$('login').style.display='none';$('app').style.display='block';
+  $('who').innerHTML=`<b>${u.name}</b><br>${u.role}`;
+  $('tabs').innerHTML=TABS.map(t=>`<div class="tab ${t[0]==='dash'?'on':''}" data-p="${t[0]}" onclick="go('${t[0]}')">${t[1]}</div>`).join('');
+  await base();go('dash');
+}
+async function base(){LOC=await api('/api/locations');IT=(await api('/api/items')).items;SUP=await api('/api/suppliers')}
+
+/* ---------- Dashboard ---------- */
+async function loadDash(){
+  const d=await api('/api/report/dashboard');
+  const t=d.today||[];
+  $('dash').innerHTML=`
+  <div class="kpi">
+    <div class="k"><b>${num(d.items)}</b><span>Nomenklatura (dori turi)</span></div>
+    <div class="k"><b>${num(d.locations)}</b><span>Stelyaj / joy</span></div>
+    <div class="k g"><b>${num(d.total_qty)}</b><span>Ombordagi dona</span></div>
+    <div class="k g"><b>${money(d.value)}</b><span>Ombor qiymati</span></div>
+    <div class="k"><b>${num(d.positions)}</b><span>Band pozitsiya</span></div>
+    <div class="k y"><b>${num(d.drafts)}</b><span>Qoralama hujjat</span></div>
+    <div class="k g"><b>+${num(d.month_in)}</b><span>Bu oy kirim</span></div>
+    <div class="k w"><b>âˆ’${num(d.month_out)}</b><span>Bu oy chiqim</span></div>
+  </div>
+  <div class="g2">
+    <div class="box"><h3>ðŸ“¥ Bugungi hujjatlar</h3>
+      ${t.length?`<table><tr><th>Turi</th><th>Soni</th><th>Dona</th></tr>${t.map(x=>`<tr><td>${({kirish:'Kirim',chiqim:'Chiqim','ko\'chirish':'Ko\'chirish','yo\'qotish':'Yo\'qotish',inventarizatsiya:'Inventarizatsiya'})[x.type]||x.type}</td><td>${x.c}</td><td>${num(x.q)}</td></tr>`).join('')}</table>`:'<p style="color:var(--mut)">Bugun hujjat yo\'q</p>'}
+      <div class="r noprint" style="margin-top:10px;display:flex;gap:6px;flex-wrap:wrap">
+        <button class="btn o" onclick="newDoc('kirish')">ï¼‹ Kirim</button>
+        <button class="btn" onclick="newDoc('chiqim')">ï¼ Chiqim</button>
+        <button class="btn w" onclick="newDoc('ko\'chirish')">â‡„ Ko\'chirish</button>
+        <button class="btn r" onclick="newDoc('yo\'qotish')">âš  Yo\'qotish</button>
+      </div>
+    </div>
+    <div class="box"><h3>âš ï¸ Minimal zaxiradan past</h3>
+      ${d.low.length?`<div class="sc"><table><tr><th>Tovar</th><th>Kategoriya</th><th>Qoldi</th><th>Min</th></tr>${d.low.map(x=>`<tr><td><b>${x.name}</b></td><td>${x.category}</td><td class="low">${num(x.qty)}</td><td>${num(x.min_stock)}</td></tr>`).join('')}</table></div>`:'<p style="color:var(--ok)">âœ“ Hammasi yetarli</p>'}
+    </div>
+  </div>
+  <div class="g2">
+    <div class="box"><h3>â³ Muddatiga yaqin</h3>
+      ${d.expiring.length?`<div class="sc"><table><tr><th>Tovar</th><th>Joy</th><th>Yaroqlilik</th><th>Soni</th></tr>${d.expiring.map(x=>`<tr><td>${x.item_name}</td><td>${x.loc_code}</td><td class="low">${x.expiry}</td><td>${num(x.qty)}</td></tr>`).join('')}</table></div>`:'<p style="color:var(--mut)">Muddatiga yaqin partiya yo\'q</p>'}
+    </div>
+    <div class="box"><h3>ðŸ—‚ï¸ Oxirgi hujjatlar</h3>
+      <div class="sc"><table><tr><th>â„–</th><th>Turi</th><th>Sana</th><th>Holat</th><th>Qator</th></tr>${d.recent.map(x=>`<tr><td><a style="cursor:pointer;color:var(--b);font-weight:700" onclick="viewDoc(${x.id})">${x.no}</a></td><td>${({kirish:'Kirim',chiqim:'Chiqim','ko\'chirish':'Ko\'chirish','yo\'qotish':'Yo\'qotish',inventarizatsiya:'Inv.'})[x.type]||x.type}</td><td>${x.doc_date}</td><td>${statT(x.status)}</td><td>${x.lines_count}</td></tr>`).join('')}</table></div>
+    </div>
+  </div>`;
+}
+const statT=s=>`<span class="t ${s==='tasdiqlandi'?'g':s==='draft'?'y':'r'}">${({tasdiqlandi:'Tasdiqlandi',draft:'Qoralama','bekor qilindi':'Bekor'})[s]||s}</span>`;
+
+/* ---------- Nomenklatura ---------- */
+async function loadItems(){
+  const d=await api('/api/items?q='+encodeURIComponent($('i_q')?.value||'')+'&cat='+encodeURIComponent($('i_cat')?.value||''));
+  IT=d.items;
+  $('items').innerHTML=`
+  <div class="box"><h3>ðŸ“¦ Yangi tovar qo'shish</h3>
+    <div class="f">
+      <div><label>Nomi *</label><input id="n_name" placeholder="Paracetamol"></div>
+      <div><label>Shakli</label><select id="n_form"><option>tabletka</option><option>kapsula</option><option>sirup</option><option>inyeksiya</option><option>maz</option><option>tomchi</option><option>quti</option></select></div>
+      <div><label>Kategoriya</label><input id="n_cat" placeholder="og'riq qoldiruvchi" list="cats"></div>
+      <div><label>O'lchov birligi</label><select id="n_unit"><option>dona</option><option>quti</option><option>shisha</option><option>blister</option></select></div>
+      <div><label>Shtrix</label><input id="n_bc" placeholder="avtomatik"></div>
+      <div><label>Tannarx (so'm)</label><input id="n_cost" type="number" placeholder="8500"></div>
+      <div><label>Min zaxira</label><input id="n_min" type="number" value="20"></div>
+      <div><label>Maks zaxira</label><input id="n_max" type="number" value="200"></div>
+      <div><label>Yetkazib beruvchi</label><select id="n_sup"><option value="">â€”</option>${SUP.map(s=>`<option value="${s.id}">${s.name}</option>`).join('')}</select></div>
+    </div>
+    <div style="display:flex;gap:10px;align-items:flex-end;margin-top:10px;flex-wrap:wrap">
+      <div style="flex:1;min-width:200px"><label>Rasm</label><input type="file" id="n_img" accept="image/*"></div>
+      <button class="btn" onclick="addItem()">ðŸ’¾ Saqlash</button>
+    </div>
+    <datalist id="cats">${d.cats.map(c=>`<option value="${c}">`).join('')}</datalist>
+  </div>
+  <div class="box"><h3>ðŸ“‹ Ro'yxat <span class="r noprint"><input id="i_q" placeholder="qidirish" style="width:170px" oninput="loadItems()"><select id="i_cat" style="width:170px" onchange="loadItems()"><option value="">Barcha kategoriya</option>${d.cats.map(c=>`<option>${c}</option>`).join('')}</select></span></h3>
+  <div class="sc"><table><tr><th></th><th>Nomi</th><th>SKU</th><th>Shtrix</th><th>Kategoriya</th><th>Birlik</th><th>Tannarx</th><th>Min</th><th>Omborda</th><th>Yetkazib beruvchi</th><th></th></tr>
+  ${d.items.map(i=>`<tr>
+    <td><div class="thumb">${i.image?`<img src="${i.image}">`:'ðŸ’Š'}</div></td>
+    <td><b>${i.name}</b><div style="font-size:11px;color:var(--mut)">${i.form}</div></td>
+    <td class="mono">${i.sku}</td><td class="mono">${i.barcode||'â€”'}</td><td>${i.category}</td><td>${i.unit}</td>
+    <td>${money(i.cost)}</td><td>${num(i.min_stock)}</td>
+    <td class="${i.total<=i.min_stock?'low':''}">${num(i.total)} <span style="font-size:10px;color:var(--mut)">(${i.positions} poz)</span></td>
+    <td>${i.supplier||'â€”'}</td>
+    <td class="noprint" style="white-space:nowrap">
+      <label class="btn d s" style="display:inline-block">ðŸ–¼ï¸<input type="file" accept="image/*" style="display:none" onchange="setImg(${i.id},this.files[0])"></label>
+      <button class="btn r s" onclick="delItem(${i.id})">âœ•</button></td></tr>`).join('')}
+  </table></div></div>`;
+}
+async function addItem(){
+  try{
+    let image='';
+    const f=$('n_img').files[0];
+    if(f){const fd=new FormData();fd.append('image',f);const r=await fetch('/api/upload',{method:'POST',headers:{'Authorization':'Bearer '+T},body:fd});image=(await r.json()).url||''}
+    const r=await api('/api/items',{method:'POST',body:JSON.stringify({name:$('n_name').value,form:$('n_form').value,category:$('n_cat').value,unit:$('n_unit').value,barcode:$('n_bc').value,cost:$('n_cost').value,min_stock:$('n_min').value,max_stock:$('n_max').value,supplier_id:$('n_sup').value,image})});
+    toast('âœ… '+r.sku+' saqlandi');base();loadItems();
+  }catch(e){toast('âŒ '+e.message)}
+}
+async function setImg(id,f){
+  if(!f)return;
+  try{const fd=new FormData();fd.append('image',f);await fetch('/api/items/'+id+'/image',{method:'POST',headers:{'Authorization':'Bearer '+T},body:fd});toast('âœ… Rasm saqlandi');loadItems()}catch(e){toast('âŒ '+e.message)}
+}
+async function delItem(id){if(!confirm('Tovar arxivlanadimi?'))return;try{await api('/api/items/'+id,{method:'DELETE'});toast('ðŸ—‘ï¸ Arxivlandi');base();loadItems()}catch(e){toast('âŒ '+e.message)}}
+
+/* ---------- Pozitsiyalar ---------- */
+async function loadStocks(){
+  STOCKS=await api('/api/stocks?q='+encodeURIComponent($('s_q')?.value||'')+'&loc='+encodeURIComponent($('s_loc')?.value||'')+'&only='+encodeURIComponent($('s_only')?.value||''));
+  $('stocks').innerHTML=`
+  <div class="box"><h3>ðŸ·ï¸ Pozitsiyalar (SKU) <span class="r noprint">
+    <input id="s_q" placeholder="shtrix / nom / kod" style="width:180px" value="${($('s_q')?.value)||''}" oninput="loadStocks()">
+    <select id="s_loc" style="width:150px" onchange="loadStocks()"><option value="">Barcha joylar</option>${LOC.map(l=>`<option ${($('s_loc')?.value)===l.code?'selected':''}>${l.code}</option>`).join('')}</select>
+    <select id="s_only" style="width:150px" onchange="loadStocks()"><option value="">Barchasi</option><option value="low" ${($('s_only')?.value)==='low'?'selected':''}>Kam qoldi</option><option value="exp" ${($('s_only')?.value)==='exp'?'selected':''}>Muddatiga yaqin</option></select>
+    <button class="btn d s" onclick="csv('items')">CSV</button></span></h3>
+  <div class="sc"><table><tr><th>Kod</th><th>Tovar</th><th>SKU</th><th>Joy</th><th>Katak</th><th>Partiya</th><th>Yaroqlilik</th><th>Soni</th><th>Min</th></tr>
+  ${STOCKS.map(s=>`<tr><td class="mono">${s.code}</td><td><b>${s.item_name}</b></td><td class="mono">${s.item_sku}</td>
+  <td>ðŸ“${s.loc_code}</td><td><b>${s.cell}</b></td><td>${s.batch_no||'â€”'}</td>
+  <td class="${s.expiry&&new Date(s.expiry)<new Date()?'low':''}">${s.expiry||'â€”'}</td>
+  <td class="${s.qty<=s.min_qty?'low':''}"><b>${num(s.qty)}</b> ${s.unit}</td><td>${s.min_qty}</td></tr>`).join('')||'<tr><td colspan="9" style="text-align:center;color:var(--mut);padding:20px">Topilmadi</td></tr>'}
+  </table></div></div>`;
+}
+async function csv(t){
+  const d=await api('/api/export?t='+t);
+  if(!d.length)return toast('Ma\'lumot yo\'q');
+  const keys=Object.keys(d[0]);
+  const csv='\uFEFF'+[keys.join(';')].concat(d.map(r=>keys.map(k=>`"${String(r[k]??'').replace(/"/g,'""')}"`).join(';'))).join('\n');
+  const a=document.createElement('a');a.href=URL.createObjectURL(new Blob([csv],{type:'text/csv'}));a.download=t+'.csv';a.click();
+}
+
+/* ---------- Stelyajlar + chizma ---------- */
+async function loadLocs(){
+  sheetLoc=$('sh_loc')?.value||sheetLoc||'';
+  const m=await api('/api/map');
+  const cellInfo=(code)=>{
+    const l=m.locations.find(x=>x.code===code); if(!l)return '';
+    const p=code.split('-'), c=l.cells.find(x=>x.row==p[1]&&x.col==p[2]); if(!c)return '';
+    const pct=Math.min(100,Math.round(c.qty/c.cap*100));
+    return `<div class="box" style="margin:9px 0;background:#f8fafc">
+      <h3 style="margin-bottom:6px">ðŸ”Ž ${code} <span class="r noprint"><button class="btn s" onclick="this.closest('.box').remove()">âœ• yopish</button></span></h3>
+      <div style="display:flex;gap:5px;flex-wrap:wrap;margin-bottom:6px">
+        <span class="t ${c.qty<=0?'':c.state==="kam"?'y':c.state==="to'liq"?'r':'g'}">${c.qty<=0?'Bo\'sh':c.state==="kam"?'Kam':c.state==="to'liq"?'To\'liq':'Normal'} Â· ${pct}%</span>
+        <span class="t b">sig'im ${c.cap}</span><span class="t">${l.zone}-zona Â· ${l.name||''}</span></div>
+      ${c.stocks.length?`<table><tr><th>Dori nomi</th><th>SKU</th><th>Shtrix</th><th>Soni</th><th>Partiya</th><th>Yaroqlilik</th><th>Narxi</th><th>Qiymati</th></tr>
+      ${c.stocks.map(s=>`<tr><td><b>${s.item_name}</b></td><td class="mono">${s.item_sku}</td><td class="mono">${s.barcode||'â€”'}</td>
+      <td><b>${s.qty}</b> ${s.unit}</td><td>${s.batch_no||'â€”'}</td>
+      <td class="${s.expiry&&new Date(s.expiry)<new Date()?'low':''}">${s.expiry||'â€”'}</td>
+      <td>${money(s.cost||0)}</td><td><b>${money((s.cost||0)*s.qty)}</b></td></tr>`).join('')}</table>`
+      :'<div style="color:var(--mut)">Bu katak bo\'sh.</div>'}
+    </div>`;
+  };
+  const oldBox=$('cellInfo');
+  $('locs').innerHTML=`
+  <div class="box noprint"><h3>Bino / Xona bo'yicha</h3>
+    <div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:4px">${(function(){
+      const g={};
+      m.locations.forEach(l=>{
+        const k=(l.building||'Bino-1')+' / '+(l.room||'Xona-1');
+        if(!g[k])g[k]={floor:l.floor||1,n:0,q:0,z:new Set()};
+        g[k].n++;g[k].q+=l.total_qty;g[k].z.add(l.zone);
+      });
+      return Object.keys(g).sort().map(k=>`<div style="border:1px solid var(--ln);border-radius:8px;padding:8px 11px;min-width:180px;background:#f8fafc">
+        <b>${k}</b><div style="font-size:11.5px;color:var(--mut);margin-top:3px">qavat ${g[k].floor} &middot; ${g[k].n} stelyaj &middot; zona ${[...g[k].z].join(', ')} &middot; ${num(g[k].q)} dona</div></div>`).join('');
+    })()}</div>
+  </div>
+  <div id="cellInfo">${oldBox||''}</div>
+  <div class="box noprint"><h3>ðŸ—ï¸ Stelyaj qo'shish</h3>
+    <div class="f s2">
+      <div><label>Kod *</label><input id="l_code" placeholder="E-1"></div>
+      <div><label>Zona</label><input id="l_zone" placeholder="E"></div>
+      <div><label>Nomi</label><input id="l_name" placeholder="Gormonlar"></div>
+      <div><label>Turi</label><select id="l_kind"><option value="stelyaj">Stelyaj</option><option value="zona">Butun zona (pol)</option></select></div>
+      <div><label>Qatorlar</label><input id="l_rows" type="number" value="4" min="1" max="12"></div>
+      <div><label>Ustunlar</label><input id="l_cols" type="number" value="6" min="1" max="12"></div>
+      <div><label>Katak sig'imi</label><input id="l_cap" type="number" value="60"></div>
+      <div><label>Bino</label><input id="l_bld" placeholder="Bino-1" value="Bino-1"></div>
+      <div><label>Xona</label><input id="l_room" placeholder="Xona-2" value="Xona-1"></div>
+      <div><label>Qavat</label><input id="l_floor" type="number" value="1" min="1" max="20"></div>
+      <div><button class="btn" style="width:100%" onclick="addLoc()">ï¼‹ Qo'shish</button></div>
+    </div>
+  </div>
+  <div class="box">
+    <h3>ðŸ—ºï¸ Ombor chizmasi <span class="r noprint"><button class="btn d s" onclick="window.print()">ðŸ–¨ï¸ Chopish / PDF</button></span></h3>
+    <div style="display:flex;gap:14px;flex-wrap:wrap;font-size:11.5px;margin-bottom:10px">
+      <span><i style="display:inline-block;width:12px;height:12px;background:#f1f5f9;border:1px solid #cbd5e1;border-radius:3px"></i> Bo'sh</span>
+      <span><i style="display:inline-block;width:12px;height:12px;background:#dcfce7;border:1px solid #86efac;border-radius:3px"></i> Normal</span>
+      <span><i style="display:inline-block;width:12px;height:12px;background:#fef9c3;border:1px solid #fde047;border-radius:3px"></i> Kam</span>
+      <span><i style="display:inline-block;width:12px;height:12px;background:#fee2e2;border:1px solid #fca5a5;border-radius:3px"></i> To'liq</span>
+    </div>
+    <div style="font-size:12.5px;color:var(--mut);margin-bottom:10px">Jami: <b>${m.locations.length}</b> joy Â· <b>${num(m.total_qty)}</b> dona Â· <b>${m.positions}</b> pozitsiya Â· ogohlantirish: <b style="color:var(--w)">${m.alerts.length}</b></div>
+    ${zorder(m.locations).map(z=>`<h3 style="margin:12px 0 7px">ðŸ…°ï¸ ${z}-zona</h3>
+      <div class="g3">${m.locations.filter(l=>l.zone===z).map(l=>`<div class="loc">
+        <h4><span>ðŸ“${l.code} <span style="font-weight:400;color:var(--mut)">${l.name||''}</span></span>
+        <span class="noprint" style="display:flex;gap:3px"><span class="t s">${l.positions} poz</span><span class="t ${l.used_cells===l.total_cells?'r':'b'}">${l.used_cells}/${l.total_cells}</span>
+        <button class="btn r s" onclick="delLoc(${l.id})">âœ•</button></span></h4>
+        <div class="cells" style="grid-template-columns:repeat(${Math.min(l.cols,6)},1fr)">
+        ${l.cells.map(c=>`<div class="cell ${c.state==="to'liq"?"full":c.state}" data-cell="${l.code}-${c.row}-${c.col}" title="${c.stocks.map(s=>s.item_name+' â€” '+s.qty+' '+s.unit+(s.batch_no?' ('+s.batch_no+')':'')).join('\n')||'Bo\'sh'}">
+          <span class="cl">${c.name}</span>
+          ${c.stocks[0]?`<b>${c.stocks[0].item_name.slice(0,9)}</b><div class="q">${c.qty}</div>`:`<span>â€”</span>`}
+          <div class="bar2"><div style="width:${Math.min(100,c.qty/c.cap*100)}%;background:${c.state==="full"?'#dc2626':c.state==="kam"?'#d97706':'#16a34a'}"></div></div>
+          ${c.stocks.length>1?`<div style="font-size:8.5px">+${c.stocks.length-1}</div>`:''}</div>`).join('')}
+        </div></div>`).join('')}</div>`).join('')}
+  </div>
+  <div class="box noprint"><h3>ðŸ“‹ Stelyaj varaqasi <span class="r">
+    <select id="sh_loc" style="width:200px" onchange="loadLocs()"><option value="">Barcha stelyajlar</option>${m.locations.map(l=>`<option value="${l.id}" ${String(sheetLoc)===String(l.id)?'selected':''}>${l.zone}-zona Â· ${l.code} â€” ${l.name||''}</option>`).join('')}</select>
+    <button class="btn s" onclick="window.print()">ðŸ–¨ï¸ Chopish / PDF</button></span></h3>
+    <div style="font-size:12.5px;color:var(--mut)">Har bir stelyaj alohida varaqa: katak, dori nomi, SKU, shtrix, partiya, soni, yaroqlilik. Bo'sh kataklar ham ko'rsatiladi â€” qo'lda tekshirish uchun.</div>
+  </div>
+  ${(sheetLoc?m.locations.filter(l=>String(l.id)===String(sheetLoc)):m.locations).map(l=>{
+    const cells=l.cells.filter(c=>c.stocks.length>0);
+    return `<div class="sheet">
+      <div class="sh-head"><b style="font-size:16px">ðŸ“ ${l.code}</b> <span>${l.name||''}</span>
+        <span class="r" style="font-size:11.5px;color:var(--mut)">${l.zone}-zona Â· ${l.kind==='zona'?'butun zona pol':'stelyaj '+l.rows+'Ã—'+l.cols} Â· sig'imi ${l.cell_cap} ${'dona'} Â· ${l.used_cells}/${l.total_cells} katak band Â· jami ${num(l.total_qty)} dona Â· ${new Date().toLocaleDateString('uz-UZ')}</span></div>
+      <div class="sh-grid" style="grid-template-columns:repeat(${Math.min(l.cols,5)},1fr)">
+        ${l.cells.map(c=>`<div class="sh-cell ${c.qty>0?'f':''}" data-cell="${l.code}-${c.row}-${c.col}" title="Bosish bilan ma'lumot">
+          <div class="t">${c.name}</div>
+          ${c.stocks.length?c.stocks.map(s=>`<div class="it"><b>${s.item_name}</b>
+            <div class="mono" style="font-size:10px">${s.item_sku}</div>
+            <div>${s.barcode||''}</div>
+            <div><b>${num(s.qty)} ${s.unit}</b>${s.batch_no?' Â· '+s.batch_no:''}</div>
+            ${s.expiry?`<div style="font-size:10px;color:var(--mut)">yaroq. ${s.expiry}</div>`:''}</div>`).join('<hr style="border:0;border-top:1px dashed #cbd5e1;margin:4px 0">')
+            :'<div style="color:var(--mut);font-size:11px">bo\'sh</div>'}
+        </div>`).join('')}
+      </div>
+      ${cells.length?`<table style="margin-top:8px"><tr><th>â„–</th><th>Katak</th><th>Dori nomi</th><th>SKU</th><th>Shtrix</th><th>Partiya</th><th>Soni</th><th>Birlik</th><th>Yaroqlilik</th><th>Min</th><th>Haqiqiy</th></tr>
+      ${cells.flatMap(c=>c.stocks).map((s,i)=>`<tr><td>${i+1}</td><td><b>${c.name}</b></td><td><b>${s.item_name}</b></td><td class="mono">${s.item_sku}</td><td class="mono">${s.barcode||'â€”'}</td><td>${s.batch_no||'â€”'}</td><td><b>${num(s.qty)}</b></td><td>${s.unit}</td><td class="${s.expiry&&new Date(s.expiry)<new Date()?'low':''}">${s.expiry||'â€”'}</td><td>${s.min_stock}</td><td style="width:70px"></td></tr>`).join('')}
+      </table>`:''}
+      <div style="display:flex;justify-content:space-between;gap:16px;margin-top:9px;font-size:12px;flex-wrap:wrap">
+        <div>Ombor muddiri: ____________</div><div>Tekshirdi: ____________</div><div>Sana: ____________</div></div>
+    </div>`;
+  }).join('')}`;
+  document.querySelectorAll('#locs .cell').forEach(el=>{
+    el.onclick=()=>{
+      const code=el.dataset.cell;
+      const keep=$('cellInfo').querySelector('.box');
+      const html=cellInfo(code);
+      if(keep&&keep.querySelector('h3').textContent.indexOf(code)>=0){keep.remove();return}
+      $('cellInfo').innerHTML=html;
+      $('cellInfo').scrollIntoView({behavior:'smooth',block:'nearest'});
+    };
+  });
+  document.querySelectorAll('#locs .sh-cell').forEach(el=>{
+    el.onclick=()=>{
+      const code=el.dataset.cell;
+      $('cellInfo').innerHTML=cellInfo(code);
+      $('cellInfo').scrollIntoView({behavior:'smooth',block:'nearest'});
+    };
+  });
+}
+async function addLoc(){
+  try{await api('/api/locations',{method:'POST',body:JSON.stringify({code:$('l_code').value,zone:$('l_zone').value,name:$('l_name').value,kind:$('l_kind').value,rows:$('l_rows').value,cols:$('l_cols').value,cell_cap:$('l_cap').value,building:$('l_bld').value,room:$('l_room').value,floor:$('l_floor').value})});
+  $('l_code').value='';$('l_name').value='';toast('âœ… Stelyaj qo\'shildi');LOC=await api('/api/locations');loadLocs()}catch(e){toast('âŒ '+e.message)}
+}
+async function delLoc(id){if(!confirm('Joy arxivlanadimi?'))return;try{await api('/api/locations/'+id,{method:'DELETE'});toast('ðŸ—‘ï¸ Arxivlandi');LOC=await api('/api/locations');loadLocs()}catch(e){toast('âŒ '+e.message)}}
+
+/* ---------- Hujjat yaratish ---------- */
+const DN={kirish:'Kirim â€” tovarlar kiritish',chiqim:'Chiqim â€” berish/yuborish',"ko'chirish":"Ko'chirish â€” boshqa joyga", "yo'qotish":"Yo'qotish â€” hisobdan chiqarish"};
+let DL=[];
+function newDoc(t){cur='doc';document.querySelectorAll('.tab').forEach(x=>x.classList.toggle('on',x.dataset.p==='doc'));document.querySelectorAll('.pan').forEach(s=>s.classList.toggle('on',s.id==='doc'));loadDoc(t)}
+async function loadDoc(t){
+  if(!t)t=$('dtype')?.value||'kirish';
+  const no=(await api('/api/docs/next/'+t)).no;
+  DL=[];
+  $('doc').innerHTML=`
+  <div class="box noprint"><h3>ðŸ“¥ Hujjat yaratish</h3>
+    <div class="f">
+      <div><label>Hujjat turi</label><select id="dtype" onchange="loadDoc(this.value)">${Object.entries(DN).map(([k,v])=>`<option value="${k}" ${k===t?'selected':''}>${v}</option>`).join('')}</select></div>
+      <div><label>Hujjat â„–</label><input id="d_no" value="${no}" readonly></div>
+      <div><label>Sana</label><input id="d_date" type="date" value="${new Date().toISOString().slice(0,10)}"></div>
+      ${t==='kirish'||t==='chiqim'?`<div><label>Yetkazib beruvchi</label><select id="d_sup"><option value="">â€”</option>${SUP.map(s=>`<option value="${s.id}">${s.name}</option>`).join('')}</select></div>`:''}
+      <div><label>${t==='chiqim'?'Kimga berildi':t==="ko'chirish"?"Natija":"Izoh"}</label><input id="d_dest" placeholder="${t==='chiqim'?'Apteka peshtaxtasi':''}"></div>
+    </div>
+  </div>
+  <div class="box noprint"><h3>ï¼‹ Qator qo'shish</h3>
+    <div class="f">
+      <div style="grid-column:span 2"><label>Tovar (nom / shtrix)</label><input id="l_item" list="ilist" placeholder="Qidiringâ€¦" oninput="pickItem(this.value)"><datalist id="ilist">${IT.map(i=>`<option value="${i.name}">`).join('')}</datalist></div>
+      <div><label>Manba joy</label><select id="l_loc"><option value="">â€”</option>${LOC.map(l=>`<option value="${l.id}">${l.code} ${l.name?'('+l.name+')':''}</option>`).join('')}</select></div>
+      <div><label>Qator</label><input id="l_row" type="number" value="1" min="1"></div>
+      <div><label>Ustun</label><input id="l_col" type="number" value="1" min="1"></div>
+      <div><label>Soni *</label><input id="l_qty" type="number" value="1" min="0"></div>
+      ${t!=="ko'chirish"?`<div><label>Partiya</label><input id="l_batch"></div><div><label>Yaroqlilik</label><input id="l_exp" type="date"></div>`:
+        `<div><label>â†’ Yangi joy</label><select id="l_tloc"><option value="">â€”</option>${LOC.map(l=>`<option value="${l.id}">${l.code}</option>`).join('')}</select></div>
+         <div><label>â†’ Qator</label><input id="l_trow" type="number" value="1" min="1"></div>
+         <div><label>â†’ Ustun</label><input id="l_tcol" type="number" value="1" min="1"></div>`}
+      <div style="align-self:end"><button class="btn" onclick="addLine()">Qo'shish</button></div>
+    </div>
+    <div class="picker" id="pick"></div>
+  </div>
+  <div class="box"><h3>ðŸ“„ Hujjat qatorlari <span class="r noprint"><button class="btn o" onclick="saveDoc()">ðŸ’¾ Saqlash (qoralama)</button><button class="btn g" style="background:var(--ok)" onclick="saveDoc(1)">âœ… Saqlash va tasdiqlash</button></span></h3>
+    <div class="sc"><table><tr><th>#</th><th>Tovar</th><th>Manba</th><th>Katak</th><th>Natija</th><th>Soni</th><th>Partiya</th><th></th></tr>
+    <tbody id="dlines"></tbody></table></div>
+    <div style="text-align:right;font-size:16px;font-weight:800;margin-top:10px">Jami: <span id="dsum">0</span></div>
+  </div>`;
+  drawLines();
+}
+let pickId=null;
+function pickItem(v){
+  const q=v.toLowerCase();
+  pickId=null;
+  $('pick').innerHTML=q?IT.filter(i=>i.name.toLowerCase().includes(q)||i.barcode===q||i.sku===q).slice(0,8).map(i=>
+    `<div class="pick" onclick="pickId=${i.id};document.getElementById('l_item').value='${i.name}';document.getElementById('pick').innerHTML='';pickSrc(${i.id})"><div class="thumb">${i.image?`<img src="${i.image}">`:'ðŸ’Š'}</div><div><b>${i.name}</b><div style="font-size:11px;color:var(--mut)">${i.sku} Â· ${i.category} Â· ommada ${i.total}</div></div></div>`).join(''):'';
+}
+async function pickSrc(itemId){
+  const t=$('dtype').value;
+  if(t==='kirish')return;
+  const s=STOCKS.find(x=>x.item_id==itemId&&x.qty>0);
+  const all=await api('/api/stocks?q=');
+  STOCKS=all;
+  const list=all.filter(x=>x.item_id==itemId&&x.qty>0);
+  $('pick').innerHTML=list.length?'<div style="padding:6px;font-size:11.5px;color:var(--mut);font-weight:600">Qayerdan olish (pozitsiya):</div>'+list.map(s=>
+    `<div class="pick" onclick="pickSrc2(${s.id})"><b>${s.loc_code}-${s.cell}</b> <span class="t ${s.qty<=s.min_qty?'y':'g'}">${s.qty} ${s.unit}</span> <span style="font-size:11px;color:var(--mut)">${s.batch_no||''}</span></div>`).join(''):'<div style="padding:8px;color:var(--r)">Omborda yo\'q</div>';
+}
+function pickSrc2(sid){
+  const s=STOCKS.find(x=>x.id==sid);if(!s)return;
+  $('l_loc').value=s.location_id;$('l_row').value=s.cell_row;$('l_col').value=s.cell_col;$('l_qty').value=Math.min(s.qty,1);
+  $('pick').innerHTML='';stockSel=sid;
+}
+let stockSel=null;
+function addLine(){
+  if(!pickId)return toast('âŒ Avval tovarni tanlang');
+  const t=$('dtype').value, loc=$('l_loc').value;
+  if(!loc)return toast('âŒ Joyni tanlang');
+  const it=IT.find(x=>x.id==pickId);
+  DL.push({item_id:pickId,item_name:it.name,location_id:+loc,loc_code:(LOC.find(l=>l.id==+loc)||{}).code,
+    cell_row:+$('l_row').value||1,cell_col:+$('l_col').value||1,qty:+$('l_qty').value||0,
+    batch_no:$('l_batch')?.value||'',expiry:$('l_exp')?.value||'',
+    to_location_id:$('l_tloc')?+$('l_tloc').value||null:null,to_cell_row:+$('l_trow')?.value||1,to_cell_col:+$('l_tcol')?.value||1,
+    stock_id:(t!=='kirish')?stockSel:null});
+  drawLines();
+}
+function drawLines(){
+  $('dlines').innerHTML=DL.map((l,i)=>`<tr><td>${i+1}</td><td><b>${l.item_name}</b></td><td>${l.loc_code}</td><td>${l.cell_row}-${l.cell_col}</td>
+    <td>${l.to_location_id?(LOC.find(x=>x.id===l.to_location_id)||{}).code+'-'+l.to_cell_row+'-'+l.to_cell_col:'â€”'}</td>
+    <td><b>${num(l.qty)}</b></td><td>${l.batch_no||'â€”'} ${l.expiry||''}</td>
+    <td><button class="btn r s" onclick="DL.splice(${i},1);drawLines()">âœ•</button></td></tr>`).join('');
+  $('dsum').textContent=num(DL.reduce((a,l)=>a+l.qty,0));
+}
+async function saveDoc(andConfirm){
+  try{
+    const t=$('dtype').value;
+    if(t!=="ko'chirish"&&DL.some(l=>!l.stock_id))return toast('âŒ Chiqim/yo\'qotish uchun pozitsiyani (manbani) tanlash shart');
+    const r=await api('/api/docs',{method:'POST',body:JSON.stringify({type:t,no:$('d_no').value,doc_date:$('d_date').value,supplier_id:$('d_sup')?.value,dest:$('d_dest').value,lines:DL})});
+    if(andConfirm){await api('/api/docs/'+r.id+'/confirm',{method:'POST'});toast('âœ… '+r.no+' tasdiqlandi')}
+    else toast('âœ… '+r.no+' qoralama saqlandi');
+    STOCKS=await api('/api/stocks');LOC=await api('/api/locations');loadDoc(t);
+  }catch(e){toast('âŒ '+e.message)}
+}
+
+/* ---------- Hujjatlar ---------- */
+async function loadDocs(){
+  const d=await api('/api/docs?type='+($('f_type')?.value||'')+'&status='+($('f_st')?.value||''));
+  $('docs').innerHTML=`<div class="box"><h3>ðŸ—‚ï¸ Hujjatlar <span class="r noprint">
+    <select id="f_type" style="width:180px" onchange="loadDocs()"><option value="">Barcha turlar</option>${Object.entries(DN).map(([k,v])=>`<option value="${k}" ${($('f_type')?.value)===k?'selected':''}>${v}</option>`).join('')}</select>
+    <select id="f_st" style="width:150px" onchange="loadDocs()"><option value="">Barcha holatlar</option><option value="draft" ${($('f_st')?.value)==='draft'?'selected':''}>Qoralama</option><option value="tasdiqlandi" ${($('f_st')?.value)==='tasdiqlandi'?'selected':''}>Tasdiqlangan</option><option value="bekor qilindi" ${($('f_st')?.value)==='bekor qilindi'?'selected':''}>Bekor</option></select>
+    <button class="btn o s" onclick="newDoc('kirish')">ï¼‹ Yangi</button></span></h3>
+    <div class="sc"><table><tr><th>â„–</th><th>Turi</th><th>Sana</th><th>Yetkazib beruvchi / Kimga</th><th>Qator</th><th>Dona</th><th>Holat</th><th>Kim</th><th></th></tr>
+    ${d.map(x=>`<tr><td><a onclick="viewDoc(${x.id})" style="cursor:pointer;color:var(--b);font-weight:700">${x.no}</a></td>
+    <td>${DN[x.type]||x.type}</td><td>${x.doc_date}</td><td>${x.supplier||x.dest||'â€”'}</td>
+    <td>${x.lines_count}</td><td>${num(x.total_qty)}</td><td>${statT(x.status)}</td><td>${x.user}</td>
+    <td class="noprint" style="white-space:nowrap">
+    ${x.status==='draft'?`<button class="btn o s" onclick="confirmDoc(${x.id})">âœ… Tasdiqlash</button> <button class="btn r s" onclick="delDoc(${x.id})">ðŸ—‘ï¸</button>`:''}
+    ${x.status==='tasdiqlandi'?`<button class="btn w s" onclick="cancelDoc(${x.id})">â†©ï¸Ž Bekor</button>`:''}
+    <button class="btn d s" onclick="viewDoc(${x.id})">ðŸ‘</button></td></tr>`).join('')||'<tr><td colspan="9" style="text-align:center;color:var(--mut);padding:20px">Hujjat yo\'q</td></tr>'}
+    </table></div></div>`;
+}
+async function viewDoc(id){
+  const d=await api('/api/docs/'+id);
+  document.querySelectorAll('.pan').forEach(s=>s.classList.toggle('on',s.id==='print'));
+  $('print').style.display='';
+  $('print').innerHTML=`<div class="doc">
+    <div style="display:flex;justify-content:space-between;border-bottom:2px solid #0f172a;padding-bottom:8px">
+      <div><b style="font-size:17px">ðŸ­ OMBOR â€” ${DN[d.type]||d.type}</b><div style="font-size:12px">Hujjat â„– <b>${d.no}</b> Â· ${d.status}</div></div>
+      <div style="text-align:right;font-size:12px">Sana: ${d.doc_date}<br>Yetkazib beruvchi: ${d.supplier||'â€”'}<br>${d.dest?'Manzil/jo\'lovchi: '+d.dest:''}<br>Ombor muddiri: ${d.user||ME.name}</div>
+    </div>
+    <table style="margin-top:10px"><tr><th>#</th><th>Tovar</th><th>SKU</th><th>Shtrix</th><th>Joy</th><th>Katak</th>${d.type==="ko'chirish"?'<th>â†’ Joy</th>':''}<th>Soni</th><th>Partiya / Yaroqlilik</th><th>Narxi</th><th>Summa</th></tr>
+    ${d.lines.map((l,i)=>`<tr><td>${i+1}</td><td><b>${l.item_name}</b></td><td class="mono">${l.item_sku}</td><td class="mono">${l.barcode||'â€”'}</td><td>${l.loc_code}</td><td>${l.cell_row}-${l.cell_col}</td>${d.type==="ko'chirish"?`<td>${l.to_loc_code}-${l.to_cell_row}-${l.to_cell_col}</td>`:''}<td><b>${num(l.qty)}</b> ${l.unit}</td><td>${l.batch_no||'â€”'} ${l.expiry||''}</td><td>${money(l.cost)}</td><td><b>${money(l.sum)}</b></td></tr>`).join('')}
+    </table>
+    <div style="display:flex;justify-content:space-between;margin-top:14px;font-size:12px">
+      <div>Topshirdi: ____________<br><br>Kabul qildi: ____________</div>
+      <div style="text-align:right"><b style="font-size:15px">Jami: ${num(d.total_qty)}</b>${d.total_sum?`<br>Umumiy qiymat: <b style="font-size:15px">${money(d.total_sum)}</b>`:''}${d.note?`<br style="margin-top:6px">Izoh: ${d.note}`:''}</div></div>
+    <div class="noprint" style="margin-top:14px;display:flex;gap:8px">
+      <button class="btn d" onclick="go('docs')">â† Orqaga</button>
+      <button class="btn" onclick="window.print()">ðŸ–¨ï¸ Chopish</button>
+      ${d.status==='draft'?`<button class="btn o" onclick="confirmDoc(${d.id})">âœ… Tasdiqlash</button>`:''}
+    </div></div>`;
+  go('docs');
+}
+async function confirmDoc(id){try{await api('/api/docs/'+id+'/confirm',{method:'POST'});toast('âœ… Tasdiqlandi');STOCKS=await api('/api/stocks');loadDocs()}catch(e){toast('âŒ '+e.message)}}
+async function cancelDoc(id){if(!confirm('Hujjat bekor qilinadi va omborga qaytariladi. Davom etamizmi?'))return;try{await api('/api/docs/'+id+'/cancel',{method:'POST'});toast('â†©ï¸Ž Bekor qilindi');STOCKS=await api('/api/stocks');loadDocs()}catch(e){toast('âŒ '+e.message)}}
+async function delDoc(id){if(!confirm('O\'chirilsinmi?'))return;try{await api('/api/docs/'+id,{method:'DELETE'});toast('ðŸ—‘ï¸');loadDocs()}catch(e){toast('âŒ '+e.message)}}
+function newDocBtn(){newDoc('kirish')}
+
+/* ---------- Inventarizatsiya ---------- */
+async function loadCounts(){
+  const d=await api('/api/counts');
+  $('counts').innerHTML=`<div class="box noprint"><h3>ðŸ§® Inventarizatsiya sessiyasi ochish</h3>
+    <div class="f"><div><label>Joy (bo'sh qoldirilsa â€” butun ombor)</label><select id="c_loc"><option value="">Butun ombor</option>${LOC.map(l=>`<option value="${l.id}">${l.code} ${l.name?'('+l.name+')':''}</option>`).join('')}</select></div>
+    <div><label>Izoh</label><input id="c_note" placeholder="Oylik inventarizatsiya"></div>
+    <div style="align-self:end"><button class="btn" onclick="openCount()">Ochish</button></div></div></div>
+  <div class="box"><h3>ðŸ“‹ Sessiyalar</h3><div class="sc"><table><tr><th>â„–</th><th>Joy</th><th>Sana</th><th>Qator</th><th>Sanangan</th><th>Holat</th><th>Kim</th><th></th></tr>
+  ${d.map(x=>`<tr><td><b>${x.no}</b></td><td>${x.loc_code||'butun ombor'}</td><td>${x.doc_date}</td><td>${x.lines}</td><td>${x.counted}/${x.lines}</td>
+  <td><span class="t ${x.status==='yopilgan'?'g':'y'}">${x.status}</span></td><td>${x.user}</td>
+  <td class="noprint"><button class="btn d s" onclick="countOpen(${x.id})">${x.status==='ochilgan'?'Davom etish':'Ko\'rish'}</button></td></tr>`).join('')||'<tr><td colspan="8" style="text-align:center;color:var(--mut);padding:20px">Sessiya yo\'q</td></tr>'}
+  </table></div></div>`;
+}
+async function openCount(){
+  try{const r=await api('/api/counts',{method:'POST',body:JSON.stringify({location_id:$('c_loc').value,note:$('c_note').value})});
+  toast('âœ… '+r.no+' â€” '+r.lines+' pozitsiya');countOpen(r.id)}catch(e){toast('âŒ '+e.message)}
+}
+async function countOpen(id){
+  const d=await api('/api/counts/'+id);
+  document.querySelectorAll('.pan').forEach(s=>s.classList.toggle('on',s.id==='print'));$('print').style.display='';
+  $('print').innerHTML=`<div class="box"><h3>ðŸ§® ${d.no} â€” inventarizatsiya <span class="t ${d.status==='yopilgan'?'g':'y'}">${d.status}</span></h3>
+    <p style="font-size:12.5px;color:var(--mut);margin-bottom:10px">Joy: <b>${d.loc_code||'butun ombor'}</b> Â· Sanalgan: <b>${d.counted}/${d.lines.length}</b> Â· Farqli qatorlar: <b>${d.lines.filter(l=>l.diff).length}</b></p>
+    <div class="sc"><table><tr><th>Joy</th><th>Katak</th><th>Tovar</th><th>Shtrix</th><th>Tizimda</th><th>Haqiqiy</th><th>Farq</th></tr>
+    ${d.lines.map(l=>`<tr><td>${l.loc_code}</td><td><b>${l.cell}</b></td><td>${l.item_name}</td><td class="mono">${l.barcode||'â€”'}</td>
+      <td><b>${l.system_qty}</b></td>
+      <td>${d.status==='ochilgan'?`<input type="number" value="${l.actual_qty===null?'':l.actual_qty}" style="width:80px;padding:4px" onchange="setCount(${l.id},${d.id},this.value)">`:`<b>${l.actual_qty}</b>`}</td>
+      <td class="${l.diff<0?'low':l.diff>0?'':''}">${l.diff===null?'â€”':(l.diff>0?'+':'')+l.diff}</td></tr>`).join('')}
+    </table></div>
+    <div class="noprint" style="margin-top:12px;display:flex;gap:8px;flex-wrap:wrap">
+      <button class="btn d" onclick="go('counts')">â† Orqaga</button>
+      ${d.status==='ochilgan'?`<button class="btn o" onclick="closeCount(${d.id})">ðŸ”’ Yopish va farqni ta'mirlash</button>`:''}
+      ${d.doc?`<button class="btn" onclick="viewDoc(${d.doc.id})">ðŸ“„ Ta'mirlash hujjati ${d.doc.no}</button>`:''}
+    </div></div>`;
+  go('counts');
+}
+async function setCount(lid,cid,v){try{await api('/api/counts/'+cid+'/lines/'+lid,{method:'PUT',body:JSON.stringify({actual_qty:v})})}catch(e){toast('âŒ '+e.message)}}
+async function closeCount(id){
+  if(!confirm('Sessiya yopilsinmi? Farq avtomatik hujjat bilan ta\'mirlanadi.'))return;
+  try{const r=await api('/api/counts/'+id+'/close',{method:'POST'});
+  toast(r.diffs?`âœ… Yopildi â€” ${r.diffs} ta farq hujjatga kiritildi`:'âœ… Yopildi â€” farq yo\'q');
+  STOCKS=await api('/api/stocks');countOpen(id)}catch(e){toast('âŒ '+e.message)}
+}
+
+/* ---------- Harakatlar ---------- */
+async function loadMoves(){
+  const d=await api('/api/movements?type='+($('m_t')?.value||'')+'&q='+encodeURIComponent($('m_q')?.value||''));
+  $('moves').innerHTML=`<div class="box"><h3>ðŸ”„ Harakatlar tarixi <span class="r noprint">
+    <input id="m_q" placeholder="qidirish" style="width:170px" value="${($('m_q')?.value)||''}" oninput="loadMoves()">
+    <select id="m_t" style="width:170px" onchange="loadMoves()"><option value="">Barchasi</option>${Object.entries(DN).map(([k,v])=>`<option value="${k}" ${($('m_t')?.value)===k?'selected':''}>${v}</option>`).join('')}</select>
+    <button class="btn d s" onclick="csv('movements')">CSV</button></span></h3>
+    <div class="sc"><table><tr><th>Sana</th><th>Hujjat</th><th>Turi</th><th>Tovar</th><th>Yo'nalish</th><th>Soni</th><th>Qoldi</th><th>Kim</th></tr>
+    ${d.map(m=>`<tr><td>${dt(m.created_at)}</td><td><a onclick="viewDoc(${m.doc_id})" style="cursor:pointer;color:var(--b)">${m.doc_no}</a></td>
+    <td>${DN[m.doc_type]||m.doc_type}</td><td>${m.item_name}</td>
+    <td>${m.direction==='in'?'<span class="t g">ï¼‹ Kirish</span>':'<span class="t r">ï¼ Chiqim</span>'} ${m.loc_code||''}${m.to_loc_code?' â†’ '+m.to_loc_code:''}</td>
+    <td><b>${m.direction==='in'?'+':''}${num(m.qty)}</b></td><td>${m.balance_after===null?'â€”':num(m.balance_after)}</td><td>${m.user}</td></tr>`).join('')||'<tr><td colspan="8" style="text-align:center;color:var(--mut);padding:20px">Harakat yo\'q</td></tr>'}
+    </table></div></div>`;
+}
+
+/* ---------- Hisobotlar ---------- */
+async function loadRep(){
+  const b=await api('/api/report/balance?loc='+($('r_loc')?.value||''));
+  const t=await api('/api/report/turnover');
+  $('rep').innerHTML=`
+  <div class="box"><h3>ðŸ“ˆ Ombor qoldig'i <span class="r noprint">
+    <select id="r_loc" style="width:150px" onchange="loadRep()"><option value="">Barcha joylar</option>${LOC.map(l=>`<option ${($('r_loc')?.value)===l.code?'selected':''}>${l.code}</option>`).join('')}</select>
+    <button class="btn d s" onclick="window.print()">ðŸ–¨ï¸</button><button class="btn d s" onclick="csv('items')">CSV</button></span></h3>
+    <div style="font-size:12.5px;color:var(--mut);margin-bottom:8px">Qatorlar: <b>${b.rows.length}</b> Â· Jami: <b>${num(b.sum_qty)}</b> dona Â· Qiymat: <b>${money(b.sum_value)}</b></div>
+    <div class="sc"><table><tr><th>Joy</th><th>Katak</th><th>Tovar</th><th>Kategoriya</th><th>Soni</th><th>Tannarx</th><th>Summa</th><th>Partiya / Yaroqlilik</th></tr>
+    ${b.rows.map(r=>`<tr><td>${r.loc_code}</td><td>${r.cell_row}-${r.cell_col}</td><td><b>${r.name}</b></td><td>${r.category}</td>
+    <td><b>${num(r.qty)}</b> ${r.unit}</td><td>${money(r.cost)}</td><td>${money(r.qty*r.cost)}</td><td>${r.batch_no||'â€”'} ${r.expiry||''}</td></tr>`).join('')}
+    </table></div></div>
+  <div class="box"><h3>ðŸ” Aylanma (kirim / chiqim)</h3>
+    <div class="sc"><table><tr><th>Tovar</th><th>Kategoriya</th><th>Kirim</th><th>Chiqim</th><th>Farq</th></tr>
+    ${t.map(r=>`<tr><td><b>${r.name}</b></td><td>${r.category}</td><td style="color:var(--ok)">+${num(r.kirim)}</td><td style="color:var(--r)">âˆ’${num(r.chiqim)}</td>
+    <td><b>${num(r.kirim-r.chiqim)}</b></td></tr>`).join('')||'<tr><td colspan="5" style="text-align:center;color:var(--mut);padding:20px">Ma\'lumot yo\'q</td></tr>'}
+    </table></div></div>`;
+}
+
+/* ---------- 3D izometrik ombor ---------- */
+const CW=44,CD=34,LH=30,SLAB=4,ZP=250,RP=78;
+const CLR={bosh:['#e8edf3','#cfd8e3','#b6c2d1'],kam:['#fde68a','#f59e0b','#d97706'],normal:['#86efac','#22c55e','#15803d'],"to'liq":['#fca5a5','#ef4444','#b91c1c']};
+const ZC={A:'#1d4ed8',B:'#047857',C:'#b45309',D:'#7c3aed',A2:'#0891b2',B2:'#0d9488',C2:'#ea580c',D2:'#9333ea'};
+let V3={rx:56,rz:34,sc:.62,lx:0,lz:0,sel:null,first:null,zl:true,nl:true,zone:'A',rack:'',dz:false,dk:null,keys:0,M:null,mode:'2d'};
+const RACKS=()=>V3.M?[...V3.M.locations].sort((a,b)=>a.code.localeCompare(b.code,undefined,{numeric:true})).map(l=>l.code):[];
+function zorder(list){
+  const f=new Map();
+  (list||[]).forEach(l=>f.set(l.zone,Math.min(f.get(l.zone)===undefined?99:f.get(l.zone),l.floor||1)));
+  return [...f.keys()].sort((a,b)=>(f.get(a)-f.get(b))||String(a).localeCompare(String(b)));
+}
+const ZONES=()=>V3.M?zorder(V3.M.locations):[];
+const ROOMS=()=>V3.M?([...new Set(V3.M.locations.map(l=>(l.building||'Bino-1')+' / '+(l.room||'Xona-1')))].sort()):[];
+function rackIdx(){return RACKS().indexOf(V3.rack)}
+function zoneIdx(){return ZONES().indexOf(V3.zone)}
+function stepZone(d){
+  const Z=ZONES(); if(!Z.length)return;
+  let i=(V3.zone?zoneIdx():Z.length)+d;
+  if(i<0)i=Z.length-1; if(i>=Z.length)i=0;
+  setZone(Z[i]);
+}
+function setRack(c){
+  V3.rack=c||'';
+  V3.sel=null;
+  if(V3.rack){V3.zone='';V3.sc=V3.sc<1.2?2.0:V3.sc}
+  else V3.sc=0.5;
+  resetDrug(false);
+  renderW3D();camFit();syncSliders();applyCam();syncRack();syncDrug();
+}
+function stepRack(d){
+  const R=RACKS(); if(!R.length)return;
+  let i=rackIdx()+d;
+  if(i<0)i=R.length-1; if(i>=R.length)i=0;
+  setRack(R[i]);
+}
+function drugList(){
+  const m=V3.M; if(!m)return[];
+  const locs=[...m.locations].sort((a,b)=>a.code.localeCompare(b.code,undefined,{numeric:true}));
+  const out=[];
+  locs.forEach(l=>{
+    if(!V3.dz){
+      if(V3.rack){if(l.code!==V3.rack)return}
+      else if(V3.zone){if(l.zone!==V3.zone)return}
+    }
+    l.cells.forEach(c=>{
+      if(!c.stocks||!c.stocks.length)return;
+      c.stocks.forEach(s=>{
+        out.push({key:l.code+'|'+c.row+'|'+c.col+'|'+s.id,loc:l.code,zone:l.zone,r:c.row,c:c.col,
+          row:c.name,qty:c.qty,cap:c.cap,name:s.item_name,unit:s.unit,batch:s.batch_no||'â€”',
+          exp:s.expiry||'â€”',sku:s.item_sku||'',bc:s.barcode||'',cost:s.cost||0,min:s.min_stock||0,sq:s.qty});
+      });
+    });
+  });
+  return out;
+}
+function resetDrug(dz){
+  V3.dz=!!dz;
+  const L=drugList();
+  V3.dk=L.length?L[0].key:null;
+}
+function toggleDrugAll(){
+  const z=V3.zone;
+  V3.dz=!V3.dz;
+  V3.rack='';
+  const L=drugList();
+  let i=z?L.findIndex(e=>e.zone===z):-1;
+  if(i<0)i=0;
+  V3.dk=L.length?L[i].key:null;
+  V3.sc=V3.dz?0.62:(V3.zone?0.62:0.5);
+  renderW3D();camFit();syncSliders();applyCam();syncRack();syncDrug();
+}
+function stepDrug(k){
+  const L=drugList(); if(!L.length)return;
+  let i=L.findIndex(e=>e.key===V3.dk);
+  i=(i<0?(k>0?-1:0):i)+k;
+  i=((i%L.length)+L.length)%L.length;
+  const e=L[i];
+  V3.dk=e.key;
+  if(V3.dz){V3.zone=e.zone;V3.rack='';V3.sc=0.62}
+  V3.sel={loc:e.loc,r:e.r,c:e.c};
+  renderW3D();camFit();syncSliders();applyCam();syncRack();syncDrug();markSel();
+}
+function syncDrug(){
+  const L=drugList(), i=L.findIndex(e=>e.key===V3.dk);
+  const w=$('w_drugn'), t=$('w_drugi'), b=$('w_dz');
+  if(w)w.textContent=L.length?((i>=0?i+1:1)+' / '+L.length):'0 / 0';
+  if(b){b.style.opacity=V3.dz?1:.55;b.style.boxShadow=V3.dz?'0 0 0 3px #7c3aed':'none'}
+  if(t){
+    const e=L[i];
+    if(!e){t.innerHTML='<span style="color:var(--mut)">bu doim dor yo\'q</span>';return}
+    const today=new Date().toISOString().slice(0,10);
+    const late=(e.exp&&e.exp!=='â€”'&&e.exp<today);
+    const soon=(!late&&e.exp&&e.exp!=='â€”'&&e.exp<new Date(Date.now()+90*864e5).toISOString().slice(0,10));
+    t.innerHTML=`<b>${e.name}</b>
+      <span class="t b" style="margin-left:6px">${e.zone}-zona Â· ${e.loc} Â· ${e.row}</span>
+      <span class="t ${late?'r':'g'}" style="margin-left:4px">${num(e.sq)} ${e.unit}</span>
+      <span class="t" style="margin-left:4px">partiya ${e.batch}</span>
+      <span class="t ${late||soon?'r':''}" style="margin-left:4px">${late?'âš ï¸ muddati o\'tgan':soon?'âš ï¸ yaqin '+e.exp:e.exp}</span>
+      <span class="t" style="margin-left:4px">min ${num(e.min)}</span>
+      <span class="t" style="margin-left:4px">${money(e.sq*e.cost)}</span>`;
+  }
+}
+function syncRack(){
+  const s=$('w_rack'); if(s)s.value=V3.rack;
+  const n=$('w_rackn');
+  if(n){const R=RACKS(),i=rackIdx();n.textContent=V3.rack?(i>=0?`${i+1} / ${R.length}`:''):`${R.length} ta stelyaj`}
+  const zn=$('w_zoneN');
+  if(zn){const Z=ZONES(),i=zoneIdx();zn.textContent=V3.zone?(i>=0?`${i+1} / ${Z.length}`:''):`${Z.length} zona`}
+  document.querySelectorAll('#w_rackbar .rk').forEach(b=>{b.style.opacity=V3.rack===b.dataset.r?1:.5});
+  document.querySelectorAll('#w_zbtns .wz').forEach(b=>{
+    const on=(b.dataset.z||'')===V3.zone;
+    b.style.opacity=(!V3.zone||on)?1:.45;
+    b.style.boxShadow=on?'0 0 0 3px '+(ZC[V3.zone]||'#0f172a'):'none';
+  });
+}
+
+function setZone(z){
+  V3.zone=z||'';
+  V3.rack='';
+  V3.sel=null;
+  V3.sc=V3.zone?0.62:0.5;
+  resetDrug(false);
+  renderW3D();camFit();syncSliders();applyCam();syncRack();syncDrug();
+}
+
+function cube3(x,y,z,W,D,H,c,loc,r,col,tip,op){
+  const[t,f,s]=c;
+  return `<div class="bx" data-loc="${loc}" data-r="${r}" data-c="${col}" title="${loc}-${r}-${col}: ${tip}"
+    style="transform:translate3d(${x}px,${y}px,${z}px);opacity:${op===undefined?1:op}">
+    <div class="f" style="width:${W}px;height:${D}px;background:${t};transform:translateY(${-H}px) rotateX(-90deg)"></div>
+    <div class="f" style="width:${W}px;height:${H}px;background:linear-gradient(180deg,${f},${s});transform:translateY(${-H}px)"></div>
+    <div class="f" style="width:${D}px;height:${H}px;background:linear-gradient(90deg,${s},${t});transform:translate(${W}px,${-H}px) rotateY(90deg)"></div>
+  </div>`;
+}
+
+function applyCam(){
+  const w=$('w_world'); if(!w)return;
+  w.style.transform=`translate3d(${V3.lx}px,${V3.lz}px,0) rotateX(${V3.rx}deg) rotateZ(${V3.rz}deg) scale(${V3.sc})`;
+}
+function pcellCls(state){return state==="to'liq"?'full':(state||'bosh')}
+function renderPlan(){
+  const p=$('w_plan'); if(!p||!V3.M)return;
+  const m=V3.M;
+  let src=m.locations;
+  if(V3.rack)src=src.filter(l=>l.code===V3.rack);
+  else if(V3.zone)src=src.filter(l=>l.zone===V3.zone);
+  const rooms=new Map();
+  src.forEach(l=>{
+    const k=(l.building||'Bino-1')+' / '+(l.room||'Xona-1');
+    if(!rooms.has(k))rooms.set(k,[]);
+    rooms.get(k).push(l);
+  });
+  let out='';
+  [...rooms.keys()].forEach(k=>{
+    const ls=rooms.get(k);
+    out+=`<div class="p-room"><div class="p-rh">🏢 ${k} <span>qavat ${ls[0].floor||1} &middot; ${ls.length} stelyaj &middot; ${num(ls.reduce((a,b)=>a+(b.total_qty||0),0))} dona</span></div>`;
+    zorder(ls).forEach(z=>{
+      const zs=ls.filter(l=>l.zone===z);
+      out+=`<div class="p-zone"><div class="p-zh" style="border-color:${ZC[z]||'#1d4ed8'};color:${ZC[z]||'#1d4ed8'}">${z}-zona <span>${zs.length} stelyaj</span></div><div class="p-racks">`;
+      zs.forEach(l=>{
+        out+=`<div class="p-rack"><div class="p-rn">${l.code} <span>${l.name||''}</span></div><div class="p-cells" style="grid-template-columns:repeat(${l.cols||1},1fr)">`;
+        (l.cells||[]).forEach(c=>{
+          const tip=c.stocks&&c.stocks.length
+            ? c.stocks.map(s=>s.item_name+' - '+num(s.qty)+' '+s.unit+(s.batch_no?' ('+s.batch_no+')':'')).join(' | ')
+            : "Bo'sh katak (sig'im "+c.cap+")";
+          out+=`<div class="pcell ${pcellCls(c.state)}" data-cell="${l.code}-${c.row}-${c.col}" title="${String(tip).replace(/"/g,'&quot;')}">`
+             +`<span>${c.name}</span>${c.qty>0?'<b>'+num(c.qty)+'</b>':'<i>-</i>'}</div>`;
+        });
+        out+=`</div></div>`;
+      });
+      out+=`</div></div>`;
+    });
+    out+=`</div>`;
+  });
+  p.innerHTML=out||`<div style="color:var(--mut);padding:20px">Ma'lumot yo'q</div>`;
+  if(V3.sel)markSel();
+}
+function setMode(m){
+  V3.mode=m==='3d'?'3d':'2d';
+  const v=$('w_view');
+  if(v){
+    v.classList.toggle('m2d',V3.mode==='2d');
+    const w=$('w_world'),p=$('w_plan');
+    if(w)w.style.display=V3.mode==='2d'?'none':'';
+    if(p)p.style.display=V3.mode==='2d'?'':'none';
+    const h=v.querySelector('.hint');
+    if(h){
+      h.style.display='';
+      h.innerHTML=V3.mode==='2d'
+        ? "Katakni bosing &mdash; ma'lumot o'ngdagi panelda &middot; <b>&#8592; &#8594;</b> = dori &middot; <b>Shift</b> = stelyaj &middot; <b>Ctrl</b> = zona"
+        : "&#128433;&#65039; Sudrab aylantiring &middot; g'ildirak = kattalashtirish &middot; <b>&#8592; &#8594;</b> = dori &middot; <b>Shift</b> = stelyaj &middot; <b>Ctrl</b> = zona";
+    }
+  }
+  const c=document.querySelector('#w3d .w3d-ctl'); if(c)c.style.display=V3.mode==='2d'?'none':'';
+  const o=$('w_3donly'); if(o)o.style.display=V3.mode==='2d'?'none':'';
+  [['m2d','2d'],['m3d','3d']].forEach(([id,mm])=>{
+    const b=$(id); if(!b)return;
+    const on=V3.mode===mm;
+    b.style.opacity=on?1:.55;
+    b.style.boxShadow=on?'0 0 0 2px #0f172a':'none';
+    b.style.fontWeight=on?'700':'500';
+  });
+  if(V3.mode==='2d')renderPlan();
+  else{renderW3D();camFit();applyCam();}
+  if(V3.M)syncDrug();
+}
+function renderW3D(){
+  const w=$('w_world');
+  if(!w||!V3.M)return;
+  if(V3.mode==='2d'){renderPlan();return;}
+  const m=V3.M;
+  let src=m.locations;
+  if(V3.rack)src=src.filter(l=>l.code===V3.rack);
+  else if(V3.zone)src=src.filter(l=>l.zone===V3.zone);
+  const zones=zorder(src);
+  const l0=src[0];
+  let out='';
+  let fx=0;
+  const nz=zones.length;
+  zones.forEach((z,zi)=>{
+    const dim=V3.zone&&z!==V3.zone;
+    const op=dim?.13:1;
+    const fz=zi*ZP;
+    const zs=src.filter(l=>l.zone===z);
+    let x=0;
+    zs.forEach((l,li)=>{
+      const rows=l.kind==='zona'?1:l.rows, cols=l.kind==='zona'?1:l.cols;
+      const RW=cols*CW, RD=CD;
+      const tp=`opacity:${op}`;
+      for(let r=1;r<=rows;r++){
+        const y=-(r-1)*LH;
+        out+=`<div class="pl" style="transform:translate3d(${x}px,${y-SLAB}px,${fz}px);${tp}">
+          <div class="f" style="width:${RW}px;height:${RD}px;background:linear-gradient(90deg,#cbd5e1,#94a3b8);transform:rotateX(-90deg)"></div></div>`;
+      }
+      [0,RW-SLAB].forEach(px=>{
+        out+=`<div class="pl" style="transform:translate3d(${x+px}px,0px,${fz}px);${tp}">
+          <div class="f" style="width:${SLAB}px;height:${rows*LH-SLAB}px;background:linear-gradient(180deg,#64748b,#334155);transform:translateY(${-rows*LH+SLAB}px)"></div></div>`;
+      });
+      /* kataklar */
+      l.cells.forEach(c=>{
+        const h=Math.max(c.qty>0?7:2, Math.min(LH-6,(c.qty/c.cap)*(LH-6)));
+        const cl=c.state==="to'liq"?"to'liq":c.state==="kam"?"kam":c.qty>0?"normal":"bosh";
+        const tip=c.stocks.length?c.stocks.map(s=>`${s.item_name} â€” ${s.qty} ${s.unit}`+(s.batch_no?` (${s.batch_no})`:'')).join(' Â· '):'Bo\'sh katak';
+        out+=cube3(x+(c.col-1)*CW, -(c.row-1)*LH, fz+CD, CW-5, CD-5, h, CLR[cl], l.code, c.row, c.col, tip, op);
+      });
+      /* stelyaj yorlig'i â€” tartib raqami bilan */
+      if(V3.nl!==false)out+=`<div class="lb" style="transform:translate3d(${x+6}px,${-rows*LH-42}px,${fz}px);${tp}">
+        <div style="background:${ZC[z]||'#0f172a'};font-size:${V3.rack?20:13}px">${V3.rack?'ðŸ“Œ '+l.code:(li+1)+'. '+l.code}<span style="font-weight:400;opacity:.85"> ${l.name||''}</span></div></div>`;
+      x+=RW+RP;
+    });
+    fx=Math.max(fx,x);
+    /* zona rangli poli */
+    out+=`<div class="pl" style="transform:translate3d(${-110}px,.4px,${fz+ZP}px)">
+      <div class="f" style="width:${fx+200}px;height:${ZP-14}px;background:${ZC[z]||'#1d4ed8'};opacity:.10;transform:rotateX(-90deg);
+      box-shadow:0 0 0 4px ${ZC[z]||'#1d4ed8'} inset"></div></div>`;
+    /* zonalar orasidagi ajratuvchi devor (o'rtada o'tish joyi) */
+    if(zi<nz-1){
+      const zW=fz+ZP-52, cx=(-110+fx+90)/2, gap=100;
+      out+=`<div class="pl" style="transform:translate3d(${-110}px,0px,${zW}px)">
+        <div class="f" style="width:${cx+110-gap}px;height:64px;background:linear-gradient(180deg,#e2e8f0,#94a3b8);transform:translateY(-64px)"></div></div>`;
+      out+=`<div class="pl" style="transform:translate3d(${cx+gap}px,0px,${zW}px)">
+        <div class="f" style="width:${fx+90-cx-gap}px;height:64px;background:linear-gradient(180deg,#e2e8f0,#94a3b8);transform:translateY(-64px)"></div></div>`;
+      out+=`<div class="lb" style="transform:translate3d(${cx-46}px,-4px,${zW}px)"><div style="background:#0f172a;font-size:11px">â¬Œ o'tish joyi</div></div>`;
+    }
+    if(!V3.first){
+      const fc=l0.cells.find(c=>c.stocks.length);
+      if(fc)V3.first={loc:l0.code,r:fc.row,c:fc.col};
+    }
+  });
+  /* POL â€” z0 dan -Z tomonga cho'ziladi, shuning uchun z0=farq+60 qilinadi */
+  V3.b={fx:fx,nz:nz,cz:(V3.rack?60:nz*ZP/2)};
+  const FW=fx+200, FD=nz*ZP+140;
+  out=`<div class="pl" style="transform:translate3d(${-110}px,0px,${nz*ZP+60}px)">
+    <div class="f" style="width:${FW}px;height:${FD}px;background:
+      repeating-linear-gradient(0deg,#eef1f5 0 47px,#c3ced9 47px 49px),
+      repeating-linear-gradient(90deg,#eef1f5 0 47px,#c3ced9 47px 49px),
+      linear-gradient(160deg,#f4f6f9,#dfe5ec);transform:rotateX(-90deg);
+      box-shadow:0 0 0 6px #94a3b8 inset,0 0 0 12px #64748b inset"></div></div>`+out;
+  /* polga yozilgan zona nomlari + koridor chizig'i */
+  zones.forEach((z,i)=>{
+    const op=(V3.zone&&z!==V3.zone)?.16:1;
+    out+=`<div class="pl" style="transform:translate3d(${-100}px,.7px,${i*ZP+150}px);opacity:${op}">
+      <div class="f" style="width:${fx+170}px;height:9px;background:repeating-linear-gradient(90deg,#facc15 0 26px,transparent 26px 44px);transform:rotateX(-90deg)"></div></div>`;
+    out+=`<div class="fl-z" style="transform:translate3d(${-98}px,.8px,${i*ZP+152}px);opacity:${op}">
+      <div style="font-size:34px;color:${ZC[z]||'#1d4ed8'};opacity:.8;font-weight:800">ZONA ${z}</div></div>`;
+    out+=`<div class="fl-z" style="transform:translate3d(${-98}px,.75px,${i*ZP+152}px);opacity:${op}"><div>${z}</div></div>`;
+  });
+  /* orqa devor */
+  out+=`<div class="pl" style="transform:translate3d(${-110}px,0px,${nz*ZP+60}px)">
+    <div class="f" style="width:${FW}px;height:96px;background:linear-gradient(180deg,#e2e8f0,#94a3b8);transform:translateY(-96px)"></div></div>`;
+  /* koridor yorliklari */
+  if(V3.zl!==false)zones.forEach((z,i)=>{
+    const op=(V3.zone&&z!==V3.zone)?.28:1;
+    out+=`<div class="lb" style="transform:translate3d(${-70}px,-1px,${i*ZP+206}px);opacity:${op}">
+      <div style="background:${ZC[z]||'#0f172a'};font-size:15px">${z}-ZONA Â· ${src.filter(l=>l.zone===z).length} stelyaj</div></div>`;
+  });
+  w.innerHTML=out;
+  w.style.transform=`translate3d(${V3.lx}px,${V3.lz}px,0) rotateX(${V3.rx}deg) rotateZ(${V3.rz}deg) scale(${V3.sc})`;
+  if(V3.sel)markSel();
+}
+
+function markSel(){
+  document.querySelectorAll('#w_world .bx.sel,#w_plan .pcell.sel').forEach(e=>e.classList.remove('sel'));
+  const s=V3.sel; if(!s)return;
+  const l=V3.M.locations.find(l=>l.code===s.loc); if(!l)return;
+  const c=l.cells.find(c=>c.row==s.r&&c.col==s.c); if(!c)return;
+  const cid=s.loc+'-'+s.r+'-'+s.c;
+  document.querySelectorAll('#w_world .bx').forEach(e=>{
+    if(e.dataset.loc==s.loc&&e.dataset.r==String(s.r)&&e.dataset.c==String(s.c))e.classList.add('sel');
+  });
+  document.querySelectorAll('#w_plan .pcell').forEach(e=>{ if(e.dataset.cell===cid)e.classList.add('sel'); });
+  const pe=document.querySelector('#w_plan .pcell[data-cell="'+cid+'"]'); if(pe)pe.scrollIntoView({block:'nearest'});
+  const pct=Math.min(100,Math.round(c.qty/c.cap*100));
+  const stt=c.qty<=0?'Bo\'sh':c.state==="to'liq"?'To\'liq':c.state==="kam"?'Kam':'Normal';
+  $('w_side').innerHTML=`
+    <div style="display:flex;justify-content:space-between;align-items:flex-start;gap:6px">
+      <div><div style="font-size:16px;font-weight:800">${s.loc}-${s.r}-${s.c}</div>
+      <div style="color:var(--mut);font-size:11.5px">${l.name||''} Â· ${l.zone}-zona</div></div>
+      <button class="btn s" onclick="V3.sel=null;markSel();renderW3D()">âœ•</button>
+    </div>
+    <div style="display:flex;gap:5px;margin:8px 0;flex-wrap:wrap">
+      <span class="t ${c.qty<=0?'':c.state==="kam"?'y':c.state==="to'liq"?'r':'g'}">${stt} Â· ${pct}%</span>
+      <span class="t b">sig'im ${c.cap}</span>
+      <span class="t">${l.kind==='zona'?'butun zona':'stelyaj '+(l.rows||1)+'Ã—'+(l.cols||1)}</span>
+    </div>
+    ${c.stocks.length?c.stocks.map(s2=>`<div style="border-top:1px solid var(--ln);padding:7px 0">
+      <b style="font-size:13.5px">${s2.item_name}</b>
+      <div class="mono" style="font-size:11px;color:var(--mut)">SKU ${s2.item_sku}${s2.barcode?' Â· '+s2.barcode:''}</div>
+      <div style="margin-top:4px"><b style="font-size:18px;color:#15803d">${num(s2.qty)}</b> <span style="font-size:12px">${s2.unit}</span></div>
+      <div class="bar2" style="height:7px;margin-top:5px"><div style="width:${pct}%;background:${c.state==="to'liq"?'#dc2626':c.state==="kam"?'#d97706':'#16a34a'}"></div></div>
+      <div style="margin-top:6px;font-size:12px;display:grid;grid-template-columns:auto 1fr;gap:2px 8px">
+        ${s2.batch_no?`<span style="color:var(--mut)">Partiya</span><b>${s2.batch_no}</b>`:''}
+        ${s2.expiry?`<span style="color:var(--mut)">Yaroqlilik</span><b class="${new Date(s2.expiry)<new Date()?'low':''}">${s2.expiry}</b>`:''}
+        ${s2.min_stock!=null?`<span style="color:var(--mut)">Min zaxira</span><span>${s2.min_stock} ${s2.unit}</span>`:''}
+        ${s2.cost?`<span style="color:var(--mut)">Tannarx</span><span>${money(s2.cost)}</span><span style="color:var(--mut)">Qiymati</span><b>${money(s2.qty*s2.cost)}</b>`:''}
+        ${s2.code?`<span style="color:var(--mut)">SKU kodi</span><span class="mono">${s2.code}</span>`:''}
+      </div>
+      ${new Date(s2.expiry)<new Date()?'<div style="margin-top:6px;color:var(--r);font-size:12px">âš ï¸ Muddati o\'tgan</div>':''}
+    </div>`).join('')
+    :'<div style="color:var(--mut);padding:8px 0">Bu katak bo\'sh. Yangi kirim hujjati orqali tovar joylashtiring.</div>'}
+    <div style="border-top:1px solid var(--ln);padding-top:8px;display:flex;gap:6px;flex-wrap:wrap">
+      <button class="btn s" onclick="newDoc('kirish')">ðŸ“¥ Bu katakka kirim</button>
+      <button class="btn s" onclick="go('locs');setTimeout(()=>toast('ðŸ“ '+'${s.loc}'),200)">ðŸ“ Stelyaj varaqasi</button>
+    </div>`;
+}
+
+function pick3(loc,r,c){
+  V3.sel={loc,r:Number(r),c:Number(c)};
+  markSel();
+}
+
+function w3dView(v){
+  if(v==='iso'){V3.rx=56;V3.rz=34}
+  if(v==='top'){V3.rx=88;V3.rz=0}
+  if(v==='front'){V3.rx=12;V3.rz=0}
+  if(v==='side'){V3.rx=16;V3.rz=74}
+  V3.sc=V3.rack?2.0:V3.zone?0.62:0.50;
+  camFit();syncSliders();applyCam();
+}
+function camFit(){
+  const B=V3.b; if(!B)return;
+  const cx=B.fx/2, cz=B.cz!==undefined?B.cz:B.nz*ZP/2;
+  const a=V3.rx*Math.PI/180,b=V3.rz*Math.PI/180,s=V3.sc;
+  const cy=-45;
+  const y1=cx*Math.sin(b)+cy*Math.cos(b), x1=cx*Math.cos(b)-cy*Math.sin(b);
+  const y2=y1*Math.cos(a)-cz*Math.sin(a);
+  V3.lx=Math.round(-s*x1); V3.lz=Math.round(-s*y2);
+}
+
+async function loadW3D(){
+  const m=await api('/api/map');
+  V3.M=m;
+  resetDrug(false);
+  const zones=zorder(m.locations);
+  $('w3d').innerHTML=`
+  <div class="box noprint"><h3>ðŸ§Š Ombor ko'rinishi <span class="r">
+    <button class="btn s" id="m2d" onclick="setMode('2d')">&#128241; 2D rejasi</button>
+    <button class="btn s" id="m3d" onclick="setMode('3d')">&#129306; 3D</button>
+    <span id="w_3donly">
+    <button class="btn s" onclick="w3dView('iso')">ðŸ”· Izometrik</button>
+    <button class="btn s" onclick="w3dView('top')">â¬†ï¸ Yuqoridan</button>
+    <button class="btn s" onclick="w3dView('front')">â¬…ï¸ Oldindan</button>
+    <button class="btn s" onclick="w3dView('side')">âž¡ï¸ Yondan</button>
+    <button class="btn s" onclick="V3.sc=Math.min(3,V3.sc+.2);applyCam()">ðŸ”+</button>
+    <button class="btn s" onclick="V3.sc=Math.max(.25,V3.sc-.2);applyCam()">ðŸ”âˆ’</button>
+    </span>
+  </span></h3>
+  <div class="w3d-ctl">
+    <label>ðŸ”„ Aylantirish X <input type="range" min="8" max="89" value="${V3.rx}" oninput="V3.rx=+this.value;applyCam()"></label>
+    <label>Z <input type="range" min="-90" max="90" value="${V3.rz}" oninput="V3.rz=+this.value;applyCam()"></label>
+    <label>ðŸ” Kattalik <input type="range" min="25" max="300" value="${V3.sc*100}" oninput="V3.sc=this.value/100;applyCam()"></label>
+    <label>â†”ï¸ <input type="range" min="-700" max="200" value="${V3.lx}" oninput="V3.lx=+this.value;applyCam()"></label>
+    <label>â†•ï¸ <input type="range" min="-200" max="600" value="${V3.lz}" oninput="V3.lz=+this.value;applyCam()"></label>
+    <label style="cursor:pointer"><input type="checkbox" ${V3.zl?'checked':''} onchange="V3.zl=this.checked;renderW3D()"> zona/koridor yorlig'i</label>
+    <label style="cursor:pointer"><input type="checkbox" ${V3.nl?'checked':''} onchange="V3.nl=this.checked;renderW3D()"> stelyaj nomlari</label>
+    <label style="cursor:pointer"><input type="checkbox" ${V3.sel?'checked':''} onchange="if(this.checked&&!V3.sel){V3.sel=V3.first;markSel();renderW3D()}else if(!this.checked){V3.sel=null;markSel();renderW3D()}"> birinchi tovardan boshlash</label>
+  </div>
+  <div id="w_zbtns" style="display:flex;gap:8px;flex-wrap:wrap;align-items:center;margin-top:10px;padding-top:9px;border-top:1px dashed var(--bd,#e2e8f0)">
+    <b style="font-size:12.5px;color:var(--mut)">ðŸ—‚ï¸ ZONA (ketma-ket):</b>
+    <button class="btn s" onclick="stepZone(-1)" title="Oldingi zona">â€¹</button>
+    <button class="btn s" onclick="stepZone(1)" title="Keyingi zona">â€º</button>
+    <span id="w_zoneN" style="font-size:12px;color:var(--mut)"></span>
+    <span style="width:6px"></span>
+    <button class="btn s wz" data-z="" onclick="setZone('')" style="border-left:5px solid #64748b">ðŸ—‚ï¸ Hammasi</button>
+    ${zones.map(z=>{
+      const ls=m.locations.filter(l=>l.zone===z);
+      const q=ls.reduce((s,l)=>s+l.cells.reduce((a,c)=>a+c.qty,0),0);
+      return `<button class="btn s wz" data-z="${z}" onclick="setZone('${z}')" style="border-left:5px solid ${ZC[z]||'#1d4ed8'}">
+        ${z}-zona <span style="opacity:.7;font-weight:400">Â· ${ls.length} stelyaj Â· ${num(q)}</span></button>`;
+    }).join('')}
+  </div>
+  <div id="w_rackbar" style="display:flex;gap:7px;flex-wrap:wrap;align-items:center;margin-top:9px;padding-top:9px;border-top:1px dashed var(--bd,#e2e8f0)">
+    <b style="font-size:12.5px;color:var(--mut)">ðŸ“Œ STELYAJ (ketma-ket):</b>
+    <button class="btn s" onclick="stepRack(-1)" title="Oldingi">â€¹</button>
+    <select id="w_rack" onchange="setRack(this.value)" style="width:130px">
+      <option value="">ðŸ—‚ï¸ Hammasi</option>
+      ${RACKS().map(c=>`<option ${c===V3.rack?'selected':''}>${c}</option>`).join('')}
+    </select>
+    <button class="btn s" onclick="stepRack(1)" title="Keyingi">â€º</button>
+    <span id="w_rackn" style="font-size:12px;color:var(--mut)"></span>
+    <span style="flex:1"></span>
+    <button class="btn s rk" data-r="A-1" onclick="setRack('A-1')" style="border-left:5px solid ${ZC.A}">ðŸ…°ï¸ A-1</button>
+    <button class="btn s rk" data-r="B-1" onclick="setRack('B-1')" style="border-left:5px solid ${ZC.B}">ðŸ…±ï¸ B-1</button>
+    <button class="btn s rk" data-r="C-1" onclick="setRack('C-1')" style="border-left:5px solid ${ZC.C}">ðŸ†‘ C-1</button>
+    <button class="btn s rk" data-r="D-1" onclick="setRack('D-1')" style="border-left:5px solid ${ZC.D}">ðŸ…³ D-1</button>
+  </div>
+  <div id="w_drugbar" style="display:flex;gap:7px;flex-wrap:wrap;align-items:center;margin-top:9px;padding-top:9px;border-top:1px dashed var(--bd,#e2e8f0)">
+    <b style="font-size:12.5px;color:var(--mut)">ðŸ’Š DORI (ketma-ket):</b>
+    <button class="btn s" onclick="stepDrug(-1)" title="Oldingi dori">â€¹</button>
+    <button class="btn s" onclick="stepDrug(1)" title="Keyingi dori">â€º</button>
+    <span id="w_drugn" style="font-size:12px;color:var(--mut);min-width:58px"></span>
+    <button class="btn s" id="w_dz" onclick="toggleDrugAll()" title="A->D barcha zonalar bo'yicha" style="border-left:5px solid #7c3aed">ðŸŒ Aâ†’D</button>
+    <span id="w_drugi" style="font-size:12.5px;display:flex;gap:4px;flex-wrap:wrap;align-items:center"></span>
+  </div>
+  <div style="display:flex;gap:14px;flex-wrap:wrap;font-size:11.5px;margin-top:8px">
+    <span><i style="display:inline-block;width:12px;height:12px;background:#e8edf3;border:1px solid #b6c2d1;border-radius:2px"></i> Bo'sh</span>
+    <span><i style="display:inline-block;width:12px;height:12px;background:#86efac;border:1px solid #15803d;border-radius:2px"></i> Normal</span>
+    <span><i style="display:inline-block;width:12px;height:12px;background:#fde68a;border:1px solid #d97706;border-radius:2px"></i> Kam (â‰¤5)</span>
+    <span><i style="display:inline-block;width:12px;height:12px;background:#fca5a5;border:1px solid #b91c1c;border-radius:2px"></i> To'liq</span>
+    <span style="color:var(--mut)">Kub balandligi = katakda qancha tovar bor</span>
+  </div>
+  <div style="font-size:12.5px;color:var(--mut);margin-top:6px">Joylar: <b>${m.locations.length}</b> Â· pozitsiyalar: <b>${m.positions}</b> Â· dona: <b>${num(m.total_qty)}</b> Â· ogohlantirish: <b style="color:var(--w)">${m.alerts.length}</b></div>
+  </div>
+  <div class="v3" id="w_view"><div id="w_plan" style="display:none"></div><div class="world" id="w_world"></div>
+    <div class="hint">ðŸ–±ï¸ Sudrab aylantiring Â· g'ildirak = kattalashtirish Â· <b>â† â†’</b>=dori Â· <b>Shift+â† â†’</b>=stelyaj Â· <b>Ctrl+â† â†’</b>=zona</div>
+    <div class="side" id="w_side"><b>ðŸ§Š Ombor</b><div style="color:var(--mut);margin-top:6px">Istalgan kubni bosing â€” dori ma'lumotlari shu yerda chiqadi.</div></div>
+  </div>`;
+  renderW3D();camFit();syncSliders();applyCam();syncRack();syncDrug();
+  const v=$('w_view');
+  v.onwheel=e=>{
+    if(V3.mode==='2d')return;
+    e.preventDefault();
+    V3.sc=Math.max(.25,Math.min(1.4,V3.sc*(e.deltaY<0?1.1:.9)));applyCam();
+  };
+  let down=false,moved=false,px=0,py=0;
+  v.onpointerdown=e=>{
+    down=true;moved=false;px=e.clientX;py=e.clientY;
+    v.classList.add('drag');
+  };
+  v.onpointermove=e=>{
+    if(!down||V3.mode==='2d')return;
+    const dx=e.clientX-px, dy=e.clientY-py;
+    if(!moved&&Math.abs(dx)+Math.abs(dy)<5)return;
+    moved=true;
+    V3.rz+=dx*.35;
+    V3.rx=Math.max(5,Math.min(89,V3.rx-dy*.25));
+    px=e.clientX;py=e.clientY;
+    syncSliders();
+    if(!applyCam.raf)applyCam.raf=requestAnimationFrame(()=>{applyCam.raf=0;applyCam()});
+  };
+  const up=e=>{
+    if(!down)return;
+    down=false;v.classList.remove('drag');
+    if(moved)return;
+    const bx=(e.target.closest&&e.target.closest('.bx'))||null;
+    if(bx){pick3(bx.dataset.loc,bx.dataset.r,bx.dataset.c);return}
+    const st=(e.target.closest&&e.target.closest('[data-cell]'))||null;
+    if(st){pick3(st.dataset.cell.split('-')[0],st.dataset.cell.split('-')[1],st.dataset.cell.split('-')[2]);return}
+    if(!e.target.closest||!e.target.closest('.bx,.pl,.pcell,#w_side')){V3.sel=null;markSel()}
+  };
+  v.onpointerup=up;
+  v.onpointercancel=()=>{down=false;moved=false;v.classList.remove('drag')};
+  v.onpointerleave=()=>{down=false;v.classList.remove('drag')};
+  if(!V3.keys){
+    V3.keys=1;
+    addEventListener('keydown',e=>{
+      const p=document.querySelector('.pan.on');
+      if(!p||p.id!=='w3d')return;
+      if(e.target&&/INPUT|SELECT|TEXTAREA/.test(e.target.tagName))return;
+      if(e.key==='ArrowRight'||e.key==='ArrowLeft'){
+        const d=e.key==='ArrowRight'?1:-1;
+        if(e.shiftKey)stepRack(d);
+        else if(e.ctrlKey||e.metaKey)stepZone(d);
+        else stepDrug(d);
+        e.preventDefault();
+      }
+      if(e.key==='Home'){setZone('');e.preventDefault()}
+    });
+  }
+  setMode(V3.mode);
+}
+
+function syncSliders(){
+  const r=document.querySelectorAll('#w3d .w3d-ctl input[type=range]');
+  if(r[0])r[0].value=V3.rx;
+  if(r[1])r[1].value=V3.rz;
+  if(r[2])r[2].value=Math.round(V3.sc*100);
+  if(r[3])r[3].value=V3.lx;
+  if(r[4])r[4].value=V3.lz;
+}
+
+/* ---------- Joylashuv ro'yxati ---------- */
+let pMode='zone';
+async function loadPlace(){
+  const f='&loc='+encodeURIComponent($('pl_loc')?.value||'')+'&cat='+encodeURIComponent($('pl_cat')?.value||'')+'&q='+encodeURIComponent($('pl_q')?.value||'');
+  const d=await api('/api/report/placement?'+f);
+  const mode=pMode;
+  const byLoc={};
+  d.items.forEach(it=>it.positions.forEach(p=>{
+    byLoc[p.zone]=byLoc[p.zone]||{};
+    byLoc[p.zone][p.loc]=byLoc[p.zone][p.loc]||[];
+    byLoc[p.zone][p.loc].push({it,p});
+  }));
+
+  let body='';
+  if(mode==='item'){
+    body=`<table><tr><th>â„–</th><th>Dori nomi</th><th>SKU</th><th>Shtrix</th><th>Kategoriya</th><th>Birlik</th><th>Jami</th><th>Joylashuvi (stelyaj-katak)</th><th>Min</th></tr>
+    ${d.items.map((it,i)=>`<tr><td>${i+1}</td><td><b>${it.name}</b></td><td class="mono">${it.sku}</td><td class="mono">${it.barcode||'â€”'}</td><td>${it.category}</td><td>${it.unit}</td>
+    <td class="${it.total<=it.min_stock?'low':''}"><b>${num(it.total)}</b></td>
+    <td>${it.positions.map(p=>`<b>${p.loc}-${p.cell}</b> (${num(p.qty)})${p.batch_no?' <span style="color:var(--mut);font-size:11px">'+p.batch_no+'</span>':''}`).join('<br>')}</td>
+    <td>${it.min_stock}</td></tr>`).join('')}</table>`;
+  }else{
+    body=d.zones.map(z=>`<h3 style="margin:12px 0 6px">ðŸ…°ï¸ ${z}-zona</h3>`+Object.keys(byLoc[z]||{}).sort().map(loc=>{
+      const list=byLoc[z][loc];
+      return `<div class="box" style="padding:9px"><h3 style="font-size:13px;margin-bottom:6px">ðŸ“ ${loc} <span style="font-weight:400;font-size:11.5px;color:var(--mut)">${(LOC.find(l=>l.code===loc)||{}).name||''} Â· ${list.length} pozitsiya Â· ${num(list.reduce((a,x)=>a+x.p.qty,0))} dona</span></h3>
+      <table><tr><th>â„–</th><th>Katak</th><th>Dori nomi</th><th>SKU</th><th>Shtrix</th><th>Kategoriya</th><th>Soni</th><th>Partiya</th><th>Yaroqlilik</th><th>Ishorali</th></tr>
+      ${list.map((x,i)=>`<tr><td>${i+1}</td><td><b>${x.p.cell}</b></td><td><b>${x.it.name}</b></td><td class="mono">${x.it.sku}</td><td class="mono">${x.it.barcode||'â€”'}</td>
+      <td>${x.it.category}</td><td><b>${num(x.p.qty)}</b> ${x.it.unit}</td><td>${x.p.batch_no||'â€”'}</td>
+      <td class="${x.p.expiry&&new Date(x.p.expiry)<new Date()?'low':''}">${x.p.expiry||'â€”'}</td><td style="width:60px"></td></tr>`).join('')}
+      </table></div>`}).join('')).join('');
+  }
+
+  $('place').innerHTML=`
+  <div class="box noprint"><h3>ðŸ“ Joylashuv ro'yxati <span class="r">
+    <select id="pl_mode" style="width:190px" onchange="pMode=this.value;loadPlace()">
+      <option value="zone" ${mode==='zone'?'selected':''}>Stelyaj bo'yicha (varaq)</option>
+      <option value="item" ${mode==='item'?'selected':''}>Dori bo'yicha (qisqa)</option></select>
+    <input id="pl_q" placeholder="nom / SKU / shtrix" style="width:160px" value="${($('pl_q')?.value)||''}" oninput="loadPlace()">
+    <select id="pl_loc" style="width:130px" onchange="loadPlace()"><option value="">Barcha joylar</option>${LOC.map(l=>`<option ${($('pl_loc')?.value)===l.code?'selected':''}>${l.code}</option>`).join('')}</select>
+    <select id="pl_cat" style="width:170px" onchange="loadPlace()"><option value="">Barcha kategoriya</option>${d.cats.map(c=>`<option ${($('pl_cat')?.value)===c?'selected':''}>${c}</option>`).join('')}</select>
+    <button class="btn s" onclick="window.print()">ðŸ–¨ï¸ Chopish / PDF</button>
+    <button class="btn d s" onclick="csvPlace()">CSV</button></span></h3>
+    <div style="font-size:12.5px;color:var(--mut)">Dorilar: <b>${d.items.length}</b> Â· Pozitsiyalar: <b>${d.rows}</b> Â· Jami: <b>${num(d.total_qty)}</b> dona Â· Qiymat: <b>${money(d.total_value)}</b> Â· Sanalgani: <b>${new Date().toLocaleDateString('uz-UZ')}</b></div>
+  </div>
+  <div>${body}</div>
+  <div class="box noprint" style="margin-top:10px;font-size:12.5px;display:flex;justify-content:space-between;gap:20px;flex-wrap:wrap">
+    <div>Ombor muddiri: ____________</div><div>Shtrix tekshiruvchi: ____________</div><div>Sana: ____________</div></div>`;
+}
+
+async function csvPlace(){
+  const f='&loc='+encodeURIComponent($('pl_loc')?.value||'')+'&cat='+encodeURIComponent($('pl_cat')?.value||'')+'&q='+encodeURIComponent($('pl_q')?.value||'');
+  const d=await api('/api/report/placement?'+f);
+  const a=[['Zona','Stelyaj','Katak','SKU kodi','Dori nomi','Shtrix','Kategoriya','Birlik','Soni','Partiya','Yaroqlilik','Min zaxira','Qiymat']];
+  d.items.forEach(it=>it.positions.forEach(p=>a.push([p.zone,p.loc,p.cell,p.code,it.name,it.barcode,it.category,it.unit,p.qty,p.batch_no||'',p.expiry||'',it.min_stock,(p.qty*it.cost).toFixed(2)])));
+  dl('Joylashuv_royxati_'+new Date().toISOString().slice(0,10)+'.csv',a);
+}
+
+/* ---------- Yetkazib beruvchilar ---------- */
+async function loadSup(){
+  $('sup').innerHTML=`<div class="box"><h3>ðŸšš Yangi yetkazib beruvchi</h3>
+    <div class="f"><div><label>Nomi *</label><input id="s_n"></div><div><label>Telefon</label><input id="s_p"></div>
+    <div><label>Manzil</label><input id="s_a"></div><div style="align-self:end"><button class="btn" onclick="addSup()">ï¼‹ Qo'shish</button></div></div></div>
+  <div class="box"><table><tr><th>Nomi</th><th>Telefon</th><th>Manzil</th><th></th></tr>
+  ${SUP.map(s=>`<tr><td><b>${s.name}</b></td><td>${s.phone}</td><td>${s.address}</td><td><button class="btn r s" onclick="delSup(${s.id})">âœ•</button></td></tr>`).join('')}
+  </table></div>`;
+}
+async function addSup(){try{await api('/api/suppliers',{method:'POST',body:JSON.stringify({name:$('s_n').value,phone:$('s_p').value,address:$('s_a').value})});toast('âœ…');SUP=await api('/api/suppliers');loadSup()}catch(e){toast('âŒ '+e.message)}}
+async function delSup(id){if(!confirm('O\'chirilsinmi?'))return;try{await api('/api/suppliers/'+id,{method:'DELETE'});SUP=await api('/api/suppliers');loadSup()}catch(e){toast('âŒ '+e.message)}}
+
+/* ---------- Global qidiruv ---------- */
+async function globalSearch(v){
+  v=v.trim();if(!v)return;
+  go('stocks');await loadStocks();
+  $('s_q').value=v;await loadStocks();
+  if(!STOCKS.length){toast('Pozitsiyada topilmadi â€” nomenklaturada qidiring');go('items');$('i_q').value=v;loadItems()}
+}
+
+if(T)fetch('/api/me',{headers:{'Authorization':'Bearer '+T}}).then(r=>r.json()).then(u=>boot(u)).catch(()=>localStorage.removeItem('om_t'));
+document.addEventListener('keydown',e=>{if(e.key==='Enter'&&e.target.id!=='gsearch'&&T){}})
+</script>
+</body>
+</html>

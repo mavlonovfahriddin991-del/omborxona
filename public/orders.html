@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="uz">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Buyurtmalarim — OpenBudget</title>
+  <link rel="stylesheet" href="/style.css" />
+</head>
+<body>
+  <div class="container">
+    <div class="topbar">
+      <div class="logo">Open<span>Budget</span></div>
+      <a href="/" class="balance-chip" style="text-decoration:none">← Orqaga</a>
+    </div>
+    <div class="card">
+      <h1 class="title">📦 Buyurtmalarim</h1>
+      <div id="list"><p style="color:var(--muted);text-align:center;padding:20px">Yuklanmoqda...</p></div>
+    </div>
+  </div>
+  <script src="/main.js"></script>
+  <script>
+    (async () => {
+      try {
+        const { orders } = await api("/api/my-orders");
+        const list = document.getElementById("list");
+        if (!orders.length) {
+          list.innerHTML = '<p style="color:var(--muted);text-align:center;padding:16px">Hozircha buyurtma yo\'q</p>';
+          return;
+        }
+        list.innerHTML = orders
+          .map(
+            (o) => `<div class="order-item">
+              <div class="row1"><span>#${o.id} · ${o.service_name}</span><span class="badge ${o.status}">${STATUS_UZ[o.status] || o.status}</span></div>
+              <div class="meta">${o.service_name} &nbsp;|&nbsp; ${fmt(o.amount)} &nbsp;|&nbsp; ${o.created_at.slice(0, 16)}</div>
+            </div>`
+          )
+          .join("");
+      } catch {
+        location.href = "/login";
+      }
+    })();
+  </script>
+</body>
+</html>

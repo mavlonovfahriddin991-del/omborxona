@@ -1,0 +1,20 @@
+{
+  "name": "openbudget-bot",
+  "version": "1.0.0",
+  "private": true,
+  "description": "OpenBudget platformasi: buyurtma, referral va admin panel bilan Telegram bot + web sayt",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "bot": "node bot-start.js",
+    "web": "node -e \"process.env.DISABLE_BOT='1';require('./server.js')\"",
+    "apteka": "node apteka/server.js"
+  },
+  "dependencies": {
+    "bcryptjs": "^2.4.3",
+    "express": "^4.19.2",
+    "express-session": "^1.18.0",
+    "multer": "^2.2.0",
+    "telegraf": "^4.16.3"
+  }
+}

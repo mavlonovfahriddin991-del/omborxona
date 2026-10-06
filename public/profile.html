@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="uz">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Profil — OpenBudget</title>
+  <link rel="stylesheet" href="/style.css" />
+</head>
+<body>
+  <div class="container">
+    <div class="topbar">
+      <div class="logo">Open<span>Budget</span></div>
+      <a href="/" class="balance-chip" style="text-decoration:none">← Orqaga</a>
+    </div>
+
+    <div class="card">
+      <h1 class="title">👤 Profil</h1>
+      <p style="font-size:14px;color:var(--muted)">Login: <b id="username" style="color:var(--text)"></b></p>
+      <div class="price-row"><span>Balans:</span><b id="balance"></b></div>
+    </div>
+
+    <div class="card">
+      <h1 class="title">👥 Referal dasturi</h1>
+      <div class="ref-link-box" id="ref-link">...</div>
+      <button class="btn small secondary" id="copy-btn">📋 Nusxa olish</button>
+      <div class="stat-grid">
+        <div class="cell"><div class="num" id="invited">0</div><div class="lbl">Referal orqali kelganlar</div></div>
+        <div class="cell"><div class="num" id="earned">0 so'm</div><div class="lbl">Referal daromadi</div></div>
+      </div>
+    </div>
+
+    <button class="btn danger" id="logout-btn">Chiqish</button>
+  </div>
+  <script src="/main.js"></script>
+  <script src="/profile.js"></script>
+</body>
+</html>

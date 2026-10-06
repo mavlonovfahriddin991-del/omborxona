@@ -1,0 +1,102 @@
+* { margin: 0; padding: 0; box-sizing: border-box; }
+:root {
+  --bg: #f4f6fb;
+  --card: #ffffff;
+  --text: #17203a;
+  --muted: #6b7392;
+  --accent: #4f46e5;
+  --accent-dark: #4338ca;
+  --ok: #16a34a;
+  --warn: #d97706;
+  --err: #dc2626;
+  --border: #e5e8f2;
+  --radius: 14px;
+}
+body {
+  font-family: "Segoe UI", system-ui, -apple-system, sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  min-height: 100vh;
+}
+.container { max-width: 480px; margin: 0 auto; padding: 18px 16px 40px; }
+
+.topbar {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 14px 4px 20px;
+}
+.logo { font-weight: 800; font-size: 20px; letter-spacing: .3px; }
+.logo span { color: var(--accent); }
+.balance-chip {
+  background: var(--card); border: 1px solid var(--border);
+  padding: 7px 12px; border-radius: 999px; font-size: 13px; font-weight: 600; color: var(--muted);
+}
+
+.card {
+  background: var(--card); border: 1px solid var(--border);
+  border-radius: var(--radius); padding: 18px; margin-bottom: 16px;
+  box-shadow: 0 1px 3px rgba(23,32,58,.05);
+}
+
+h1.title { font-size: 17px; margin-bottom: 14px; text-align: center; }
+label { display: block; font-size: 13px; font-weight: 600; color: var(--muted); margin: 12px 0 6px; }
+input, select {
+  width: 100%; padding: 14px; font-size: 16px;
+  border: 1.5px solid var(--border); border-radius: 10px; outline: none; background: #fafbff;
+  transition: border-color .15s;
+}
+input:focus, select:focus { border-color: var(--accent); }
+.price-row {
+  display: flex; justify-content: space-between; align-items: center;
+  padding: 12px 0 2px; font-size: 14px; color: var(--muted);
+}
+.total-row {
+  display: flex; justify-content: space-between; align-items: center;
+  padding: 12px 2px; font-size: 18px; font-weight: 700;
+  border-top: 1px dashed var(--border); margin-top: 6px;
+}
+.btn {
+  width: 100%; padding: 16px; border: none; border-radius: 12px;
+  background: var(--accent); color: #fff; font-size: 17px; font-weight: 700;
+  cursor: pointer; margin-top: 16px; transition: background .15s;
+}
+.btn:hover { background: var(--accent-dark); }
+.btn:disabled { opacity: .55; cursor: not-allowed; }
+.btn.secondary { background: #eef0ff; color: var(--accent); }
+.btn.danger { background: #fee2e2; color: var(--err); }
+.btn.small { padding: 10px; font-size: 14px; margin-top: 8px; }
+
+.msg { padding: 12px; border-radius: 10px; font-size: 14px; margin-top: 12px; display: none; }
+.msg.ok { display: block; background: #dcfce7; color: var(--ok); }
+.msg.err { display: block; background: #fee2e2; color: var(--err); }
+
+.nav-row { display: flex; gap: 10px; margin-top: 4px; }
+.nav-row a {
+  flex: 1; text-align: center; text-decoration: none; font-size: 14px; font-weight: 600;
+  padding: 13px; border-radius: 12px; background: var(--card); color: var(--text); border: 1px solid var(--border);
+}
+
+.order-item { border-bottom: 1px solid var(--border); padding: 12px 2px; }
+.order-item:last-child { border-bottom: none; }
+.order-item .row1 { display: flex; justify-content: space-between; font-weight: 700; font-size: 15px; }
+.order-item .meta { font-size: 13px; color: var(--muted); margin-top: 4px; }
+.badge { font-size: 12px; font-weight: 700; padding: 4px 10px; border-radius: 999px; }
+.badge.pending { background: #fef3c7; color: var(--warn); }
+.badge.processing { background: #dbeafe; color: #1d4ed8; }
+.badge.done { background: #dcfce7; color: var(--ok); }
+.badge.cancelled { background: #fee2e2; color: var(--err); }
+
+.ref-link-box {
+  background: #f0f1ff; border: 1px dashed var(--accent); border-radius: 10px;
+  padding: 12px; font-size: 13px; word-break: break-all; color: var(--accent-dark);
+}
+.stat-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 12px; }
+.stat-grid .cell { background: #fafbff; border: 1px solid var(--border); border-radius: 10px; padding: 12px; text-align: center; }
+.stat-grid .num { font-size: 20px; font-weight: 800; }
+.stat-grid .lbl { font-size: 12px; color: var(--muted); margin-top: 2px; }
+
+.tabs { display: flex; gap: 8px; margin-bottom: 16px; }
+.tabs button {
+  flex: 1; padding: 12px; border: none; border-radius: 10px; font-weight: 700; font-size: 14px;
+  background: transparent; color: var(--muted); cursor: pointer;
+}
+.tabs button.active { background: var(--accent); color: #fff; }

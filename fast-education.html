@@ -1,0 +1,345 @@
+<!DOCTYPE html>
+<html lang="uz">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Fast Education — Zamonaviy Onlayn Ta'lim</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+<style>
+*{font-family:'Inter',sans-serif;box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{background:#020617;margin:0}
+::-webkit-scrollbar{width:8px}
+::-webkit-scrollbar-track{background:#0f172a}
+::-webkit-scrollbar-thumb{background:linear-gradient(180deg,#06b6d4,#6366f1);border-radius:4px}
+.glass{background:rgba(15,23,42,.7);backdrop-filter:blur(20px);border:1px solid rgba(6,182,212,.15)}
+.glass-card{background:rgba(15,23,42,.6);backdrop-filter:blur(16px);border:1px solid rgba(6,182,212,.1)}
+.neon-border{border:1px solid rgba(6,182,212,.3);box-shadow:0 0 15px rgba(6,182,212,.1)}
+.neon-text{text-shadow:0 0 10px rgba(6,182,212,.5),0 0 20px rgba(6,182,212,.3)}
+.btn-neon{background:linear-gradient(135deg,#06b6d4,#6366f1);transition:all .3s ease;position:relative;overflow:hidden}
+.btn-neon:hover{box-shadow:0 0 30px rgba(6,182,212,.4),0 0 60px rgba(99,102,241,.2);transform:translateY(-2px)}
+.bg-grid{background-image:radial-gradient(rgba(6,182,212,.08) 1px,transparent 1px);background-size:40px 40px}
+.course-card{transition:all .4s cubic-bezier(.4,0,.2,1)}
+.course-card:hover{transform:translateY(-8px) scale(1.02);box-shadow:0 20px 60px rgba(6,182,212,.15);border-color:rgba(6,182,212,.4)}
+@keyframes fadeUp{from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:translateY(0)}}
+@keyframes float{0%,100%{transform:translateY(0)}50%{transform:translateY(-10px)}}
+.fade-up{animation:fadeUp .6s ease-out both}
+.animate-float{animation:float 3.5s ease-in-out infinite}
+.hero-grad{background:linear-gradient(135deg,rgba(6,182,212,.08),rgba(99,102,241,.08))}
+</style>
+</head>
+<body class="min-h-screen text-white overflow-x-hidden">
+
+<nav class="fixed top-0 left-0 right-0 z-[100]" style="background:rgba(2,6,23,.85);backdrop-filter:blur(20px);border-bottom:1px solid rgba(6,182,212,.1)">
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <div class="flex items-center justify-between h-16">
+      <a href="#home" class="flex items-center gap-3">
+        <div class="w-10 h-10 rounded-xl bg-gradient-to-br from-cyan-400 to-indigo-500 flex items-center justify-center shadow-lg shadow-cyan-500/20">
+          <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 14l9-5-9-5-9 5 9 5z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 14l6.16-3.422a12.083 12.083 0 01.665 6.479A11.952 11.952 0 0012 20.055a11.952 11.952 0 00-6.824-2.998 12.078 12.078 0 01.665-6.479L12 14z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 14v7"/></svg>
+        </div>
+        <div>
+          <div class="text-lg font-extrabold leading-tight bg-gradient-to-r from-cyan-400 to-indigo-400 bg-clip-text text-transparent">Fast Education</div>
+          <div class="text-[10px] text-slate-500 leading-none tracking-widest uppercase">Onlayn Ta'lim</div>
+        </div>
+      </a>
+      <div class="hidden md:flex items-center gap-7 text-sm font-semibold text-slate-300">
+        <a href="#home" class="hover:text-cyan-300 transition-colors">Bosh sahifa</a>
+        <a href="#features" class="hover:text-cyan-300 transition-colors">Afzalliklar</a>
+        <a href="#courses" class="hover:text-cyan-300 transition-colors">Kurslar</a>
+        <a href="#pricing" class="hover:text-cyan-300 transition-colors">Narxlar</a>
+        <a href="#contact" class="hover:text-cyan-300 transition-colors">Bog'lanish</a>
+      </div>
+      <div class="flex items-center gap-3">
+        <a href="#pricing" class="px-5 py-2 rounded-xl text-sm font-semibold text-cyan-300 border border-cyan-500/40 hover:bg-cyan-500/10 transition-all">Kirish</a>
+        <a href="#contact" class="px-5 py-2 rounded-xl text-sm font-semibold text-white btn-neon">Ro'yxatdan o'tish</a>
+      </div>
+    </div>
+  </div>
+</nav>
+
+<section id="home" class="relative bg-grid min-h-screen flex items-center pt-16">
+  <div class="absolute inset-0 hero-grad"></div>
+  <div class="absolute -top-20 -right-20 w-96 h-96 rounded-full bg-cyan-500/10 blur-3xl"></div>
+  <div class="absolute -bottom-20 -left-20 w-96 h-96 rounded-full bg-indigo-500/10 blur-3xl"></div>
+  <div class="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20 w-full">
+    <div class="grid grid-cols-1 lg:grid-cols-2 gap-14 items-center">
+      <div class="fade-up">
+        <span class="inline-block px-4 py-1.5 rounded-full text-xs font-bold tracking-wider bg-cyan-500/10 text-cyan-300 border border-cyan-500/30 mb-6">Zamonaviy onlayn ta'lim platformasi</span>
+        <h1 class="text-4xl sm:text-5xl lg:text-6xl font-black leading-tight mb-6">Kelajak kasblarini <br><span class="bg-gradient-to-r from-cyan-400 to-indigo-400 bg-clip-text text-transparent neon-text">tez va oson</span> o'rganing</h1>
+        <p class="text-slate-400 text-lg mb-8 max-w-xl">Fast Education — eng so'nggi bilimlarni qulay formatda taklif qiluvchi platforma. 10 000+ o'quvchi, 100+ kurs va har kuni yangi darslar.</p>
+        <div class="flex flex-wrap gap-4">
+          <a href="#courses" class="btn-neon text-white font-bold py-4 px-8 rounded-2xl text-base flex items-center gap-2">
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+            Kurslarni ko'rish
+          </a>
+          <a href="#pricing" class="px-8 py-4 rounded-2xl text-base font-bold text-cyan-300 border border-cyan-500/40 hover:bg-cyan-500/10 transition-all">Narxlarni bilish</a>
+        </div>
+        <div class="flex items-center gap-8 mt-10">
+          <div>
+            <div class="text-3xl font-black text-white">10 000+</div>
+            <div class="text-slate-500 text-sm">O'quvchilar</div>
+          </div>
+          <div class="w-px h-10 bg-slate-700"></div>
+          <div>
+            <div class="text-3xl font-black text-white">100+</div>
+            <div class="text-slate-500 text-sm">Kurslar</div>
+          </div>
+          <div class="w-px h-10 bg-slate-700"></div>
+          <div>
+            <div class="text-3xl font-black text-white">50+</div>
+            <div class="text-slate-500 text-sm">Mutaxassislar</div>
+          </div>
+        </div>
+      </div>
+      <div class="relative fade-up" style="animation-delay:.15s">
+        <div class="glass neon-border rounded-3xl p-8 animate-float">
+          <div class="flex items-center gap-4 mb-6">
+            <div class="w-14 h-14 rounded-2xl bg-gradient-to-br from-cyan-400 to-indigo-500 flex items-center justify-center shadow-lg shadow-cyan-500/20">
+              <svg class="w-7 h-7 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"/></svg>
+            </div>
+            <div>
+              <div class="font-bold text-lg">Sertifikatlangan kurslar</div>
+              <div class="text-slate-500 text-sm">Xalqaro standartlar asosida</div>
+            </div>
+          </div>
+          <div class="space-y-4">
+            <div class="flex items-center justify-between text-sm">
+              <span class="text-slate-400">Web Dasturlash</span>
+              <span class="font-bold text-cyan-300">92%</span>
+            </div>
+            <div class="h-2 rounded-full bg-slate-800"><div class="h-2 rounded-full bg-gradient-to-r from-cyan-400 to-indigo-400" style="width:92%"></div></div>
+            <div class="flex items-center justify-between text-sm">
+              <span class="text-slate-400">Grafik Dizayn</span>
+              <span class="font-bold text-cyan-300">78%</span>
+            </div>
+            <div class="h-2 rounded-full bg-slate-800"><div class="h-2 rounded-full bg-gradient-to-r from-cyan-400 to-indigo-400" style="width:78%"></div></div>
+            <div class="flex items-center justify-between text-sm">
+              <span class="text-slate-400">Mobile Development</span>
+              <span class="font-bold text-cyan-300">85%</span>
+            </div>
+            <div class="h-2 rounded-full bg-slate-800"><div class="h-2 rounded-full bg-gradient-to-r from-cyan-400 to-indigo-400" style="width:85%"></div></div>
+          </div>
+          <div class="mt-6 rounded-2xl bg-slate-900/70 border border-slate-700 p-4 flex items-center gap-3">
+            <span class="w-2.5 h-2.5 rounded-full bg-emerald-400 animate-pulse"></span>
+            <span class="text-sm text-slate-300">Hozir <b class="text-emerald-400">1 240</b> o'quvchi dars o'qilmoqda</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="features" class="py-24">
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <div class="text-center max-w-2xl mx-auto mb-16 fade-up">
+      <span class="inline-block px-4 py-1.5 rounded-full text-xs font-bold tracking-wider bg-cyan-500/10 text-cyan-300 border border-cyan-500/30 mb-4">Afzalliklarimiz</span>
+      <h2 class="text-3xl sm:text-4xl font-extrabold mb-4">Nega aynan <span class="neon-text text-cyan-400">Fast Education?</span></h2>
+      <p class="text-slate-500 text-lg">Biz bilim olishni oddiy, tez va samarali qilamiz.</p>
+    </div>
+    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+      <div class="glass-card rounded-3xl p-8 course-card fade-up">
+        <div class="w-14 h-14 rounded-2xl bg-gradient-to-br from-cyan-400 to-indigo-500 flex items-center justify-center mb-6 shadow-lg shadow-cyan-500/20">
+          <svg class="w-7 h-7 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"/></svg>
+        </div>
+        <h3 class="font-bold text-xl mb-2">Tez natija</h3>
+        <p class="text-slate-400 text-sm leading-relaxed">Qisqa vaqt ichida amaliy ko'nikmalarga ega bo'lasiz. Har bir modul — amaliy vazifalar bilan.</p>
+      </div>
+      <div class="glass-card rounded-3xl p-8 course-card fade-up" style="animation-delay:.05s">
+        <div class="w-14 h-14 rounded-2xl bg-gradient-to-br from-cyan-400 to-indigo-500 flex items-center justify-center mb-6 shadow-lg shadow-cyan-500/20">
+          <svg class="w-7 h-7 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"/></svg>
+        </div>
+        <h3 class="font-bold text-xl mb-2">Sertifikatlar</h3>
+        <p class="text-slate-400 text-sm leading-relaxed">Kursni tugatgach, xalqaro miqyosda tan olinadigan sertifikat olasiz.</p>
+      </div>
+      <div class="glass-card rounded-3xl p-8 course-card fade-up" style="animation-delay:.1s">
+        <div class="w-14 h-14 rounded-2xl bg-gradient-to-br from-cyan-400 to-indigo-500 flex items-center justify-center mb-6 shadow-lg shadow-cyan-500/20">
+          <svg class="w-7 h-7 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"/></svg>
+        </div>
+        <h3 class="font-bold text-xl mb-2">24/7 Qo'llab-quvvatlash</h3>
+        <p class="text-slate-400 text-sm leading-relaxed">Istagan vaqtda mentorlar va texnik yordam xizmatiga murojaat qiling.</p>
+      </div>
+      <div class="glass-card rounded-3xl p-8 course-card fade-up" style="animation-delay:.15s">
+        <div class="w-14 h-14 rounded-2xl bg-gradient-to-br from-cyan-400 to-indigo-500 flex items-center justify-center mb-6 shadow-lg shadow-cyan-500/20">
+          <svg class="w-7 h-7 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+        </div>
+        <h3 class="font-bold text-xl mb-2">Cheksiz kirish</h3>
+        <p class="text-slate-400 text-sm leading-relaxed">Har qanday qurilmada, istalgan vaqtda dars materiallariga kirishingiz mumkin.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="courses" class="py-24 bg-grid">
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <div class="text-center max-w-2xl mx-auto mb-16 fade-up">
+      <span class="inline-block px-4 py-1.5 rounded-full text-xs font-bold tracking-wider bg-cyan-500/10 text-cyan-300 border border-cyan-500/30 mb-4">Ommabop kurslar</span>
+      <h2 class="text-3xl sm:text-4xl font-extrabold mb-4">Eng ko'p tanlangan <span class="neon-text text-cyan-400">kurslar</span></h2>
+      <p class="text-slate-500 text-lg">Eng talabgir yo'nalishlardagi professional kurslar.</p>
+    </div>
+    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6" id="coursesGrid"></div>
+  </div>
+</section>
+
+<section id="pricing" class="py-24">
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <div class="text-center max-w-2xl mx-auto mb-16 fade-up">
+      <span class="inline-block px-4 py-1.5 rounded-full text-xs font-bold tracking-wider bg-cyan-500/10 text-cyan-300 border border-cyan-500/30 mb-4">Narxlar</span>
+      <h2 class="text-3xl sm:text-4xl font-extrabold mb-4">Har kimga mos <span class="neon-text text-cyan-400">tarif reja</span></h2>
+      <p class="text-slate-500 text-lg">Oddiy va shaffof narxlar. Istalgan vaqtda bepul sinab ko'ring.</p>
+    </div>
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-6 max-w-5xl mx-auto">
+      <div class="glass-card rounded-3xl p-8 text-center course-card fade-up">
+        <h3 class="font-bold text-xl mb-2">Boshlang'ich</h3>
+        <p class="text-slate-500 text-sm mb-6">Yangi boshlovchilar uchun</p>
+        <div class="text-5xl font-black mb-2">0 <span class="text-2xl text-slate-500">so'm</span></div>
+        <p class="text-slate-500 text-sm mb-8">doimiy</p>
+        <ul class="space-y-3 text-slate-400 text-sm mb-8 text-left">
+          <li class="flex items-center gap-2"><span class="text-emerald-400">✓</span>5 ta bepul kurs</li>
+          <li class="flex items-center gap-2"><span class="text-emerald-400">✓</span>Video darslar</li>
+          <li class="flex items-center gap-2"><span class="text-emerald-400">✓</span>Jamoaviy chat</li>
+          <li class="flex items-center gap-2 text-slate-600"><span>✗</span>Sertifikat</li>
+        </ul>
+        <a href="#contact" class="block w-full py-3 rounded-2xl text-sm font-bold text-cyan-300 border border-cyan-500/40 hover:bg-cyan-500/10 transition-all">Boshlash</a>
+      </div>
+      <div class="glass neon-border rounded-3xl p-8 text-center course-card fade-up" style="animation-delay:.1s;position:relative">
+        <span class="absolute -top-3 left-1/2 -translate-x-1/2 px-4 py-1 rounded-full text-xs font-bold bg-gradient-to-r from-cyan-400 to-indigo-500">OMMABOP</span>
+        <h3 class="font-bold text-xl mb-2">Professional</h3>
+        <p class="text-slate-500 text-sm mb-6">Faol o'rganuvchilar uchun</p>
+        <div class="text-5xl font-black text-transparent bg-gradient-to-r from-cyan-400 to-indigo-400 bg-clip-text mb-2">199 000 <span class="text-2xl text-slate-500">so'm/oy</span></div>
+        <p class="text-slate-500 text-sm mb-8">oyiga</p>
+        <ul class="space-y-3 text-slate-400 text-sm mb-8 text-left">
+          <li class="flex items-center gap-2"><span class="text-emerald-400">✓</span>Barcha kurslarga cheksiz kirish</li>
+          <li class="flex items-center gap-2"><span class="text-emerald-400">✓</span>Sertifikatlar</li>
+          <li class="flex items-center gap-2"><span class="text-emerald-400">✓</span>Mentor bilan individual</li>
+          <li class="flex items-center gap-2"><span class="text-emerald-400">✓</span>Amaliy loyihalar</li>
+          <li class="flex items-center gap-2"><span class="text-emerald-400">✓</span>24/7 qo'llab-quvvatlash</li>
+        </ul>
+        <a href="#contact" class="btn-neon block w-full text-white font-bold py-3 rounded-2xl text-sm text-center">Boshlash</a>
+      </div>
+      <div class="glass-card rounded-3xl p-8 text-center course-card fade-up" style="animation-delay:.2s">
+        <h3 class="font-bold text-xl mb-2">Biznes</h3>
+        <p class="text-slate-500 text-sm mb-6">Korporativ jamoalar uchun</p>
+        <div class="text-5xl font-black mb-2">449 000 <span class="text-2xl text-slate-500">so'm/oy</span></div>
+        <p class="text-slate-500 text-sm mb-8">jamoaga</p>
+        <ul class="space-y-3 text-slate-400 text-sm mb-8 text-left">
+          <li class="flex items-center gap-2"><span class="text-emerald-400">✓</span>Hammasi Professional'dan</li>
+          <li class="flex items-center gap-2"><span class="text-emerald-400">✓</span>10 tagacha xodim</li>
+          <li class="flex items-center gap-2"><span class="text-emerald-400">✓</span>Hisobotlar va statistika</li>
+          <li class="flex items-center gap-2"><span class="text-emerald-400">✓</span>Maxsus dastur</li>
+        </ul>
+        <a href="#contact" class="block w-full py-3 rounded-2xl text-sm font-bold text-cyan-300 border border-cyan-500/40 hover:bg-cyan-500/10 transition-all">Bog'lanish</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="contact" class="py-24 bg-grid">
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <div class="grid grid-cols-1 lg:grid-cols-2 gap-14 items-center">
+      <div class="fade-up">
+        <span class="inline-block px-4 py-1.5 rounded-full text-xs font-bold tracking-wider bg-cyan-500/10 text-cyan-300 border border-cyan-500/30 mb-4">Bog'lanish</span>
+        <h2 class="text-3xl sm:text-4xl font-extrabold mb-4">O'rganishni <span class="neon-text text-cyan-400">bugun</span> boshlang</h2>
+        <p class="text-slate-500 text-lg mb-8">Ariza qoldiring — biz sizga eng mos kursni tanlashda yordam beramiz.</p>
+        <div class="space-y-4">
+          <div class="flex items-center gap-4 glass-card rounded-2xl p-4">
+            <div class="w-11 h-11 rounded-xl bg-gradient-to-br from-cyan-400 to-indigo-500 flex items-center justify-center"><svg class="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z"/></svg></div>
+            <div><div class="text-sm text-slate-500">Telefon</div><div class="font-semibold">+998 90 123 45 67</div></div>
+          </div>
+          <div class="flex items-center gap-4 glass-card rounded-2xl p-4">
+            <div class="w-11 h-11 rounded-xl bg-gradient-to-br from-cyan-400 to-indigo-500 flex items-center justify-center"><svg class="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/></svg></div>
+            <div><div class="text-sm text-slate-500">Email</div><div class="font-semibold">info@fasteducation.uz</div></div>
+          </div>
+          <div class="flex items-center gap-4 glass-card rounded-2xl p-4">
+            <div class="w-11 h-11 rounded-xl bg-gradient-to-br from-cyan-400 to-indigo-500 flex items-center justify-center"><svg class="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"/></svg></div>
+            <div><div class="text-sm text-slate-500">Manzil</div><div class="font-semibold">Toshkent, Amir Temur ko'chasi 108</div></div>
+          </div>
+        </div>
+      </div>
+      <div class="glass neon-border rounded-3xl p-8 fade-up" style="animation-delay:.15s">
+        <h3 class="font-bold text-2xl mb-6">Ariza qoldirish</h3>
+        <form onsubmit="handleContact(event)" class="space-y-5">
+          <div><label class="block text-sm font-semibold text-slate-300 mb-2">Ism</label><input id="ctName" type="text" required placeholder="Ismingiz" class="w-full bg-slate-900/70 border border-slate-700 rounded-2xl px-4 py-3.5 text-white placeholder-slate-600 outline-none focus:shadow-[0_0_20px_rgba(6,182,212,.2)] focus:border-cyan-500 transition-all"></div>
+          <div><label class="block text-sm font-semibold text-slate-300 mb-2">Telefon</label><input id="ctPhone" type="tel" required placeholder="+998 90 000 00 00" class="w-full bg-slate-900/70 border border-slate-700 rounded-2xl px-4 py-3.5 text-white placeholder-slate-600 outline-none focus:shadow-[0_0_20px_rgba(6,182,212,.2)] focus:border-cyan-500 transition-all"></div>
+          <div><label class="block text-sm font-semibold text-slate-300 mb-2">Kurs turi</label>
+            <select class="w-full bg-slate-900/70 border border-slate-700 rounded-2xl px-4 py-3.5 text-white outline-none focus:shadow-[0_0_20px_rgba(6,182,212,.2)] focus:border-cyan-500 transition-all">
+              <option>Web dasturlash</option>
+              <option>Mobile dasturlash</option>
+              <option>Grafik dizayn</option>
+              <option>Data Science</option>
+              <option>Ingliz tili</option>
+            </select>
+          </div>
+          <button type="submit" class="w-full btn-neon text-white font-bold py-4 rounded-2xl text-base flex items-center justify-center gap-2"><svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8"/></svg>Arizani yuborish</button>
+        </form>
+        <div id="contactMsg" class="hidden mt-4 p-4 rounded-2xl bg-emerald-500/10 border border-emerald-500/30 text-emerald-300 text-sm font-semibold">Arizangiz qabul qilindi! Tez orada siz bilan bog'lanamiz.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<footer class="border-t border-slate-800/60 py-10">
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col sm:flex-row items-center justify-between gap-4">
+    <div class="flex items-center gap-3">
+      <div class="w-9 h-9 rounded-xl bg-gradient-to-br from-cyan-400 to-indigo-500 flex items-center justify-center"><svg class="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 14l9-5-9-5-9 5 9 5z"/></svg></div>
+      <div class="text-base font-extrabold bg-gradient-to-r from-cyan-400 to-indigo-400 bg-clip-text text-transparent">Fast Education</div>
+    </div>
+    <p class="text-slate-500 text-sm">&copy; 2026 Fast Education. Barcha huquqlar himoyalangan.</p>
+  </div>
+</footer>
+
+<script>
+var courses=[
+{title:'Web Dasturlash',icon:'M10 20l4-16m4 4l4 4-4 4M6 16l-4-4 4-4',students:3200,lessons:78,level:'Boshlang\'ich',rating:4.9,grad:'from-cyan-500/20 to-indigo-500/20'},
+{title:'Mobile Development',icon:'M12 18h.01M8 21h8a2 2 0 002-2V5a2 2 0 00-2-2H8a2 2 0 00-2 2v14a2 2 0 002 2z',students:2800,lessons:64,level:'O\'rta',rating:4.8,grad:'from-indigo-500/20 to-purple-500/20'},
+{title:'Grafik Dizayn',icon:'M7 21a4 4 0 01-4-4V5a2 2 0 012-2h4a2 2 0 012 2v12a4 4 0 01-4 4zm0 0h12a2 2 0 002-2v-4a2 2 0 00-2-2h-2.343M11 7.343l1.657-1.657a2 2 0 012.828 0l2.829 2.829a2 2 0 010 2.828l-8.486 8.485M7 17h.01',students:2100,lessons:52,level:'Boshlang\'ich',rating:4.7,grad:'from-teal-500/20 to-cyan-500/20'},
+{title:'Data Science',icon:'M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z',students:1900,lessons:58,level:'Ilg\'or',rating:4.9,grad:'from-sky-500/20 to-cyan-500/20'},
+{title:'Ingliz Tili',icon:'M3 5h12M9 3v2m1.048 9.5A18.022 18.022 0 016.412 9m6.088 9h7M11 21l5-10 5 10M12.751 5C11.783 10.77 8.07 15.61 3 18.129',students:4100,lessons:90,level:'Barcha darajalar',rating:4.8,grad:'from-cyan-500/20 to-teal-500/20'},
+{title:'Sun\'iy Intellekt',icon:'M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z',students:1500,lessons:66,level:'Ilg\'or',rating:4.9,grad:'from-purple-500/20 to-indigo-500/20'}
+];
+
+function esc(s){return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;').replace(/'/g,'&#39;')}
+
+function renderCourses(){
+var grid=document.getElementById('coursesGrid');
+grid.innerHTML=courses.map(function(c,i){
+return '<div class="course-card glass-card rounded-3xl p-6 fade-up" style="animation-delay:'+(i*0.05)+'s">'+
+'<div class="h-44 rounded-2xl bg-gradient-to-br '+c.grad+' flex items-center justify-center mb-5 relative overflow-hidden">'+
+'<div class="absolute inset-0 bg-grid opacity-40"></div>'+
+'<svg class="w-20 h-20 text-cyan-300 stroke-current drop-shadow-lg" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="'+c.icon+'"/></svg>'+
+'</div>'+
+'<div class="flex items-center justify-between mb-3">'+
+'<span class="px-2.5 py-1 rounded-lg bg-slate-900/60 text-xs font-bold text-cyan-300 border border-cyan-500/20">'+esc(c.level)+'</span>'+
+'<span class="flex items-center gap-1 text-xs font-bold text-amber-300"><svg class="w-3.5 h-3.5 fill-current" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/></svg>'+c.rating.toFixed(1)+'</span>'+
+'</div>'+
+'<h3 class="font-bold text-xl mb-1">'+esc(c.title)+'</h3>'+
+'<p class="text-slate-400 text-sm mb-4 flex items-center gap-4"><span class="flex items-center gap-1"><svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"/></svg>'+c.students+'</span><span class="flex items-center gap-1"><svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"/></svg>'+c.lessons+' dars</span></p>'+
+'<button onclick="enroll(\''+esc(c.title)+'\')" class="w-full btn-neon text-white py-2.5 rounded-xl text-sm font-bold flex items-center justify-center gap-2"><svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/></svg>Kursga yozilish</button>'+
+'</div>';
+}).join('');
+}
+
+function enroll(name){
+var btn=event.target.closest('button');
+btn.disabled=true;btn.style.opacity='0.6';
+setTimeout(function(){
+btn.disabled=false;btn.style.opacity='1';
+alert('"'+name+'" kursiga muvaffaqiyatli yozildingiz! Tez orada o\'quv markazi siz bilan bog\'lanadi.');
+window.location.hash='#contact';
+},400);
+}
+
+function handleContact(e){
+e.preventDefault();
+var name=document.getElementById('ctName').value.trim();
+var phone=document.getElementById('ctPhone').value.trim();
+if(!name||!phone)return;
+document.getElementById('contactMsg').classList.remove('hidden');
+e.target.reset();
+setTimeout(function(){document.getElementById('contactMsg').classList.add('hidden')},6000);
+}
+
+renderCourses();
+</script>
+</body>
+</html>

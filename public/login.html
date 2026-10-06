@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="uz">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Kirish — OpenBudget</title>
+  <link rel="stylesheet" href="/style.css" />
+</head>
+<body>
+  <div class="container" style="margin-top:10vh">
+    <div class="topbar"><div class="logo">Open<span>Budget</span></div></div>
+    <div class="card">
+      <div class="tabs">
+        <button id="tab-login" class="active">Kirish</button>
+        <button id="tab-reg">Ro'yxatdan o'tish</button>
+      </div>
+
+      <div id="form-login">
+        <label for="li-user">Login:</label>
+        <input id="li-user" autocomplete="username" />
+        <label for="li-pass">Parol:</label>
+        <input id="li-pass" type="password" autocomplete="current-password" />
+        <button class="btn" id="btn-login">KIRISH</button>
+      </div>
+
+      <div id="form-reg" style="display:none">
+        <label for="rg-user">Login (lotin harflari):</label>
+        <input id="rg-user" autocomplete="username" />
+        <label for="rg-pass">Parol:</label>
+        <input id="rg-pass" type="password" autocomplete="new-password" />
+        <label for="rg-ref">Referal kodi (ixtiyoriy):</label>
+        <input id="rg-ref" maxlength="10" style="text-transform:uppercase" />
+        <button class="btn secondary" id="btn-reg">RO'YXATDAN O'TISH</button>
+      </div>
+
+      <div class="msg" id="msg"></div>
+    </div>
+  </div>
+  <script src="/main.js"></script>
+  <script src="/auth.js"></script>
+</body>
+</html>

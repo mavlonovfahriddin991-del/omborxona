@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="uz">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>OpenBudget Admin</title>
+  <link rel="stylesheet" href="/style.css" />
+  <link rel="stylesheet" href="/admin.css" />
+</head>
+<body class="admin">
+  <div class="admin-wrap">
+    <aside class="sidebar">
+      <div class="logo">OB <span style="color:var(--accent)">Admin</span></div>
+      <button data-view="stats" class="active">📊 Statistika</button>
+      <button data-view="orders">📦 Buyurtmalar</button>
+      <button data-view="users">👤 Foydalanuvchilar</button>
+      <button data-view="services">🛠 Xizmatlar</button>
+      <button data-view="settings">⚙️ Sozlamalar</button>
+      <button data-view="transactions">💳 Tranzaksiyalar</button>
+      <button id="logout" style="margin-top:auto;color:#f87171">Chiqish</button>
+    </aside>
+
+    <main class="main">
+      <section id="view-stats">
+        <h2>📊 Statistika</h2>
+        <div class="cards" id="stat-cards"></div>
+      </section>
+
+      <section id="view-orders" style="display:none">
+        <h2>📦 Buyurtmalar</h2>
+        <div class="row-flex panel">
+          <div style="flex:0;min-width:200px">
+            <label class="albl">Holat bo'yicha filtr</label>
+            <select class="inp" id="order-filter" style="width:100%">
+              <option value="">Hammasi</option>
+              <option value="checking">Tekshiruvda</option>
+              <option value="done">Tasdiqlangan</option>
+              <option value="cancelled">Rad etilgan</option>
+            </select>
+          </div>
+        </div>
+        <div class="panel"><table id="orders-table"></table></div>
+      </section>
+
+      <section id="view-users" style="display:none">
+        <h2>👤 Foydalanuvchilar</h2>
+        <div class="row-flex panel">
+          <div><label class="albl">Qidirish (login)</label><input class="inp" id="user-search" placeholder="username" /></div>
+        </div>
+        <div class="panel"><table id="users-table"></table></div>
+      </section>
+
+      <section id="view-services" style="display:none">
+        <h2>🛠 Xizmatlar</h2>
+        <div class="panel"><table id="services-table"></table></div>
+        <div class="panel row-flex">
+          <div><label class="albl">Yangi xizmat nomi</label><input class="inp" id="svc-name" /></div>
+          <div><label class="albl">Narxi (so'm)</label><input class="inp" id="svc-price" type="number" min="0" /></div>
+          <div style="flex:0"><button class="btn-a" id="add-svc">+ Qo'shish</button></div>
+        </div>
+      </section>
+
+      <section id="view-settings" style="display:none">
+        <h2>⚙️ Sozlamalar</h2>
+        <div class="panel" style="max-width:420px">
+          <label class="albl">🎯 Ovoz beriladigan OpenBudget ID (barcha mijozlar shu ID'ga ovoz beradi)</label>
+          <input class="inp" id="set-target-id" placeholder="masalan: 887766554" inputmode="numeric" style="width:100%" />
+          <label class="albl">Har bir tasdiqlangan ovoz mukofoti (so'm)</label>
+          <input class="inp" id="set-vote-reward" type="number" min="0" style="width:100%" />
+          <label class="albl">Referal mukofoti (so'm)</label>
+          <input class="inp" id="set-ref-reward" type="number" min="0" style="width:100%" />
+          <button class="btn-a" id="save-settings">Saqlash</button>
+        </div>
+      </section>
+
+      <section id="view-transactions" style="display:none">
+        <h2>💳 Tranzaksiyalar</h2>
+        <div class="panel"><table id="tx-table"></table></div>
+      </section>
+    </main>
+  </div>
+  <script src="/main.js"></script>
+  <script src="/admin.js"></script>
+</body>
+</html>

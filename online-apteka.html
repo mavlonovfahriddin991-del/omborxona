@@ -1,0 +1,381 @@
+<!DOCTYPE html>
+<html lang="uz">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Online Apteka — Sog'ligingiz Uchun</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+<style>
+*{font-family:'Inter',sans-serif;box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{background:#020617;margin:0}
+::-webkit-scrollbar{width:8px}
+::-webkit-scrollbar-track{background:#0f172a}
+::-webkit-scrollbar-thumb{background:linear-gradient(180deg,#06b6d4,#6366f1);border-radius:4px}
+.glass{background:rgba(15,23,42,.7);backdrop-filter:blur(20px);border:1px solid rgba(6,182,212,.15)}
+.glass-card{background:rgba(15,23,42,.6);backdrop-filter:blur(16px);border:1px solid rgba(6,182,212,.1)}
+.neon-border{border:1px solid rgba(6,182,212,.3);box-shadow:0 0 15px rgba(6,182,212,.1)}
+.neon-text{text-shadow:0 0 10px rgba(6,182,212,.5),0 0 20px rgba(6,182,212,.3)}
+.btn-neon{background:linear-gradient(135deg,#06b6d4,#6366f1);transition:all .3s ease;position:relative;overflow:hidden}
+.btn-neon:hover{box-shadow:0 0 30px rgba(6,182,212,.4),0 0 60px rgba(99,102,241,.2);transform:translateY(-2px)}
+.bg-grid{background-image:radial-gradient(rgba(6,182,212,.08) 1px,transparent 1px);background-size:40px 40px}
+.product-card{transition:all .4s cubic-bezier(.4,0,.2,1)}
+.product-card:hover{transform:translateY(-8px) scale(1.02);box-shadow:0 20px 60px rgba(6,182,212,.15);border-color:rgba(6,182,212,.4)}
+@keyframes fadeUp{from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:translateY(0)}}
+@keyframes float{0%,100%{transform:translateY(0)}50%{transform:translateY(-10px)}}
+@keyframes pop{0%{transform:scale(.8);opacity:0}100%{transform:scale(1);opacity:1}}
+.fade-up{animation:fadeUp .6s ease-out both}
+.animate-float{animation:float 3.5s ease-in-out infinite}
+.hero-grad{background:linear-gradient(135deg,rgba(6,182,212,.08),rgba(99,102,241,.08))}
+.cart-slide{animation:pop .35s ease-out}
+.qty-btn{transition:all .2s ease}
+.qty-btn:hover{background:rgba(6,182,212,.2)}
+</style>
+</head>
+<body class="min-h-screen text-white overflow-x-hidden">
+
+<div id="toastBox" class="fixed top-24 right-4 z-[9999] flex flex-col gap-3 items-end"></div>
+
+<nav class="fixed top-0 left-0 right-0 z-[100]" style="background:rgba(2,6,23,.85);backdrop-filter:blur(20px);border-bottom:1px solid rgba(6,182,212,.1)">
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <div class="flex items-center justify-between h-16">
+      <a href="#home" class="flex items-center gap-3">
+        <div class="w-10 h-10 rounded-xl bg-gradient-to-br from-cyan-400 to-indigo-500 flex items-center justify-center shadow-lg shadow-cyan-500/20">
+          <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 21v-8.25M15.75 21v-8.25M8.25 21v-8.25M3 9l9-6 9 6m-1.5 12V10.332A48.36 48.36 0 0012 9.75c-2.551 0-5.056.2-7.5.582V21M3 21h18M12 6.75h.008v.008H12V6.75z"/></svg>
+        </div>
+        <div>
+          <div class="text-lg font-extrabold leading-tight bg-gradient-to-r from-cyan-400 to-indigo-400 bg-clip-text text-transparent">Online Apteka</div>
+          <div class="text-[10px] text-slate-500 leading-none tracking-widest uppercase">Sog'ligingiz uchun</div>
+        </div>
+      </a>
+      <div class="hidden md:flex items-center gap-7 text-sm font-semibold text-slate-300">
+        <a href="#home" class="hover:text-cyan-300 transition-colors">Bosh sahifa</a>
+        <a href="#shop" class="hover:text-cyan-300 transition-colors">Dorilar</a>
+        <a href="#features" class="hover:text-cyan-300 transition-colors">Afzalliklar</a>
+        <a href="#contact" class="hover:text-cyan-300 transition-colors">Bog'lanish</a>
+      </div>
+      <button onclick="toggleCart()" class="relative px-5 py-2 rounded-xl text-sm font-semibold text-white btn-neon flex items-center gap-2">
+        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z"/></svg>
+        Savat
+        <span id="cartBadge" class="absolute -top-1.5 -right-1.5 min-w-[22px] h-[22px] px-1 rounded-full bg-rose-500 text-white text-xs font-bold flex items-center justify-center border-2 border-slate-900">0</span>
+      </button>
+    </div>
+  </div>
+</nav>
+
+<section id="home" class="relative bg-grid min-h-screen flex items-center pt-16">
+  <div class="absolute inset-0 hero-grad"></div>
+  <div class="absolute -top-20 -right-20 w-96 h-96 rounded-full bg-cyan-500/10 blur-3xl"></div>
+  <div class="absolute -bottom-20 -left-20 w-96 h-96 rounded-full bg-indigo-500/10 blur-3xl"></div>
+  <div class="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20 w-full">
+    <div class="grid grid-cols-1 lg:grid-cols-2 gap-14 items-center">
+      <div class="fade-up">
+        <span class="inline-block px-4 py-1.5 rounded-full text-xs font-bold tracking-wider bg-cyan-500/10 text-cyan-300 border border-cyan-500/30 mb-6">Ishonchli online dorixona</span>
+        <h1 class="text-4xl sm:text-5xl lg:text-6xl font-black leading-tight mb-6">Zarur dori-darmonlarni <span class="bg-gradient-to-r from-cyan-400 to-indigo-400 bg-clip-text text-transparent neon-text">uyingizga</span> yetkazamiz</h1>
+        <p class="text-slate-400 text-lg mb-8 max-w-xl">5000+ dori vositalari, 24 soat yetkazib berish va litsenziyalangan farmatsevtlar maslahati. Online Apteka — sog'ligingiz xizmatida.</p>
+        <div class="flex flex-wrap gap-4">
+          <a href="#shop" class="btn-neon text-white font-bold py-4 px-8 rounded-2xl text-base flex items-center gap-2">
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z"/></svg>
+            Dorilarni ko'rish
+          </a>
+          <a href="#features" class="px-8 py-4 rounded-2xl text-base font-bold text-cyan-300 border border-cyan-500/40 hover:bg-cyan-500/10 transition-all">Afzalliklar</a>
+        </div>
+        <div class="flex items-center gap-8 mt-10">
+          <div><div class="text-3xl font-black text-white">5 000+</div><div class="text-slate-500 text-sm">Dori vositalari</div></div>
+          <div class="w-px h-10 bg-slate-700"></div>
+          <div><div class="text-3xl font-black text-white">24/7</div><div class="text-slate-500 text-sm">Yetkazib berish</div></div>
+          <div class="w-px h-10 bg-slate-700"></div>
+          <div><div class="text-3xl font-black text-white">120+</div><div class="text-slate-500 text-sm">Tumanlarga xizmat</div></div>
+        </div>
+      </div>
+      <div class="relative fade-up" style="animation-delay:.15s">
+        <div class="glass neon-border rounded-3xl p-8 animate-float">
+          <div class="flex items-center gap-4 mb-6">
+            <div class="w-14 h-14 rounded-2xl bg-gradient-to-br from-cyan-400 to-indigo-500 flex items-center justify-center shadow-lg shadow-cyan-500/20">
+              <svg class="w-7 h-7 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"/></svg>
+            </div>
+            <div><div class="font-bold text-lg">Litsenziyalangan dorixona</div><div class="text-slate-500 text-sm">Sifat kafolati bilan</div></div>
+          </div>
+          <div class="space-y-3 text-sm">
+            <div class="flex items-center gap-3 rounded-2xl bg-slate-900/70 border border-slate-700 p-4"><span class="w-9 h-9 rounded-xl bg-emerald-500/15 flex items-center justify-center text-emerald-400"><svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"/></svg></span><span class="text-slate-300">Barcha dorilar rasmiy ruxsatga ega</span></div>
+            <div class="flex items-center gap-3 rounded-2xl bg-slate-900/70 border border-slate-700 p-4"><span class="w-9 h-9 rounded-xl bg-emerald-500/15 flex items-center justify-center text-emerald-400"><svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/></svg></span><span class="text-slate-300">24 soat ichida hamma joyga yetkazamiz</span></div>
+            <div class="flex items-center gap-3 rounded-2xl bg-slate-900/70 border border-slate-700 p-4"><span class="w-9 h-9 rounded-xl bg-emerald-500/15 flex items-center justify-center text-emerald-400"><svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 10h.01M12 10h.01M16 10h.01M9 16H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-5l-5 5v-5z"/></svg></span><span class="text-slate-300">Farmatsevtlar bepul maslahati</span></div>
+          </div>
+          <div class="mt-6 rounded-2xl bg-slate-900/70 border border-slate-700 p-4 flex items-center gap-3">
+            <span class="w-2.5 h-2.5 rounded-full bg-emerald-400 animate-pulse"></span>
+            <span class="text-sm text-slate-300">Hozir <b class="text-emerald-400">1 240</b> mijoz buyurtma berilmoqda</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="shop" class="py-24 bg-grid">
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <div class="flex flex-wrap items-end justify-between gap-6 mb-10 fade-up">
+      <div>
+        <span class="inline-block px-4 py-1.5 rounded-full text-xs font-bold tracking-wider bg-cyan-500/10 text-cyan-300 border border-cyan-500/30 mb-4">Dori katalogi</span>
+        <h2 class="text-3xl sm:text-4xl font-extrabold">Dori-darmonlar <span class="neon-text text-cyan-400">katalogi</span></h2>
+        <p class="text-slate-500 text-lg mt-1" id="prodCount"></p>
+      </div>
+      <div class="flex items-center gap-3 glass neon-border rounded-2xl p-2 w-full sm:w-auto">
+        <svg class="w-5 h-5 text-cyan-400 ml-2 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/></svg>
+        <input id="searchInput" oninput="onSearch(this.value)" type="text" placeholder="Dori nomini qidiring..." class="flex-1 bg-transparent text-white placeholder-slate-500 outline-none py-1.5 text-sm min-w-[200px]">
+      </div>
+    </div>
+    <div id="cats" class="flex flex-wrap gap-2 mb-8"></div>
+    <div id="productsGrid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6"></div>
+  </div>
+</section>
+
+<section id="features" class="py-24">
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <div class="text-center max-w-2xl mx-auto mb-16 fade-up">
+      <span class="inline-block px-4 py-1.5 rounded-full text-xs font-bold tracking-wider bg-cyan-500/10 text-cyan-300 border border-cyan-500/30 mb-4">Nega biz?</span>
+      <h2 class="text-3xl sm:text-4xl font-extrabold mb-4">Online Apteka <span class="neon-text text-cyan-400">afzalliklari</span></h2>
+    </div>
+    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+      <div class="glass-card rounded-3xl p-8 product-card fade-up">
+        <div class="w-14 h-14 rounded-2xl bg-gradient-to-br from-cyan-400 to-indigo-500 flex items-center justify-center mb-6 shadow-lg shadow-cyan-500/20"><svg class="w-7 h-7 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"/></svg></div>
+        <h3 class="font-bold text-xl mb-2">Tez yetkazib berish</h3><p class="text-slate-400 text-sm leading-relaxed">Toshkent bo'ylab 1 soatda, viloyatlarga 24 soatda yetkazamiz.</p>
+      </div>
+      <div class="glass-card rounded-3xl p-8 product-card fade-up" style="animation-delay:.05s">
+        <div class="w-14 h-14 rounded-2xl bg-gradient-to-br from-cyan-400 to-indigo-500 flex items-center justify-center mb-6 shadow-lg shadow-cyan-500/20"><svg class="w-7 h-7 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"/></svg></div>
+        <h3 class="font-bold text-xl mb-2">Sifat kafolati</h3><p class="text-slate-400 text-sm leading-relaxed">Faqat litsenziyalangan va rasmiy ishlab chiqaruvchilar mahsulotlari.</p>
+      </div>
+      <div class="glass-card rounded-3xl p-8 product-card fade-up" style="animation-delay:.1s">
+        <div class="w-14 h-14 rounded-2xl bg-gradient-to-br from-cyan-400 to-indigo-500 flex items-center justify-center mb-6 shadow-lg shadow-cyan-500/20"><svg class="w-7 h-7 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 10h.01M12 10h.01M16 10h.01M9 16H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-5l-5 5v-5z"/></svg></div>
+        <h3 class="font-bold text-xl mb-2">Bepul maslahat</h3><p class="text-slate-400 text-sm leading-relaxed">Professional farmatsevtlar 24/7 sizga maslahat beradi.</p>
+      </div>
+      <div class="glass-card rounded-3xl p-8 product-card fade-up" style="animation-delay:.15s">
+        <div class="w-14 h-14 rounded-2xl bg-gradient-to-br from-cyan-400 to-indigo-500 flex items-center justify-center mb-6 shadow-lg shadow-cyan-500/20"><svg class="w-7 h-7 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg></div>
+        <h3 class="font-bold text-xl mb-2">Qulay narxlar</h3><p class="text-slate-400 text-sm leading-relaxed">Doimiy mijozlarga chegirmalar va bonus dasturi mavjud.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="contact" class="py-24 bg-grid">
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <div class="grid grid-cols-1 lg:grid-cols-2 gap-14 items-center">
+      <div class="fade-up">
+        <span class="inline-block px-4 py-1.5 rounded-full text-xs font-bold tracking-wider bg-cyan-500/10 text-cyan-300 border border-cyan-500/30 mb-4">Bog'lanish</span>
+        <h2 class="text-3xl sm:text-4xl font-extrabold mb-4">Farmatsevtga savol <span class="neon-text text-cyan-400">bering</span></h2>
+        <p class="text-slate-500 text-lg mb-8">Sizga kerakli dori topolmadikmi yoki maslahat kerakmi? Bizga yozing.</p>
+        <div class="space-y-4">
+          <div class="flex items-center gap-4 glass-card rounded-2xl p-4">
+            <div class="w-11 h-11 rounded-xl bg-gradient-to-br from-cyan-400 to-indigo-500 flex items-center justify-center"><svg class="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z"/></svg></div>
+            <div><div class="text-sm text-slate-500">Telefon</div><div class="font-semibold">+998 71 200 00 00</div></div>
+          </div>
+          <div class="flex items-center gap-4 glass-card rounded-2xl p-4">
+            <div class="w-11 h-11 rounded-xl bg-gradient-to-br from-cyan-400 to-indigo-500 flex items-center justify-center"><svg class="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/></svg></div>
+            <div><div class="text-sm text-slate-500">Email</div><div class="font-semibold">info@onlineapteka.uz</div></div>
+          </div>
+          <div class="flex items-center gap-4 glass-card rounded-2xl p-4">
+            <div class="w-11 h-11 rounded-xl bg-gradient-to-br from-cyan-400 to-indigo-500 flex items-center justify-center"><svg class="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"/></svg></div>
+            <div><div class="text-sm text-slate-500">Manzil</div><div class="font-semibold">Toshkent, Chilonzor tumani, 5 uy</div></div>
+          </div>
+        </div>
+      </div>
+      <div class="glass neon-border rounded-3xl p-8 fade-up" style="animation-delay:.15s">
+        <h3 class="font-bold text-2xl mb-6">So'rov qoldirish</h3>
+        <form onsubmit="handleContact(event)" class="space-y-5">
+          <div><label class="block text-sm font-semibold text-slate-300 mb-2">Ism</label><input id="ctName" type="text" required placeholder="Ismingiz" class="w-full bg-slate-900/70 border border-slate-700 rounded-2xl px-4 py-3.5 text-white placeholder-slate-600 outline-none focus:shadow-[0_0_20px_rgba(6,182,212,.2)] focus:border-cyan-500 transition-all"></div>
+          <div><label class="block text-sm font-semibold text-slate-300 mb-2">Telefon</label><input id="ctPhone" type="tel" required placeholder="+998 90 000 00 00" class="w-full bg-slate-900/70 border border-slate-700 rounded-2xl px-4 py-3.5 text-white placeholder-slate-600 outline-none focus:shadow-[0_0_20px_rgba(6,182,212,.2)] focus:border-cyan-500 transition-all"></div>
+          <div><label class="block text-sm font-semibold text-slate-300 mb-2">Xabar</label><textarea rows="3" placeholder="So'rovingiz..." class="w-full bg-slate-900/70 border border-slate-700 rounded-2xl px-4 py-3.5 text-white placeholder-slate-600 outline-none focus:shadow-[0_0_20px_rgba(6,182,212,.2)] focus:border-cyan-500 transition-all"></textarea></div>
+          <button type="submit" class="w-full btn-neon text-white font-bold py-4 rounded-2xl text-base flex items-center justify-center gap-2"><svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8"/></svg>Yuborish</button>
+        </form>
+        <div id="contactMsg" class="hidden mt-4 p-4 rounded-2xl bg-emerald-500/10 border border-emerald-500/30 text-emerald-300 text-sm font-semibold">So'rovingiz qabul qilindi! Tez orada bog'lanamiz.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<footer class="border-t border-slate-800/60 py-10">
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col sm:flex-row items-center justify-between gap-4">
+    <div class="flex items-center gap-3">
+      <div class="w-9 h-9 rounded-xl bg-gradient-to-br from-cyan-400 to-indigo-500 flex items-center justify-center"><svg class="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 21v-8.25M15.75 21v-8.25M8.25 21v-8.25M3 9l9-6 9 6m-1.5 12V10.332A48.36 48.36 0 0012 9.75c-2.551 0-5.056.2-7.5.582V21M3 21h18M12 6.75h.008v.008H12V6.75z"/></svg></div>
+      <div class="text-base font-extrabold bg-gradient-to-r from-cyan-400 to-indigo-400 bg-clip-text text-transparent">Online Apteka</div>
+    </div>
+    <p class="text-slate-500 text-sm">&copy; 2026 Online Apteka. Barcha huquqlar himoyalangan.</p>
+  </div>
+</footer>
+
+<div id="cartOverlay" class="fixed inset-0 bg-black/60 backdrop-blur-sm z-[200] hidden" onclick="toggleCart()"></div>
+<aside id="cartDrawer" class="fixed top-0 right-0 h-full w-full sm:w-[400px] z-[300] glass translate-x-full transition-transform duration-300 flex flex-col" style="background:rgba(2,6,23,.98)">
+  <div class="flex items-center justify-between p-6 border-b border-slate-800">
+    <h3 class="font-bold text-2xl flex items-center gap-2"><svg class="w-6 h-6 text-cyan-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z"/></svg>Savat</h3>
+    <button onclick="toggleCart()" class="w-10 h-10 rounded-xl bg-slate-800/60 flex items-center justify-center hover:bg-slate-700 transition-colors"><svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg></button>
+  </div>
+  <div id="cartItems" class="flex-1 overflow-y-auto p-6 space-y-4"></div>
+  <div class="p-6 border-t border-slate-800">
+    <div class="flex items-center justify-between mb-4">
+      <span class="text-slate-400">Jami:</span>
+      <span id="cartTotal" class="text-2xl font-black text-transparent bg-gradient-to-r from-cyan-400 to-indigo-400 bg-clip-text">0 so'm</span>
+    </div>
+    <button onclick="checkout()" class="w-full btn-neon text-white font-bold py-4 rounded-2xl text-base flex items-center justify-center gap-2"><svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg>Buyurtma berish</button>
+  </div>
+</aside>
+
+<script>
+var products=[
+{id:1,title:'Paratsetamol 500mg',cat:'Og'riq qoldiruvchi',price:5000,old:6500,icon:'M19.428 15.428a2 2 0 00-1.022-.547l-2.387-.477a6 6 0 00-3.86.517l-.318.158a6 6 0 01-3.86.517L6.05 15.21a2 2 0 00-1.806.547M8 4h8l-1 1v5.172a2 2 0 00.586 1.414l5 5c1.26 1.26.367 3.414-1.415 3.414H4.828c-1.782 0-2.674-2.154-1.414-3.414l5-5A2 2 0 009 10.172V5L8 4z',grad:'from-cyan-500/20 to-indigo-500/20',need:false},
+{id:2,title:'Ibuprofen 400mg',cat:'Og'riq qoldiruvchi',price:8000,old:9000,icon:'M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z',grad:'from-indigo-500/20 to-purple-500/20',need:false},
+{id:3,title:'Amoksiklav 625mg',cat:'Antibiotik',price:45000,old:50000,icon:'M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.964-.833-2.732 0L4.082 16.5c-.77.833.192 2.5 1.732 2.5z',grad:'from-teal-500/20 to-cyan-500/20',need:true},
+{id:4,title:'Vitamin C 1000mg',cat:'Vitaminlar',price:15000,old:18000,icon:'M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z',grad:'from-sky-500/20 to-cyan-500/20',need:false},
+{id:5,title:'Xlorgeksidin 0.05%',cat:'Antiseptik',price:12000,old:13000,icon:'M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z',grad:'from-cyan-500/20 to-teal-500/20',need:false},
+{id:6,title:'Nikola D3 2000IU',cat:'Vitaminlar',price:22000,old:25000,icon:'M16 8a6 6 0 016 6v7h-4v-7a2 2 0 00-2-2 2 2 0 00-2 2v7h-4v-7a6 6 0 016-6zM2 9l7-4 7 4v2H2V9z',grad:'from-emerald-500/20 to-cyan-500/20',need:false},
+{id:7,title:'Septril 480mg',cat:'Antibiotik',price:28000,old:32000,icon:'M12 6V4m0 2a2 2 0 100 4m0-4a2 2 0 110 4m-6 8a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4m6 6v10m6-2a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4',grad:'from-purple-500/20 to-indigo-500/20',need:true},
+{id:8,title:'Aktivlangan uglerod',cat:'Ichak kasalliklari',price:4000,old:5000,icon:'M3 7v6a4 4 0 004 4h5a4 4 0 004-4V7a4 4 0 00-4-4H7a4 4 0 00-4 4zm12 8v2a5 5 0 01-5 5H8a2 2 0 000 4h2a9 9 0 009-9V9a2 2 0 00-2-2 2 2 0 00-2 2v4a2 2 0 002 2z',grad:'from-rose-500/20 to-orange-500/20',need:false},
+{id:9,title:'Zelenka 10ml',cat:'Antiseptik',price:6000,old:7000,icon:'M7 21h10a2 2 0 002-2V5a2 2 0 00-2-2H7a2 2 0 00-2 2v14a2 2 0 002 2zm0 0h10M7 6h10M9 3v6',grad:'from-emerald-500/20 to-teal-500/20',need:false},
+{id:10,title:'Ambroxol siropi',cat:'Sovuqqarshi',price:16000,old:18000,icon:'M9 12l2 2 4-4M9 12h.01M12 21a9 9 0 110-18 9 9 0 010 18z',grad:'from-amber-500/20 to-orange-500/20',need:false},
+{id:11,title:'Bint steril 10x10',cat:'Tibbiy anjomlar',price:7000,old:8000,icon:'M4 7h16M4 7a2 2 0 01-2-2V3h20v2a2 2 0 01-2 2M4 7v10a2 2 0 002 2h12a2 2 0 002-2V7M4 7h16',grad:'from-slate-500/20 to-cyan-500/20',need:false},
+{id:12,title:'Mezapam siropi',cat:'Ichak kasalliklari',price:24000,old:28000,icon:'M13 10V3L4 14h7v7l9-11h-7z',grad:'from-orange-500/20 to-rose-500/20',need:true}
+];
+
+var categories=['Barchasi','Og\'riq qoldiruvchi','Antibiotik','Vitaminlar','Antiseptik','Ichak kasalliklari','Sovuqqarshi','Tibbiy anjomlar'];
+var cart={};
+var activeCat='Barchasi';
+var searchTerm='';
+
+function esc(s){return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;').replace(/'/g,'&#39;')}
+function fmt(n){return n.toLocaleString('ru-RU').replace(/,/g,' ')+' so\'m'}
+
+function toast(msg,type){
+var c=type==='success'?['from-emerald-500 to-teal-600','M5 13l4 4L19 7']:type==='error'?['from-rose-500 to-red-600','M6 18L18 6M6 6l12 12']:['from-cyan-500 to-indigo-600','M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z'];
+var el=document.createElement('div');
+el.className='flex items-center gap-3 px-5 py-3.5 rounded-2xl shadow-2xl bg-gradient-to-r '+c[0]+' text-white min-w-[280px] max-w-[420px] cart-slide';
+el.innerHTML='<svg class="w-5 h-5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="'+c[1]+'"/></svg><span class="text-sm font-semibold flex-1">'+msg+'</span><button class="opacity-70 hover:opacity-100" onclick="this.parentElement.remove()"><svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg></button>';
+document.getElementById('toastBox').appendChild(el);
+setTimeout(function(){el.style.transition='all .4s';el.style.opacity='0';el.style.transform='translateX(100px)';setTimeout(function(){el.remove()},400)},3500);
+}
+
+function loadCart(){try{var c=JSON.parse(localStorage.getItem('apteka_cart'));if(c&&typeof c==='object')cart=c}catch(e){}}
+function saveCart(){localStorage.setItem('apteka_cart',JSON.stringify(cart));updateBadge()}
+function cartCount(){return Object.keys(cart).reduce(function(s,k){return s+cart[k]},0)}
+function cartSum(){return Object.keys(cart).reduce(function(s,k){var p=products.filter(function(x){return x.id===parseInt(k)})[0];return s+(p?p.price*cart[k]:0)},0)}
+function updateBadge(){document.getElementById('cartBadge').textContent=cartCount()}
+
+function addToCart(id){
+cart[id]=(cart[id]||0)+1;
+saveCart();
+var p=products.filter(function(x){return x.id===id})[0];
+toast('"'+p.title+'" savatga qo\'shildi','success');
+}
+
+function changeQty(id,d){
+var n=(cart[id]||0)+d;
+if(n<=0){delete cart[id]}else{cart[id]=n}
+saveCart();renderCart();renderProducts();
+}
+
+function removeItem(id){delete cart[id];saveCart();renderCart();renderProducts()}
+
+function renderCats(){
+document.getElementById('cats').innerHTML=categories.map(function(c){
+var active=c===activeCat?'btn-neon text-white':'text-slate-300 border border-slate-700 hover:border-cyan-500/50 hover:text-cyan-300';
+return '<button onclick="setCat(\''+esc(c)+'\')" class="px-4 py-2 rounded-xl text-sm font-semibold transition-all '+active+'">'+esc(c)+'</button>';
+}).join('');
+}
+function setCat(c){activeCat=c;renderCats();renderProducts()}
+function onSearch(v){searchTerm=v.toLowerCase();renderProducts()}
+
+function getFiltered(){
+return products.filter(function(p){
+var okCat=activeCat==='Barchasi'||p.cat===activeCat;
+var okS=!searchTerm||p.title.toLowerCase().indexOf(searchTerm)>-1||p.cat.toLowerCase().indexOf(searchTerm)>-1;
+return okCat&&okS;
+});
+}
+
+function renderProducts(){
+var grid=document.getElementById('productsGrid');
+var list=getFiltered();
+document.getElementById('prodCount').textContent='Jami: '+products.length+' ta. Topildi: '+list.length+' ta';
+if(list.length===0){
+grid.innerHTML='<div class="col-span-full text-center py-20"><div class="text-6xl mb-4">💊</div><p class="text-xl font-bold text-slate-300 mb-2">Hech narsa topilmadi</p><p class="text-slate-500">Boshqa nom bilan qidirib ko\'ring.</p></div>';
+return;
+}
+grid.innerHTML=list.map(function(p,i){
+var qty=cart[p.id]||0;
+var inCart=qty>0;
+var needBadge=p.need?'<span class="absolute top-3 right-3 px-2.5 py-1 rounded-lg bg-amber-500/15 text-amber-300 text-[10px] font-bold border border-amber-500/30">RETSEPT BO\'YICHA</span>':'';
+var btn=inCart
+?'<div class="flex items-center justify-between gap-2"><button onclick="changeQty('+p.id+',-1)" class="qty-btn w-10 h-10 rounded-xl bg-slate-800/70 border border-slate-700 text-white font-bold text-lg flex items-center justify-center">−</button><span class="font-black text-lg text-cyan-300">'+qty+'</span><button onclick="changeQty('+p.id+',1)" class="qty-btn w-10 h-10 rounded-xl bg-slate-800/70 border border-slate-700 text-white font-bold text-lg flex items-center justify-center">+</button></div>'
+:'<button onclick="addToCart('+p.id+')" class="w-full btn-neon text-white py-2.5 rounded-xl text-sm font-bold flex items-center justify-center gap-2"><svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z"/></svg>Savatga</button>';
+return '<div class="product-card glass-card rounded-3xl p-6 fade-up" style="animation-delay:'+(i*0.05)+'s">'+
+'<div class="h-40 rounded-2xl bg-gradient-to-br '+p.grad+' flex items-center justify-center mb-5 relative overflow-hidden">'+
+'<div class="absolute inset-0 bg-grid opacity-40"></div>'+
+'<svg class="w-16 h-16 text-cyan-300 stroke-current" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="'+p.icon+'"/></svg>'+
+needBadge+'</div>'+
+'<span class="px-2.5 py-1 rounded-lg bg-slate-900/60 text-[10px] font-bold text-cyan-300 border border-cyan-500/20 uppercase tracking-wide">'+esc(p.cat)+'</span>'+
+'<h3 class="font-bold text-lg mt-2 mb-1 leading-snug">'+esc(p.title)+'</h3>'+
+'<p class="mb-4"><span class="text-cyan-300 font-black text-lg">'+fmt(p.price)+'</span>'+(p.old?'<span class="text-slate-600 line-through text-sm ml-2">'+fmt(p.old)+'</span>':'')+'</p>'+
+btn+'</div>';
+}).join('');
+}
+
+function renderCart(){
+var box=document.getElementById('cartItems');
+var total=cartSum();
+document.getElementById('cartTotal').textContent=fmt(total).replace(/\s/g,' ').replace('so\'m','so\'m');
+var keys=Object.keys(cart);
+if(keys.length===0){
+box.innerHTML='<div class="text-center py-16"><div class="text-6xl mb-4">🛒</div><p class="text-lg font-bold text-slate-300 mb-1">Savatingiz bo\'sh</p><p class="text-slate-500 text-sm">Dorilarni qo\'shing va buyurtma bering</p></div>';
+return;
+}
+box.innerHTML=keys.map(function(k){
+var p=products.filter(function(x){return x.id===parseInt(k)})[0];
+if(!p)return'';
+return '<div class="glass-card rounded-2xl p-4 flex items-center gap-4 cart-slide">'+
+'<div class="w-14 h-14 rounded-xl bg-gradient-to-br '+p.grad+' flex items-center justify-center flex-shrink-0"><svg class="w-7 h-7 text-cyan-300 stroke-current" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="'+p.icon+'"/></svg></div>'+
+'<div class="flex-1 min-w-0"><h4 class="font-bold text-sm truncate">'+esc(p.title)+'</h4><p class="text-cyan-300 text-sm font-bold mt-0.5">'+fmt(p.price)+'</p></div>'+
+'<div class="flex items-center gap-2"><button onclick="changeQty('+p.id+',-1)" class="qty-btn w-8 h-8 rounded-lg bg-slate-800/70 border border-slate-700 text-white font-bold flex items-center justify-center">−</button><span class="font-black w-6 text-center">'+cart[k]+'</span><button onclick="changeQty('+p.id+',1)" class="qty-btn w-8 h-8 rounded-lg bg-slate-800/70 border border-slate-700 text-white font-bold flex items-center justify-center">+</button></div>'+
+'<button onclick="removeItem('+p.id+')" class="text-slate-600 hover:text-rose-400 transition-colors flex-shrink-0"><svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/></svg></button>'+
+'</div>';
+}).join('');
+}
+
+function toggleCart(){
+var d=document.getElementById('cartDrawer');
+var o=document.getElementById('cartOverlay');
+var open=d.classList.contains('translate-x-0');
+d.classList.toggle('translate-x-0');
+d.classList.toggle('translate-x-full');
+o.classList.toggle('hidden');
+if(!open&&cartCount()>0)renderCart();
+if(!open&&cartCount()===0)renderCart();
+}
+
+function checkout(){
+if(cartCount()===0){toast('Savat bo\'sh! Avval dorilarni tanlang','warning');return}
+var total=cartSum();
+var names=Object.keys(cart).map(function(k){
+var p=products.filter(function(x){return x.id===parseInt(k)})[0];
+return p.title+' x'+cart[k];
+}).join(', ');
+alert('Buyurtmangiz qabul qilindi!\n\n'+names+'\nJami: '+fmt(total)+'\n\nTez orada operator siz bilan bog\'lanadi.');
+cart={};saveCart();renderCart();renderProducts();toggleCart();
+toast('Buyurtma muvaffaqiyatli qabul qilindi!','success');
+}
+
+function handleContact(e){
+e.preventDefault();
+var name=document.getElementById('ctName').value.trim();
+var phone=document.getElementById('ctPhone').value.trim();
+if(!name||!phone)return;
+document.getElementById('contactMsg').classList.remove('hidden');
+e.target.reset();
+setTimeout(function(){document.getElementById('contactMsg').classList.add('hidden')},6000);
+toast('So\'rovingiz yuborildi!','success');
+}
+
+loadCart();
+renderCats();
+renderProducts();
+updateBadge();
+</script>
+</body>
+</html>

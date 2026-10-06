@@ -1,0 +1,457 @@
+﻿<!DOCTYPE html>
+<html lang="uz">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>E-Kuzatuv — Elektron Kutubxona</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<script src="https://unpkg.com/@supabase/supabase-js@2"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+<style>
+*{font-family:'Inter',sans-serif;box-sizing:border-box}
+body{background:#020617;margin:0}
+::-webkit-scrollbar{width:8px}
+::-webkit-scrollbar-track{background:#0f172a}
+::-webkit-scrollbar-thumb{background:linear-gradient(180deg,#06b6d4,#6366f1);border-radius:4px}
+.glass{background:rgba(15,23,42,.7);backdrop-filter:blur(20px);border:1px solid rgba(6,182,212,.15)}
+.glass-card{background:rgba(15,23,42,.6);backdrop-filter:blur(16px);border:1px solid rgba(6,182,212,.1)}
+.neon-border{border:1px solid rgba(6,182,212,.3);box-shadow:0 0 15px rgba(6,182,212,.1)}
+.neon-text{text-shadow:0 0 10px rgba(6,182,212,.5),0 0 20px rgba(6,182,212,.3)}
+.btn-neon{background:linear-gradient(135deg,#06b6d4,#6366f1);transition:all .3s ease;position:relative;overflow:hidden}
+.btn-neon:hover{box-shadow:0 0 30px rgba(6,182,212,.4),0 0 60px rgba(99,102,241,.2);transform:translateY(-2px)}
+.bg-grid{background-image:radial-gradient(rgba(6,182,212,.08) 1px,transparent 1px);background-size:40px 40px}
+.book-card{transition:all .4s cubic-bezier(.4,0,.2,1)}
+.book-card:hover{transform:translateY(-8px) scale(1.02);box-shadow:0 20px 60px rgba(6,182,212,.15);border-color:rgba(6,182,212,.4)}
+.input-glow:focus{box-shadow:0 0 20px rgba(6,182,212,.2);border-color:#06b6d4}
+@keyframes fadeUp{from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:translateY(0)}}
+@keyframes fadeIn{from{opacity:0}to{opacity:1}}
+@keyframes swoop{from{opacity:0;transform:translateY(-12px)}to{opacity:1;transform:translateY(0)}}
+@keyframes shake{0%,100%{transform:translateX(0)}10%,30%,50%,70%,90%{transform:translateX(-4px)}20%,40%,60%,80%{transform:translateX(4px)}}
+@keyframes spin{to{transform:rotate(360deg)}}@keyframes float{0%,100%{transform:translateY(0)}50%{transform:translateY(-8px)}}.animate-float{animation:float 3s ease-in-out infinite}
+.fade-page{animation:fadeIn .35s ease-out}
+.fade-up{animation:fadeUp .5s ease-out both}
+.swoop{animation:swoop .35s ease-out}
+.shake{animation:shake .6s ease-in-out}
+.hero-grad{background:linear-gradient(135deg,rgba(6,182,212,.08),rgba(99,102,241,.08))}
+.nav-blur{background:rgba(2,6,23,.85);backdrop-filter:blur(20px);border-bottom:1px solid rgba(6,182,212,.1)}
+.loader{border:3px solid rgba(6,182,212,.2);border-top-color:#06b6d4;border-radius:50%;width:36px;height:36px;animation:spin .8s linear infinite}
+</style>
+</head>
+<body class="min-h-screen text-white overflow-x-hidden">
+<div id="toastBox" class="fixed top-6 right-4 z-[9999] flex flex-col gap-3 items-end"></div>
+<nav class="fixed top-0 left-0 right-0 z-[100] nav-blur">
+<div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+<div class="flex items-center justify-between h-16">
+<div class="flex items-center gap-3 cursor-pointer select-none" onclick="showPage('landing')">
+<div class="w-10 h-10 rounded-xl bg-gradient-to-br from-cyan-400 to-indigo-500 flex items-center justify-center shadow-lg shadow-cyan-500/20">
+<svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"/></svg>
+</div>
+<div>
+<div class="text-lg font-extrabold leading-tight bg-gradient-to-r from-cyan-400 to-indigo-400 bg-clip-text text-transparent">E-Kuzatuv</div>
+<div class="text-[10px] text-slate-500 leading-none tracking-widest uppercase">Elektron Kutubxona</div>
+</div>
+</div>
+<div id="navLinks" class="flex items-center gap-2 sm:gap-3"></div>
+</div>
+</div>
+</nav>
+<main id="app" class="pt-16"></main>
+<footer class="border-t border-slate-800/60 mt-20 py-8">
+<div class="max-w-7xl mx-auto px-4 text-center">
+<p class="text-slate-500 text-sm">&copy; 2026 E-Kuzatuv — Elektron Kutubxona Platformasi. Barcha huquqlar himoyalangan.</p>
+</div>
+</footer>
+<script>
+var SB_URL='https://YOUR-PROJECT.supabase.co';
+var SB_KEY='YOUR-ANON-KEY';
+var supabase=null;try{supabase=window.supabase.createClient(SB_URL,SB_KEY)}catch(e){console.error('Supabase init error',e)}
+var currentUser=null;
+var currentPage='landing';
+var booksCache=[];
+var filteredBooks=[];
+var searchTerm='';
+var lockTimer=null;
+var ADMIN_EMAIL='admin@ekuzatuv.uz';
+var navLockTimer=null;
+
+function esc(s){if(!s)return'';return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;').replace(/'/g,'&#39;')}
+
+function toast(message,type){
+type=type||'info';
+var conf={
+success:['from-emerald-500 to-teal-600','<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/>'],
+error:['from-rose-500 to-red-600','<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>'],
+warning:['from-amber-500 to-orange-600','<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.964-.833-2.732 0L4.082 16.5c-.77.833.192 2.5 1.732 2.5z"/>'],
+info:['from-cyan-500 to-indigo-600','<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>']
+};
+var c=conf[type]||conf.info;
+var el=document.createElement('div');
+el.className='flex items-center gap-3 px-5 py-3.5 rounded-2xl shadow-2xl bg-gradient-to-r '+c[0]+' text-white min-w-[280px] max-w-[420px] swoop';
+el.innerHTML='<svg class="w-5 h-5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">'+c[1]+'</svg><span class="text-sm font-semibold flex-1">'+message+'</span><button class="opacity-70 hover:opacity-100 hover:scale-110 transition-all" onclick="this.parentElement.remove()"><svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg></button>';
+document.getElementById('toastBox').appendChild(el);
+setTimeout(function(){el.style.transition='all .4s ease';el.style.opacity='0';el.style.transform='translateX(100px)';setTimeout(function(){el.remove()},400)},4200);
+}
+
+function getLockData(){try{var d=JSON.parse(localStorage.getItem('ekuzatuv_lock'));return d||{attempts:0,until:0}}catch(e){return{attempts:0,until:0}}}
+function setLockData(o){localStorage.setItem('ekuzatuv_lock',JSON.stringify(o))}
+function lockActive(){var d=getLockData();if(d.until&&d.until<=Date.now()){setLockData({attempts:0,until:0});return false}return!!d.until}
+function lockRemainMin(){var d=getLockData();if(!d.until)return 0;var ms=d.until-Date.now();if(ms<=0)return 0;return Math.ceil(ms/60000)}
+
+function registerBadAttempt(){
+var d=getLockData();
+d.attempts=(d.attempts||0)+1;
+if(d.attempts>=3){d.until=Date.now()+3600000;d.attempts=3;setLockData(d);toast('3 marta xato kiritildi! Hisob 1 soatga bloklandi.','error');return true}
+setLockData(d);
+toast('Parol xato! Qolgan urinishlar: '+(3-d.attempts), 'warning');
+return false;
+}
+function resetLock(){setLockData({attempts:0,until:0})}
+async function initAuth(){
+try{var res=await supabase.auth.getSession();if(res&&res.data&&res.data.session&&res.data.session.user){currentUser=res.data.session.user}}catch(e){}
+renderNav();
+supabase.auth.onAuthStateChange(function(event,session){
+if(session&&session.user){currentUser=session.user}else{currentUser=null}
+renderNav();
+if(currentPage==='landing')loadBooks();
+});
+}
+
+function isAdmin(){return currentUser&&currentUser.email===ADMIN_EMAIL}
+
+async function signOut(){
+await supabase.auth.signOut();
+currentUser=null;
+toast('Tizimdan muvaffaqiyatli chiqdingiz.','info');
+showPage('landing');
+}
+
+function renderNav(){
+var box=document.getElementById('navLinks');
+if(currentUser){
+var adminBadge=isAdmin()?'<span class="hidden sm:inline px-2 py-0.5 rounded-md text-[10px] font-bold bg-amber-500/20 text-amber-300 border border-amber-500/30">ADMIN</span>':'';
+box.innerHTML='<div class="hidden sm:flex items-center gap-2 px-4 py-1.5 rounded-xl glass neon-border"><span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span><span class="text-sm text-slate-200 max-w-[180px] truncate">'+esc(currentUser.email)+'</span>'+adminBadge+'</div><button onclick="signOut()" class="px-4 py-2 rounded-xl text-sm font-semibold bg-red-500/10 text-red-400 border border-red-500/30 hover:bg-red-500 hover:text-white transition-all">Chiqish</button>';
+}else{
+box.innerHTML='<button onclick="showPage(\'login\')" class="px-5 py-2 rounded-xl text-sm font-semibold text-cyan-300 border border-cyan-500/40 hover:bg-cyan-500/10 transition-all">Kirish</button><button onclick="showPage(\'register\')" class="px-5 py-2 rounded-xl text-sm font-semibold text-white btn-neon">Ro\'yxatdan o\'tish</button>';
+}
+}
+
+function showPage(name){
+currentPage=name;
+if(navLockTimer){clearInterval(navLockTimer);navLockTimer=null}
+var app=document.getElementById('app');
+if(name==='landing'){renderLanding(app);loadBooks()}
+else if(name==='register'){renderRegister(app)}
+else if(name==='login'){renderLogin(app)}
+window.scrollTo({top:0,behavior:'smooth'});
+}
+function renderLanding(el){
+el.className='fade-page';
+var adminBadge=isAdmin()?'<div class="flex items-center gap-2 px-4 py-2 rounded-xl bg-amber-500/10 border border-amber-500/30"><span class="text-amber-300 text-sm font-semibold">Admin rejimi</span></div>':'';
+var adminForm=isAdmin()?renderAdminForm():'';
+el.innerHTML=
+'<div class="relative bg-grid min-h-[55vh] flex items-center">'+
+'<div class="absolute inset-0 hero-grad"></div>'+
+'<div class="absolute -top-20 -right-20 w-96 h-96 rounded-full bg-cyan-500/10 blur-3xl"></div>'+
+'<div class="absolute -bottom-20 -left-20 w-96 h-96 rounded-full bg-indigo-500/10 blur-3xl"></div>'+
+'<div class="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16 w-full">'+
+'<div class="text-center max-w-3xl mx-auto fade-up">'+
+'<span class="inline-block px-4 py-1.5 rounded-full text-xs font-bold tracking-wider bg-cyan-500/10 text-cyan-300 border border-cyan-500/30 mb-6">Zamonaviy elektron kutubxona</span>'+
+'<h1 class="text-4xl sm:text-5xl lg:text-6xl font-black leading-tight mb-6">Bilim olamiga <span class="bg-gradient-to-r from-cyan-400 to-indigo-400 bg-clip-text text-transparent neon-text">ESLab kirib keling</span></h1>'+
+'<p class="text-slate-400 text-lg mb-10">Kitoblarni izlang, yuklab oling va o\'qing. E-Kuzatuv — sizning raqamli bilim markazingiz.</p>'+
+'<div class="flex items-center gap-3 glass neon-border rounded-2xl p-2 max-w-xl mx-auto">'+
+'<svg class="w-6 h-6 text-cyan-400 ml-2 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/></svg>'+
+'<input id="bookSearch" oninput="onSearch(this.value)" type="text" placeholder="Kitob nomi yoki muallifni qidiring..." class="flex-1 bg-transparent text-white placeholder-slate-500 outline-none py-2 text-base">'+
+'</div>'+
+'</div></div></div>'+
+'<div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10">'+
+'<div class="flex flex-wrap items-center justify-between gap-4 mb-8"><div>'+
+'<h2 class="text-2xl sm:text-3xl font-extrabold">Kitoblar <span class="neon-text text-cyan-400">Katalogi</span></h2>'+
+'<p class="text-slate-500 mt-1 text-sm" id="bookCount"></p>'+
+'</div>'+adminBadge+'</div>'+
+'<div id="booksGrid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6"></div>'+
+'</div>'+
+adminForm;
+}
+
+function renderAdminForm(){
+return '<div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 fade-up">'+
+'<div class="glass rounded-3xl p-8" style="border:1px solid rgba(245,158,11,.25);box-shadow:0 0 15px rgba(245,158,11,.08)">'+
+'<div class="flex items-center gap-3 mb-6">'+
+'<div class="w-12 h-12 rounded-2xl bg-gradient-to-br from-amber-400 to-orange-500 flex items-center justify-center shadow-lg shadow-amber-500/20"><svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v3m0 0v3m0-3h3m-3 0H9m12 0a9 9 0 11-18 0 9 9 0 0118 0z"/></svg></div>'+
+'<div><h3 class="text-2xl font-extrabold">Yangi Kitob Joylash</h3><p class="text-slate-500 text-sm">Faqat admin uchun</p></div></div>'+
+'<form onsubmit="handleAddBook(event)" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">'+
+'<div><label class="block text-sm font-semibold text-slate-300 mb-2">Kitob nomi</label><input id="bkTitle" type="text" required placeholder="Masalan: O\'tkan Kunlar" class="w-full bg-slate-900/70 border border-slate-700 rounded-2xl px-4 py-3.5 text-white placeholder-slate-600 outline-none input-glow transition-all"></div>'+
+'<div><label class="block text-sm font-semibold text-slate-300 mb-2">Muallif</label><input id="bkAuthor" type="text" required placeholder="Masalan: Abdulla Qodiriy" class="w-full bg-slate-900/70 border border-slate-700 rounded-2xl px-4 py-3.5 text-white placeholder-slate-600 outline-none input-glow transition-all"></div>'+
+'<div><label class="block text-sm font-semibold text-slate-300 mb-2">Yili</label><input id="bkYear" type="text" required placeholder="Masalan: 1926" class="w-full bg-slate-900/70 border border-slate-700 rounded-2xl px-4 py-3.5 text-white placeholder-slate-600 outline-none input-glow transition-all"></div>'+
+'<div class="flex items-end"><button type="submit" class="w-full btn-neon text-white font-bold py-3.5 px-6 rounded-2xl text-base flex items-center justify-center gap-2"><svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/></svg>Kitob qo\'shish</button></div>'+
+'</form></div></div>';
+}
+async function loadBooks(){
+var grid=document.getElementById('booksGrid');
+if(grid)grid.innerHTML='<div class="col-span-full flex justify-center py-16"><div class="loader"></div></div>';
+var res;
+try{res=await supabase.from('books').select('*').order('created_at',{ascending:false})}catch(e){if(grid)grid.innerHTML='<div class="col-span-full text-center py-16 text-slate-500">Supabase bilan bog\'lanishda xatolik. Sozlamalarni tekshiring.</div>';return}
+if(res.error){
+toast('Kitoblarni olishda xatolik: '+(res.error.message||'noma\'lum'),'error');
+if(grid)grid.innerHTML='<div class="col-span-full text-center py-16 text-slate-500">Xatolik yuz berdi. Supabase sozlamalarini tekshiring.</div>';
+return;
+}
+booksCache=res.data||[];
+applyFilter();
+}
+
+function onSearch(v){searchTerm=v.toLowerCase();applyFilter()}
+
+function applyFilter(){
+filteredBooks=booksCache.filter(function(b){
+if(!searchTerm)return true;
+return (b.title||'').toLowerCase().indexOf(searchTerm)>-1||(b.author||'').toLowerCase().indexOf(searchTerm)>-1;
+});
+renderBooks();
+}
+
+function renderBooks(){
+var grid=document.getElementById('booksGrid');
+if(!grid)return;
+var cc=document.getElementById('bookCount');
+if(cc)cc.textContent='Jami: '+booksCache.length+' ta. Topildi: '+filteredBooks.length+' ta';
+if(filteredBooks.length===0){
+grid.innerHTML='<div class="col-span-full text-center py-20"><div class="text-6xl mb-4">📚</div><p class="text-xl font-bold text-slate-300 mb-2">Hech qanday kitob topilmadi</p><p class="text-slate-500">Boshqa qidiruv so\'zini kiriting.</p></div>';
+return;
+}
+grid.innerHTML=filteredBooks.map(function(b,i){return bookCard(b,i)}).join('');
+}
+
+function bookCard(b,i){
+var grads=['from-cyan-500/20 to-indigo-500/20','from-indigo-500/20 to-purple-500/20','from-teal-500/20 to-cyan-500/20','from-sky-500/20 to-indigo-500/20'];
+var g=grads[i%grads.length];
+var adminControls='';
+if(isAdmin())adminControls='<button onclick="deleteBook(\''+b.id+'\')" class="mt-3 w-full py-2.5 rounded-xl text-sm font-semibold bg-red-500/10 text-red-400 border border-red-500/30 hover:bg-red-500 hover:text-white transition-all">Kitobni o\'chirish</button>';
+return '<div class="book-card glass-card rounded-3xl p-6 fade-up" style="animation-delay:'+(i*0.05)+'s">'+
+'<div class="h-44 rounded-2xl bg-gradient-to-br '+g+' flex items-center justify-center mb-5 relative overflow-hidden">'+
+'<div class="absolute inset-0 bg-grid opacity-40"></div>'+
+'<span class="text-6xl drop-shadow-lg">📖</span>'+
+'<span class="absolute top-3 right-3 px-2.5 py-1 rounded-lg bg-slate-900/60 text-xs font-bold text-cyan-300 border border-cyan-500/20">'+esc(b.year)+'</span>'+
+'</div>'+
+'<h3 class="font-bold text-lg mb-1 leading-snug">'+esc(b.title)+'</h3>'+
+'<p class="text-slate-400 text-sm mb-4">'+esc(b.author)+'</p>'+
+'<button onclick="downloadPDF(\''+b.id+'\')" class="w-full btn-neon text-white py-2.5 rounded-xl text-sm font-bold flex items-center justify-center gap-2"><svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"/></svg>PDF Yuklash</button>'+
+adminControls+
+'</div>';
+}
+
+function downloadPDF(id){
+var b=booksCache.filter(function(x){return x.id===id})[0];
+if(!b)return;
+var fileName=(b.title||'kitob')+'.pdf';
+if(b.pdf_url){
+var a=document.createElement('a');
+a.href=b.pdf_url;a.download=fileName;a.target='_blank';
+document.body.appendChild(a);a.click();document.body.removeChild(a);
+toast('"'+b.title+'" — PDF fayli yuklanmoqda.','success');
+return;
+}
+generateSimplePdf(b,fileName);
+}
+
+function generateSimplePdf(b,fileName){
+var title=(b.title||'Kitob').slice(0,80);
+var author=(b.author||'').slice(0,80);
+var year=b.year||'';
+var content='%PDF-1.4\n1 0 obj<</Type/Catalog/Pages 2 0 R>>endobj\n2 0 obj<</Type/Pages/Kids[3 0 R]/Count 1>>endobj\n3 0 obj<</Type/Page/Parent 2 0 R/MediaBox[0 0 595 842]/Contents 4 0 R/Resources<</Font<</F1 5 0 R>>>>>>endobj\n4 0 obj<</Length 250>>stream\nBT /F1 24 Tf 72 760 Td (E-Kuzatuv - Elektron Kutubxona) Tj ET\nBT /F1 16 Tf 72 700 Td ('+title+') Tj ET\nBT /F1 14 Tf 72 670 Td (Muallif: '+author+') Tj ET\nBT /F1 14 Tf 72 640 Td (Yili: '+year+') Tj ET\nendstream endobj\n5 0 obj<</Type/Font/Subtype/Type1/BaseFont/Helvetica>>endobj\nxref\n0 6\n0000000000 65535 f \n0000000009 00000 n \n0000000052 00000 n \n0000000089 00000 n \n0000000141 00000 n \n0000000280 00000 n \ntrailer<</Size 6/Root 1 0 R>>\nstartxref\n442\n%%EOF';
+var blob=new Blob([content],{type:'application/pdf'});
+var url=URL.createObjectURL(blob);
+var a=document.createElement('a');
+a.href=url;a.download=fileName;
+document.body.appendChild(a);a.click();document.body.removeChild(a);
+setTimeout(function(){URL.revokeObjectURL(url)},3000);
+toast('"'+b.title+'" — PDF sahifa tarzida yuklab olindi.','success');
+}
+async function handleAddBook(e){
+e.preventDefault();
+if(!isAdmin()){toast('Bu amal faqat admin uchun!','error');return}
+var title=document.getElementById('bkTitle').value.trim();
+var author=document.getElementById('bkAuthor').value.trim();
+var year=document.getElementById('bkYear').value.trim();
+if(!title||!author||!year){toast('Barcha maydonlarni to\'ldiring!','warning');return}
+var btn=e.target.querySelector('button[type=submit]');
+btn.disabled=true;btn.style.opacity='0.6';
+var res;
+try{res=await supabase.from('books').insert([{title:title,author:author,year:year}])}catch(err){toast('Kitob qo\'shishda xatolik!','error');btn.disabled=false;btn.style.opacity='1';return}
+if(res.error){
+toast('Xatolik: '+(res.error.message||'noma\'lum xato'),'error');
+btn.disabled=false;btn.style.opacity='1';
+return;
+}
+toast('"'+title+'" kitob muvaffaqiyatli qo\'shildi!','success');
+e.target.reset();
+btn.disabled=false;btn.style.opacity='1';
+loadBooks();
+}
+
+async function deleteBook(id){
+if(!isAdmin()){toast('Bu amal faqat admin uchun!','error');return}
+var b=booksCache.filter(function(x){return x.id===id})[0];
+var nm=b?b.title:'bu kitob';
+if(!confirm('"' + nm + '" kitobni o\'chirishni tasdiqlaysizmi?'))return;
+var res;
+try{res=await supabase.from('books').delete().eq('id',id)}catch(err){toast('Kitobni o\'chirishda xatolik!','error');return}
+if(res.error){toast('Xatolik: '+(res.error.message||'noma\'lum'),'error');return}
+toast('"'+nm+'" kitob o\'chirildi.','success');
+loadBooks();
+}
+function renderRegister(el){
+el.className='fade-page';
+el.innerHTML=
+'<div class="relative bg-grid min-h-[90vh] flex items-center py-12">'+
+'<div class="absolute inset-0 hero-grad"></div>'+
+'<div class="absolute -top-20 -left-20 w-80 h-80 rounded-full bg-cyan-500/10 blur-3xl"></div>'+
+'<div class="absolute -bottom-20 -right-20 w-80 h-80 rounded-full bg-indigo-500/10 blur-3xl"></div>'+
+'<div class="relative max-w-md w-full mx-auto px-4">'+
+'<div class="glass neon-border rounded-3xl p-8 fade-up">'+
+'<div class="text-center mb-8">'+
+'<div class="w-16 h-16 mx-auto mb-4 rounded-2xl bg-gradient-to-br from-cyan-400 to-indigo-500 flex items-center justify-center shadow-lg shadow-cyan-500/20 animate-float"><svg class="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M18 9v3m0 0v3m0-3h3m-3 0h-3m-2-5a4 4 0 11-8 0 4 4 0 018 0zm-8 11a5 5 0 018.6-3M19 21a4 4 0 01-7.7-2M11 13a4 4 0 10-8 0m8 0a4 4 0 108 0"/></svg></div>'+
+'<h2 class="text-3xl font-extrabold mb-2">Ro\'yxatdan o\'tish</h2>'+
+'<p class="text-slate-500 text-sm">Hisob yarating va kutubxonaga qo\'shiling</p>'+
+'</div>'+
+'<form onsubmit="handleRegister(event)" class="space-y-5">'+
+'<div><label class="block text-sm font-semibold text-slate-300 mb-2">Ism</label><input id="rgName" type="text" required placeholder="Ismingiz" class="w-full bg-slate-900/70 border border-slate-700 rounded-2xl px-4 py-3.5 text-white placeholder-slate-600 outline-none input-glow transition-all"></div>'+
+'<div><label class="block text-sm font-semibold text-slate-300 mb-2">Email</label><input id="rgEmail" type="email" required placeholder="email@misol.uz" class="w-full bg-slate-900/70 border border-slate-700 rounded-2xl px-4 py-3.5 text-white placeholder-slate-600 outline-none input-glow transition-all"></div>'+
+'<div><label class="block text-sm font-semibold text-slate-300 mb-2">Parol</label><input id="rgPass" type="password" required minlength="6" placeholder="Kamida 6 belgi" class="w-full bg-slate-900/70 border border-slate-700 rounded-2xl px-4 py-3.5 text-white placeholder-slate-600 outline-none input-glow transition-all"></div>'+
+'<button type="submit" class="w-full btn-neon text-white font-bold py-4 rounded-2xl text-lg flex items-center justify-center gap-2"><svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M18 9v3m0 0v3m0-3h3m-3 0h-3m-2-5a4 4 0 11-8 0 4 4 0 018 0zm-8 11a5 5 0 018.6-3M19 21a4 4 0 01-7.7-2M11 13a4 4 0 10-8 0m8 0a4 4 0 108 0"/></svg>Ro\'yxatdan o\'tish</button>'+
+'</form>'+
+'<p class="text-center text-slate-500 text-sm mt-6">Akkauntingiz bormi? <button class="text-cyan-400 font-semibold hover:text-cyan-300 transition-colors" onclick="showPage(\'login\')">Kirish</button></p>'+
+'</div></div></div>';
+}
+
+async function handleRegister(e){
+e.preventDefault();
+var name=document.getElementById('rgName').value.trim();
+var email=document.getElementById('rgEmail').value.trim();
+var pass=document.getElementById('rgPass').value;
+if(pass.length<6){toast('Parol kamida 6 belgidan iborat bo\'lishi kerak!','warning');return}
+var btn=e.target.querySelector('button[type=submit]');
+btn.disabled=true;btn.style.opacity='0.6';
+var res;
+try{res=await supabase.auth.signUp({email:email,password:pass,options:{data:{full_name:name}}})}catch(err){toast('Ro\'yxatdan o\'tishda xatolik!','error');btn.disabled=false;btn.style.opacity='1';return}
+if(res.error){
+toast('Xatolik: '+((res.error.message||'').replace(/Unable to validate email address: invalid format/,'Email manzil noto\'g\'ri').replace(/already registered/,'Bu email allaqachon ro\'yxatdan o\'tgan').replace(/Password should be at least/,'Parol juda qisqa')||'noma\'lum xato'),'error');
+btn.disabled=false;btn.style.opacity='1';
+return;
+}
+if(res.data&&res.data.user&&res.data.user.identities&&res.data.user.identities.length===0){
+toast('Bu email allaqachon ro\'yxatdan o\'tgan!','error');btn.disabled=false;btn.style.opacity='1';return;
+}
+toast('Tabriklaymiz! Hisob yaratildi. Iltimos, email orqali tasdiqlang.','success');
+if(res.data&&res.data.session&&res.data.session.user){
+currentUser=res.data.session.user;
+renderNav();
+}
+btn.disabled=false;btn.style.opacity='1';
+showPage('login');
+}
+function renderLogin(el){
+el.className='fade-page';
+var lockInfo='';
+if(lockActive()){
+var mins=lockRemainMin();
+lockInfo='<div id="lockBanner" class="mb-6 rounded-2xl border-2 border-red-500/50 bg-red-500/10 p-4 shake"><div class="flex items-start gap-3"><svg class="w-6 h-6 text-red-400 flex-shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.964-.833-2.732 0L4.082 16.5c-.77.833.192 2.5 1.732 2.5z"/></svg><div><p class="font-bold text-red-400">Hisob vaqtincha bloklangan!</p><p class="text-sm text-red-300 mt-1">3 ta xato urinish aniqlandi. Xavfsizlik yuzasidan login 1 soatga to\'xtatildi.</p><p class="text-sm font-bold text-red-300 mt-2">Qolgan vaqt: <span id="lockCountdown">'+mins+' m</span> daqiqa</p></div></div></div>';
+}
+el.innerHTML=
+'<div class="relative bg-grid min-h-[90vh] flex items-center py-12">'+
+'<div class="absolute inset-0 hero-grad"></div>'+
+'<div class="absolute -top-20 -right-20 w-80 h-80 rounded-full bg-cyan-500/10 blur-3xl"></div>'+
+'<div class="absolute -bottom-20 -left-20 w-80 h-80 rounded-full bg-indigo-500/10 blur-3xl"></div>'+
+'<div class="relative max-w-md w-full mx-auto px-4">'+
+'<div class="glass neon-border rounded-3xl p-8 fade-up">'+
+'<div class="text-center mb-8">'+
+'<div class="w-16 h-16 mx-auto mb-4 rounded-2xl bg-gradient-to-br from-cyan-400 to-indigo-500 flex items-center justify-center shadow-lg shadow-cyan-500/20 animate-float"><svg class="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 16l-4-4m0 0l4-4m-4 4h14m-5 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h7a3 3 0 013 3v1"/></svg></div>'+
+'<h2 class="text-3xl font-extrabold mb-2">Kirish</h2>'+
+'<p class="text-slate-500 text-sm">Hisobingizga xush kelibsiz</p>'+
+'</div>'+
+lockInfo+
+'<form onsubmit="handleLogin(event)" class="space-y-5">'+
+'<div><label class="block text-sm font-semibold text-slate-300 mb-2">Email</label><input id="lgEmail" type="email" required placeholder="email@misol.uz" class="w-full bg-slate-900/70 border border-slate-700 rounded-2xl px-4 py-3.5 text-white placeholder-slate-600 outline-none input-glow transition-all"></div>'+
+'<div><label class="block text-sm font-semibold text-slate-300 mb-2">Parol</label><input id="lgPass" type="password" required placeholder="Parolingiz" class="w-full bg-slate-900/70 border border-slate-700 rounded-2xl px-4 py-3.5 text-white placeholder-slate-600 outline-none input-glow transition-all"></div>'+
+'<button id="lgBtn" type="submit" class="w-full btn-neon text-white font-bold py-4 rounded-2xl text-lg flex items-center justify-center gap-2"><svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 16l-4-4m0 0l4-4m-4 4h14m-5 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h7a3 3 0 013 3v1"/></svg>Kirish</button>'+
+'</form>'+
+'<p class="text-center text-slate-500 text-sm mt-6">Akkauntingiz yo\'qmi? <button class="text-cyan-400 font-semibold hover:text-cyan-300 transition-colors" onclick="showPage(\'register\')">Ro\'yxatdan o\'tish</button></p>'+
+'</div></div></div>';
+applyLockState();
+}
+
+function applyLockState(){
+var em=document.getElementById('lgEmail');
+var ps=document.getElementById('lgPass');
+var bt=document.getElementById('lgBtn');
+if(lockActive()){
+if(em){em.disabled=true;em.classList.add('opacity-50','cursor-not-allowed')}
+if(ps){ps.disabled=true;ps.classList.add('opacity-50','cursor-not-allowed')}
+if(bt){bt.disabled=true;bt.style.opacity='0.5';bt.style.cursor='not-allowed'}
+if(navLockTimer){clearInterval(navLockTimer)}
+navLockTimer=setInterval(function(){
+var m=lockRemainMin();
+var el=document.getElementById('lockCountdown');
+if(el)el.textContent=m+' m daqiqa';
+var btn=document.getElementById('lgBtn');
+if(btn)btn.innerHTML='<svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"/></svg>Bloklangan ('+m+' m)';
+if(!lockActive()){
+clearInterval(navLockTimer);navLockTimer=null;
+resetLock();
+if(em){em.disabled=false;em.classList.remove('opacity-50','cursor-not-allowed')}
+if(ps){ps.disabled=false;ps.classList.remove('opacity-50','cursor-not-allowed')}
+var bn=document.getElementById('lockBanner');
+if(bn)bn.remove();
+if(bt){bt.disabled=false;bt.style.opacity='1';bt.style.cursor='pointer';bt.innerHTML='<svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 16l-4-4m0 0l4-4m-4 4h14m-5 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h7a3 3 0 013 3v1"/></svg>Kirish';
+toast('Blok tugadi! Endi qayta urinib ko\'rishingiz mumkin.','success');
+}
+},1000);
+}
+}
+async function handleLogin(e){
+e.preventDefault();
+if(lockActive()){toast('Hisob bloklangan! Iltimos kuting.','error');applyLockState();return}
+var email=document.getElementById('lgEmail').value.trim();
+var pass=document.getElementById('lgPass').value;
+var btn=document.getElementById('lgBtn');
+btn.disabled=true;btn.innerHTML='<span class="loader mr-2"></span>Kutilmoqda...';
+var res;
+try{res=await supabase.auth.signInWithPassword({email:email,password:pass})}catch(err){
+btn.disabled=false;btn.innerHTML='<svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 16l-4-4m0 0l4-4m-4 4h14m-5 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h7a3 3 0 013 3v1"/></svg>Kirish';
+toast('Kirishda xatolik yuz berdi!','error');
+return;
+}
+if(res.error){
+var msg=(res.error.message||'');
+btn.disabled=false;btn.innerHTML='<svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 16l-4-4m0 0l4-4m-4 4h14m-5 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h7a3 3 0 013 3v1"/></svg>Kirish';
+if(msg.indexOf('Invalid login credentials')>-1||msg.indexOf('Email not confirmed')>-1||msg.toLowerCase().indexOf('invalid')>-1){
+var locked=registerBadAttempt();
+if(locked){applyLockState();return}
+}else if(msg.toLowerCase().indexOf('rate limit')>-1){
+toast('Ko\'p urinishlar! Bir oz kutib qayta urinib ko\'ring.','warning');
+return;
+}else{
+toast('Xatolik: '+msg,'error');
+return;
+}
+return;
+}
+resetLock();
+if(navLockTimer){clearInterval(navLockTimer);navLockTimer=null}
+if(res.data&&res.data.session&&res.data.session.user){
+currentUser=res.data.session.user;
+toast('Xush kelibsiz, '+esc(currentUser.email)+'!','success');
+renderNav();
+if(currentUser.email===ADMIN_EMAIL)toast('Admin rejimi faollashtirildi!','success');
+showPage('landing');
+}
+}
+
+initAuth();
+showPage('landing');
+</script>
+</body>
+</html>
+
+
+
