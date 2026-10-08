@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>OMBOR â€” Sklad boshqaruv dasturi</title>
+<title>OMBOR — Ombor boshqaruv dasturi</title>
 <style>
 *{box-sizing:border-box;margin:0;padding:0;font-family:"Segoe UI",Inter,sans-serif}
 :root{--b:#1d4ed8;--b2:#3b82f6;--ok:#16a34a;--w:#d97706;--r:#dc2626;--ink:#0f172a;--mut:#64748b;--ln:#e2e8f0;--bg:#f1f5f9}
@@ -129,6 +129,8 @@ tr:hover td{background:#fafcff}
 .v3 .pcell.bosh{background:#f1f5f9;border-color:#e2e8f0}
 .v3 .pcell:hover{filter:brightness(.95)}
 .v3 .pcell.sel{outline:3px solid #2563eb;outline-offset:1px;box-shadow:0 0 0 3px rgba(37,99,235,.28)}
+.v3 #w_plan .p-rh,.v3 #w_plan .p-zh,.v3 #w_plan .p-rn{cursor:pointer;border-radius:5px;transition:background .12s}
+.v3 #w_plan .p-rh:hover,.v3 #w_plan .p-zh:hover,.v3 #w_plan .p-rn:hover{background:#e0e7ff}
 
 @media print{.sheet{page-break-after:always;break-after:page}.sheet:last-child{page-break-after:auto;break-after:auto}
   .sh-cell{min-height:44px}.sheet{border-color:#94a3b8}.v3{display:none!important}}
@@ -148,7 +150,7 @@ tr:hover td{background:#fafcff}
 <body>
 
 <div id="login" class="login box noprint">
-  <h3>ðŸ” Ombor dasturiga kirish</h3>
+  <h3>🔐 Ombor dasturiga kirish</h3>
   <label>Login</label><input id="lg" value="admin" style="margin-bottom:8px">
   <label>Parol</label><input id="pw" type="password" value="1234" style="margin-bottom:10px">
   <button class="btn" style="width:100%;padding:11px" onclick="sign()">Kirish</button>
@@ -157,8 +159,8 @@ tr:hover td{background:#fafcff}
 
 <div id="app" style="display:none">
 <div class="top"><div class="wrap trow">
-  <div class="logo" onclick="go('dash')"><i>ðŸ­</i> OMBOR <span style="font-size:11px;opacity:.7;font-weight:500">Sklad boshqaruvi</span></div>
-  <div class="bar" style="position:static;border:none;background:none;flex:1;overflow:hidden;padding:0"><input id="gsearch" placeholder="ðŸ” Shtrix skanerlash yoki nom/SKU/qidirish â€” Enter" onkeydown="if(event.key==='Enter')globalSearch(this.value)" style="max-width:420px"></div>
+  <div class="logo" onclick="go('dash')"><i>🏭</i> OMBOR <span style="font-size:11px;opacity:.7;font-weight:500">Ombor boshqaruvi</span></div>
+  <div class="bar" style="position:static;border:none;background:none;flex:1;overflow:hidden;padding:0"><input id="gsearch" placeholder="🔍 Shtrix skanerlash yoki nom/SKU/qidirish — Enter" onkeydown="if(event.key==='Enter')globalSearch(this.value)" style="max-width:420px"></div>
   <div class="who" id="who"></div>
   <button class="btn r s" onclick="logout()">Chiqish</button>
 </div></div>
@@ -192,7 +194,7 @@ const dt=s=>s?s.slice(0,16).replace('T',' '):'';
 function toast(t,ms=2800){const d=document.createElement('div');d.className='tst';d.textContent=t;$('toast').appendChild(d);setTimeout(()=>d.remove(),ms)}
 const api=async(p,o={})=>{const r=await fetch(p,{...o,headers:{'Content-Type':'application/json',...(o.headers?o.headers:{'Authorization':'Bearer '+T})}});const d=await r.json().catch(()=>({}));if(!r.ok){if(r.status===401){localStorage.removeItem('om_t');location.reload()}throw new Error(d.error||'Xatolik')}return d};
 
-const TABS=[['dash','ðŸ“Š Boshqaruv paneli'],['items','ðŸ“¦ Nomenklatura'],['stocks','ðŸ·ï¸ Pozitsiyalar'],['locs','ðŸ—ï¸ Stelyajlar'],['w3d','ðŸ§Š Ombor rejasi'],['doc','ðŸ“¥ Hujjat yaratish'],['docs','ðŸ—‚ï¸ Hujjatlar'],['counts','ðŸ§® Inventarizatsiya'],['moves','ðŸ”„ Harakatlar'],['rep','ðŸ“ˆ Hisobotlar'],['place','ðŸ“ Joylashuv ro\'yxati'],['sup','ðŸšš Yetkazib beruvchilar']];
+const TABS=[['dash','📊 Boshqaruv paneli'],['items','📦 Tovarlar'],['stocks','🏷️ Ombordagi tovarlar'],['locs','🏗️ Stelyajlar'],['w3d','🧊 Ombor rejasi'],['doc','📥 Yangi hujjat'],['docs','🗂️ Hujjatlar'],['counts','🧮 Inventarizatsiya'],['moves','🔄 Harakatlar'],['rep','📈 Hisobotlar'],['place','📍 Joylashuv ro\'yxati'],['sup','🚚 Yetkazib beruvchilar']];
 let cur='dash';
 function go(p){
   cur=p;
@@ -223,35 +225,35 @@ async function loadDash(){
   const t=d.today||[];
   $('dash').innerHTML=`
   <div class="kpi">
-    <div class="k"><b>${num(d.items)}</b><span>Nomenklatura (dori turi)</span></div>
+    <div class="k"><b>${num(d.items)}</b><span>Tovarlar (dori turi)</span></div>
     <div class="k"><b>${num(d.locations)}</b><span>Stelyaj / joy</span></div>
     <div class="k g"><b>${num(d.total_qty)}</b><span>Ombordagi dona</span></div>
     <div class="k g"><b>${money(d.value)}</b><span>Ombor qiymati</span></div>
-    <div class="k"><b>${num(d.positions)}</b><span>Band pozitsiya</span></div>
+    <div class="k"><b>${num(d.positions)}</b><span>Band o'rin</span></div>
     <div class="k y"><b>${num(d.drafts)}</b><span>Qoralama hujjat</span></div>
     <div class="k g"><b>+${num(d.month_in)}</b><span>Bu oy kirim</span></div>
-    <div class="k w"><b>âˆ’${num(d.month_out)}</b><span>Bu oy chiqim</span></div>
+    <div class="k w"><b>−${num(d.month_out)}</b><span>Bu oy chiqim</span></div>
   </div>
   <div class="g2">
-    <div class="box"><h3>ðŸ“¥ Bugungi hujjatlar</h3>
+    <div class="box"><h3>📥 Bugungi hujjatlar</h3>
       ${t.length?`<table><tr><th>Turi</th><th>Soni</th><th>Dona</th></tr>${t.map(x=>`<tr><td>${({kirish:'Kirim',chiqim:'Chiqim','ko\'chirish':'Ko\'chirish','yo\'qotish':'Yo\'qotish',inventarizatsiya:'Inventarizatsiya'})[x.type]||x.type}</td><td>${x.c}</td><td>${num(x.q)}</td></tr>`).join('')}</table>`:'<p style="color:var(--mut)">Bugun hujjat yo\'q</p>'}
       <div class="r noprint" style="margin-top:10px;display:flex;gap:6px;flex-wrap:wrap">
-        <button class="btn o" onclick="newDoc('kirish')">ï¼‹ Kirim</button>
-        <button class="btn" onclick="newDoc('chiqim')">ï¼ Chiqim</button>
-        <button class="btn w" onclick="newDoc('ko\'chirish')">â‡„ Ko\'chirish</button>
-        <button class="btn r" onclick="newDoc('yo\'qotish')">âš  Yo\'qotish</button>
+        <button class="btn o" onclick="newDoc('kirish')">+ Kirim</button>
+        <button class="btn" onclick="newDoc('chiqim')">- Chiqim</button>
+        <button class="btn w" onclick="newDoc('ko\'chirish')">⇄ Ko\'chirish</button>
+        <button class="btn r" onclick="newDoc('yo\'qotish')">⚠ Yo\'qotish</button>
       </div>
     </div>
-    <div class="box"><h3>âš ï¸ Minimal zaxiradan past</h3>
-      ${d.low.length?`<div class="sc"><table><tr><th>Tovar</th><th>Kategoriya</th><th>Qoldi</th><th>Min</th></tr>${d.low.map(x=>`<tr><td><b>${x.name}</b></td><td>${x.category}</td><td class="low">${num(x.qty)}</td><td>${num(x.min_stock)}</td></tr>`).join('')}</table></div>`:'<p style="color:var(--ok)">âœ“ Hammasi yetarli</p>'}
+    <div class="box"><h3>⚠️ Minimal zaxiradan past</h3>
+      ${d.low.length?`<div class="sc"><table><tr><th>Tovar</th><th>Kategoriya</th><th>Qoldi</th><th>Min</th></tr>${d.low.map(x=>`<tr><td><b>${x.name}</b></td><td>${x.category}</td><td class="low">${num(x.qty)}</td><td>${num(x.min_stock)}</td></tr>`).join('')}</table></div>`:'<p style="color:var(--ok)">✓ Hammasi yetarli</p>'}
     </div>
   </div>
   <div class="g2">
-    <div class="box"><h3>â³ Muddatiga yaqin</h3>
+    <div class="box"><h3>⏳ Muddatiga yaqin</h3>
       ${d.expiring.length?`<div class="sc"><table><tr><th>Tovar</th><th>Joy</th><th>Yaroqlilik</th><th>Soni</th></tr>${d.expiring.map(x=>`<tr><td>${x.item_name}</td><td>${x.loc_code}</td><td class="low">${x.expiry}</td><td>${num(x.qty)}</td></tr>`).join('')}</table></div>`:'<p style="color:var(--mut)">Muddatiga yaqin partiya yo\'q</p>'}
     </div>
-    <div class="box"><h3>ðŸ—‚ï¸ Oxirgi hujjatlar</h3>
-      <div class="sc"><table><tr><th>â„–</th><th>Turi</th><th>Sana</th><th>Holat</th><th>Qator</th></tr>${d.recent.map(x=>`<tr><td><a style="cursor:pointer;color:var(--b);font-weight:700" onclick="viewDoc(${x.id})">${x.no}</a></td><td>${({kirish:'Kirim',chiqim:'Chiqim','ko\'chirish':'Ko\'chirish','yo\'qotish':'Yo\'qotish',inventarizatsiya:'Inv.'})[x.type]||x.type}</td><td>${x.doc_date}</td><td>${statT(x.status)}</td><td>${x.lines_count}</td></tr>`).join('')}</table></div>
+    <div class="box"><h3>🗂️ Oxirgi hujjatlar</h3>
+      <div class="sc"><table><tr><th>№</th><th>Turi</th><th>Sana</th><th>Holat</th><th>Qator</th></tr>${d.recent.map(x=>`<tr><td><a style="cursor:pointer;color:var(--b);font-weight:700" onclick="viewDoc(${x.id})">${x.no}</a></td><td>${({kirish:'Kirim',chiqim:'Chiqim','ko\'chirish':'Ko\'chirish','yo\'qotish':'Yo\'qotish',inventarizatsiya:'Inv.'})[x.type]||x.type}</td><td>${x.doc_date}</td><td>${statT(x.status)}</td><td>${x.lines_count}</td></tr>`).join('')}</table></div>
     </div>
   </div>`;
 }
@@ -262,7 +264,7 @@ async function loadItems(){
   const d=await api('/api/items?q='+encodeURIComponent($('i_q')?.value||'')+'&cat='+encodeURIComponent($('i_cat')?.value||''));
   IT=d.items;
   $('items').innerHTML=`
-  <div class="box"><h3>ðŸ“¦ Yangi tovar qo'shish</h3>
+  <div class="box"><h3>📦 Yangi tovar qo'shish</h3>
     <div class="f">
       <div><label>Nomi *</label><input id="n_name" placeholder="Paracetamol"></div>
       <div><label>Shakli</label><select id="n_form"><option>tabletka</option><option>kapsula</option><option>sirup</option><option>inyeksiya</option><option>maz</option><option>tomchi</option><option>quti</option></select></div>
@@ -272,26 +274,26 @@ async function loadItems(){
       <div><label>Tannarx (so'm)</label><input id="n_cost" type="number" placeholder="8500"></div>
       <div><label>Min zaxira</label><input id="n_min" type="number" value="20"></div>
       <div><label>Maks zaxira</label><input id="n_max" type="number" value="200"></div>
-      <div><label>Yetkazib beruvchi</label><select id="n_sup"><option value="">â€”</option>${SUP.map(s=>`<option value="${s.id}">${s.name}</option>`).join('')}</select></div>
+      <div><label>Yetkazib beruvchi</label><select id="n_sup"><option value="">—</option>${SUP.map(s=>`<option value="${s.id}">${s.name}</option>`).join('')}</select></div>
     </div>
     <div style="display:flex;gap:10px;align-items:flex-end;margin-top:10px;flex-wrap:wrap">
       <div style="flex:1;min-width:200px"><label>Rasm</label><input type="file" id="n_img" accept="image/*"></div>
-      <button class="btn" onclick="addItem()">ðŸ’¾ Saqlash</button>
+      <button class="btn" onclick="addItem()">💾 Saqlash</button>
     </div>
     <datalist id="cats">${d.cats.map(c=>`<option value="${c}">`).join('')}</datalist>
   </div>
-  <div class="box"><h3>ðŸ“‹ Ro'yxat <span class="r noprint"><input id="i_q" placeholder="qidirish" style="width:170px" oninput="loadItems()"><select id="i_cat" style="width:170px" onchange="loadItems()"><option value="">Barcha kategoriya</option>${d.cats.map(c=>`<option>${c}</option>`).join('')}</select></span></h3>
+  <div class="box"><h3>📋 Ro'yxat <span class="r noprint"><input id="i_q" placeholder="qidirish" style="width:170px" oninput="loadItems()"><select id="i_cat" style="width:170px" onchange="loadItems()"><option value="">Barcha kategoriya</option>${d.cats.map(c=>`<option>${c}</option>`).join('')}</select></span></h3>
   <div class="sc"><table><tr><th></th><th>Nomi</th><th>SKU</th><th>Shtrix</th><th>Kategoriya</th><th>Birlik</th><th>Tannarx</th><th>Min</th><th>Omborda</th><th>Yetkazib beruvchi</th><th></th></tr>
   ${d.items.map(i=>`<tr>
-    <td><div class="thumb">${i.image?`<img src="${i.image}">`:'ðŸ’Š'}</div></td>
+    <td><div class="thumb">${i.image?`<img src="${i.image}">`:'💊'}</div></td>
     <td><b>${i.name}</b><div style="font-size:11px;color:var(--mut)">${i.form}</div></td>
-    <td class="mono">${i.sku}</td><td class="mono">${i.barcode||'â€”'}</td><td>${i.category}</td><td>${i.unit}</td>
+    <td class="mono">${i.sku}</td><td class="mono">${i.barcode||'—'}</td><td>${i.category}</td><td>${i.unit}</td>
     <td>${money(i.cost)}</td><td>${num(i.min_stock)}</td>
     <td class="${i.total<=i.min_stock?'low':''}">${num(i.total)} <span style="font-size:10px;color:var(--mut)">(${i.positions} poz)</span></td>
-    <td>${i.supplier||'â€”'}</td>
+    <td>${i.supplier||'—'}</td>
     <td class="noprint" style="white-space:nowrap">
-      <label class="btn d s" style="display:inline-block">ðŸ–¼ï¸<input type="file" accept="image/*" style="display:none" onchange="setImg(${i.id},this.files[0])"></label>
-      <button class="btn r s" onclick="delItem(${i.id})">âœ•</button></td></tr>`).join('')}
+      <label class="btn d s" style="display:inline-block">🖼️<input type="file" accept="image/*" style="display:none" onchange="setImg(${i.id},this.files[0])"></label>
+      <button class="btn r s" onclick="delItem(${i.id})">✕</button></td></tr>`).join('')}
   </table></div></div>`;
 }
 async function addItem(){
@@ -300,28 +302,28 @@ async function addItem(){
     const f=$('n_img').files[0];
     if(f){const fd=new FormData();fd.append('image',f);const r=await fetch('/api/upload',{method:'POST',headers:{'Authorization':'Bearer '+T},body:fd});image=(await r.json()).url||''}
     const r=await api('/api/items',{method:'POST',body:JSON.stringify({name:$('n_name').value,form:$('n_form').value,category:$('n_cat').value,unit:$('n_unit').value,barcode:$('n_bc').value,cost:$('n_cost').value,min_stock:$('n_min').value,max_stock:$('n_max').value,supplier_id:$('n_sup').value,image})});
-    toast('âœ… '+r.sku+' saqlandi');base();loadItems();
-  }catch(e){toast('âŒ '+e.message)}
+    toast('✅ '+r.sku+' saqlandi');base();loadItems();
+  }catch(e){toast('❌ '+e.message)}
 }
 async function setImg(id,f){
   if(!f)return;
-  try{const fd=new FormData();fd.append('image',f);await fetch('/api/items/'+id+'/image',{method:'POST',headers:{'Authorization':'Bearer '+T},body:fd});toast('âœ… Rasm saqlandi');loadItems()}catch(e){toast('âŒ '+e.message)}
+  try{const fd=new FormData();fd.append('image',f);await fetch('/api/items/'+id+'/image',{method:'POST',headers:{'Authorization':'Bearer '+T},body:fd});toast('✅ Rasm saqlandi');loadItems()}catch(e){toast('❌ '+e.message)}
 }
-async function delItem(id){if(!confirm('Tovar arxivlanadimi?'))return;try{await api('/api/items/'+id,{method:'DELETE'});toast('ðŸ—‘ï¸ Arxivlandi');base();loadItems()}catch(e){toast('âŒ '+e.message)}}
+async function delItem(id){if(!confirm('Tovar arxivlanadimi?'))return;try{await api('/api/items/'+id,{method:'DELETE'});toast('🗑️ Arxivlandi');base();loadItems()}catch(e){toast('❌ '+e.message)}}
 
 /* ---------- Pozitsiyalar ---------- */
 async function loadStocks(){
   STOCKS=await api('/api/stocks?q='+encodeURIComponent($('s_q')?.value||'')+'&loc='+encodeURIComponent($('s_loc')?.value||'')+'&only='+encodeURIComponent($('s_only')?.value||''));
   $('stocks').innerHTML=`
-  <div class="box"><h3>ðŸ·ï¸ Pozitsiyalar (SKU) <span class="r noprint">
+  <div class="box"><h3>🏷️ Ombordagi tovarlar (SKU) <span class="r noprint">
     <input id="s_q" placeholder="shtrix / nom / kod" style="width:180px" value="${($('s_q')?.value)||''}" oninput="loadStocks()">
     <select id="s_loc" style="width:150px" onchange="loadStocks()"><option value="">Barcha joylar</option>${LOC.map(l=>`<option ${($('s_loc')?.value)===l.code?'selected':''}>${l.code}</option>`).join('')}</select>
     <select id="s_only" style="width:150px" onchange="loadStocks()"><option value="">Barchasi</option><option value="low" ${($('s_only')?.value)==='low'?'selected':''}>Kam qoldi</option><option value="exp" ${($('s_only')?.value)==='exp'?'selected':''}>Muddatiga yaqin</option></select>
     <button class="btn d s" onclick="csv('items')">CSV</button></span></h3>
   <div class="sc"><table><tr><th>Kod</th><th>Tovar</th><th>SKU</th><th>Joy</th><th>Katak</th><th>Partiya</th><th>Yaroqlilik</th><th>Soni</th><th>Min</th></tr>
   ${STOCKS.map(s=>`<tr><td class="mono">${s.code}</td><td><b>${s.item_name}</b></td><td class="mono">${s.item_sku}</td>
-  <td>ðŸ“${s.loc_code}</td><td><b>${s.cell}</b></td><td>${s.batch_no||'â€”'}</td>
-  <td class="${s.expiry&&new Date(s.expiry)<new Date()?'low':''}">${s.expiry||'â€”'}</td>
+  <td>📍${s.loc_code}</td><td><b>${s.cell}</b></td><td>${s.batch_no||'—'}</td>
+  <td class="${s.expiry&&new Date(s.expiry)<new Date()?'low':''}">${s.expiry||'—'}</td>
   <td class="${s.qty<=s.min_qty?'low':''}"><b>${num(s.qty)}</b> ${s.unit}</td><td>${s.min_qty}</td></tr>`).join('')||'<tr><td colspan="9" style="text-align:center;color:var(--mut);padding:20px">Topilmadi</td></tr>'}
   </table></div></div>`;
 }
@@ -334,6 +336,7 @@ async function csv(t){
 }
 
 /* ---------- Stelyajlar + chizma ---------- */
+let sheetLoc='';
 async function loadLocs(){
   sheetLoc=$('sh_loc')?.value||sheetLoc||'';
   const m=await api('/api/map');
@@ -342,14 +345,14 @@ async function loadLocs(){
     const p=code.split('-'), c=l.cells.find(x=>x.row==p[1]&&x.col==p[2]); if(!c)return '';
     const pct=Math.min(100,Math.round(c.qty/c.cap*100));
     return `<div class="box" style="margin:9px 0;background:#f8fafc">
-      <h3 style="margin-bottom:6px">ðŸ”Ž ${code} <span class="r noprint"><button class="btn s" onclick="this.closest('.box').remove()">âœ• yopish</button></span></h3>
+      <h3 style="margin-bottom:6px">🔎 ${code} <span class="r noprint"><button class="btn s" onclick="this.closest('.box').remove()">✕ yopish</button></span></h3>
       <div style="display:flex;gap:5px;flex-wrap:wrap;margin-bottom:6px">
-        <span class="t ${c.qty<=0?'':c.state==="kam"?'y':c.state==="to'liq"?'r':'g'}">${c.qty<=0?'Bo\'sh':c.state==="kam"?'Kam':c.state==="to'liq"?'To\'liq':'Normal'} Â· ${pct}%</span>
-        <span class="t b">sig'im ${c.cap}</span><span class="t">${l.zone}-zona Â· ${l.name||''}</span></div>
+        <span class="t ${c.qty<=0?'':c.state==="kam"?'y':c.state==="to'liq"?'r':'g'}">${c.qty<=0?'Bo\'sh':c.state==="kam"?'Kam':c.state==="to'liq"?'To\'liq':'Normal'} · ${pct}%</span>
+        <span class="t b">sig'im ${c.cap}</span><span class="t">${l.zone}-zona · ${l.name||''}</span></div>
       ${c.stocks.length?`<table><tr><th>Dori nomi</th><th>SKU</th><th>Shtrix</th><th>Soni</th><th>Partiya</th><th>Yaroqlilik</th><th>Narxi</th><th>Qiymati</th></tr>
-      ${c.stocks.map(s=>`<tr><td><b>${s.item_name}</b></td><td class="mono">${s.item_sku}</td><td class="mono">${s.barcode||'â€”'}</td>
-      <td><b>${s.qty}</b> ${s.unit}</td><td>${s.batch_no||'â€”'}</td>
-      <td class="${s.expiry&&new Date(s.expiry)<new Date()?'low':''}">${s.expiry||'â€”'}</td>
+      ${c.stocks.map(s=>`<tr><td><b>${s.item_name}</b></td><td class="mono">${s.item_sku}</td><td class="mono">${s.barcode||'—'}</td>
+      <td><b>${s.qty}</b> ${s.unit}</td><td>${s.batch_no||'—'}</td>
+      <td class="${s.expiry&&new Date(s.expiry)<new Date()?'low':''}">${s.expiry||'—'}</td>
       <td>${money(s.cost||0)}</td><td><b>${money((s.cost||0)*s.qty)}</b></td></tr>`).join('')}</table>`
       :'<div style="color:var(--mut)">Bu katak bo\'sh.</div>'}
     </div>`;
@@ -368,8 +371,8 @@ async function loadLocs(){
         <b>${k}</b><div style="font-size:11.5px;color:var(--mut);margin-top:3px">qavat ${g[k].floor} &middot; ${g[k].n} stelyaj &middot; zona ${[...g[k].z].join(', ')} &middot; ${num(g[k].q)} dona</div></div>`).join('');
     })()}</div>
   </div>
-  <div id="cellInfo">${oldBox||''}</div>
-  <div class="box noprint"><h3>ðŸ—ï¸ Stelyaj qo'shish</h3>
+  <div id="cellInfo">${oldBox?oldBox.innerHTML:''}</div>
+  <div class="box noprint"><h3>🏗️ Stelyaj qo'shish</h3>
     <div class="f s2">
       <div><label>Kod *</label><input id="l_code" placeholder="E-1"></div>
       <div><label>Zona</label><input id="l_zone" placeholder="E"></div>
@@ -381,54 +384,54 @@ async function loadLocs(){
       <div><label>Bino</label><input id="l_bld" placeholder="Bino-1" value="Bino-1"></div>
       <div><label>Xona</label><input id="l_room" placeholder="Xona-2" value="Xona-1"></div>
       <div><label>Qavat</label><input id="l_floor" type="number" value="1" min="1" max="20"></div>
-      <div><button class="btn" style="width:100%" onclick="addLoc()">ï¼‹ Qo'shish</button></div>
+      <div><button class="btn" style="width:100%" onclick="addLoc()">+ Qo'shish</button></div>
     </div>
   </div>
   <div class="box">
-    <h3>ðŸ—ºï¸ Ombor chizmasi <span class="r noprint"><button class="btn d s" onclick="window.print()">ðŸ–¨ï¸ Chopish / PDF</button></span></h3>
+    <h3>🗺️ Ombor chizmasi <span class="r noprint"><button class="btn d s" onclick="window.print()">🖨️ Chopish / PDF</button></span></h3>
     <div style="display:flex;gap:14px;flex-wrap:wrap;font-size:11.5px;margin-bottom:10px">
       <span><i style="display:inline-block;width:12px;height:12px;background:#f1f5f9;border:1px solid #cbd5e1;border-radius:3px"></i> Bo'sh</span>
       <span><i style="display:inline-block;width:12px;height:12px;background:#dcfce7;border:1px solid #86efac;border-radius:3px"></i> Normal</span>
       <span><i style="display:inline-block;width:12px;height:12px;background:#fef9c3;border:1px solid #fde047;border-radius:3px"></i> Kam</span>
       <span><i style="display:inline-block;width:12px;height:12px;background:#fee2e2;border:1px solid #fca5a5;border-radius:3px"></i> To'liq</span>
     </div>
-    <div style="font-size:12.5px;color:var(--mut);margin-bottom:10px">Jami: <b>${m.locations.length}</b> joy Â· <b>${num(m.total_qty)}</b> dona Â· <b>${m.positions}</b> pozitsiya Â· ogohlantirish: <b style="color:var(--w)">${m.alerts.length}</b></div>
-    ${zorder(m.locations).map(z=>`<h3 style="margin:12px 0 7px">ðŸ…°ï¸ ${z}-zona</h3>
+    <div style="font-size:12.5px;color:var(--mut);margin-bottom:10px">Jami: <b>${m.locations.length}</b> joy · <b>${num(m.total_qty)}</b> dona · <b>${m.positions}</b> o'rin · ogohlantirish: <b style="color:var(--w)">${m.alerts.length}</b></div>
+    ${zorder(m.locations).map(z=>`<h3 style="margin:12px 0 7px">🅰️ ${z}-zona</h3>
       <div class="g3">${m.locations.filter(l=>l.zone===z).map(l=>`<div class="loc">
-        <h4><span>ðŸ“${l.code} <span style="font-weight:400;color:var(--mut)">${l.name||''}</span></span>
+        <h4><span>📍${l.code} <span style="font-weight:400;color:var(--mut)">${l.name||''}</span></span>
         <span class="noprint" style="display:flex;gap:3px"><span class="t s">${l.positions} poz</span><span class="t ${l.used_cells===l.total_cells?'r':'b'}">${l.used_cells}/${l.total_cells}</span>
-        <button class="btn r s" onclick="delLoc(${l.id})">âœ•</button></span></h4>
+        <button class="btn r s" onclick="delLoc(${l.id})">✕</button></span></h4>
         <div class="cells" style="grid-template-columns:repeat(${Math.min(l.cols,6)},1fr)">
-        ${l.cells.map(c=>`<div class="cell ${c.state==="to'liq"?"full":c.state}" data-cell="${l.code}-${c.row}-${c.col}" title="${c.stocks.map(s=>s.item_name+' â€” '+s.qty+' '+s.unit+(s.batch_no?' ('+s.batch_no+')':'')).join('\n')||'Bo\'sh'}">
+        ${l.cells.map(c=>`<div class="cell ${c.state==="to'liq"?"full":c.state}" data-cell="${l.code}-${c.row}-${c.col}" title="${c.stocks.map(s=>s.item_name+' — '+s.qty+' '+s.unit+(s.batch_no?' ('+s.batch_no+')':'')).join('\n')||'Bo\'sh'}">
           <span class="cl">${c.name}</span>
-          ${c.stocks[0]?`<b>${c.stocks[0].item_name.slice(0,9)}</b><div class="q">${c.qty}</div>`:`<span>â€”</span>`}
+          ${c.stocks[0]?`<b>${c.stocks[0].item_name.slice(0,9)}</b><div class="q">${c.qty}</div>`:`<span>—</span>`}
           <div class="bar2"><div style="width:${Math.min(100,c.qty/c.cap*100)}%;background:${c.state==="full"?'#dc2626':c.state==="kam"?'#d97706':'#16a34a'}"></div></div>
           ${c.stocks.length>1?`<div style="font-size:8.5px">+${c.stocks.length-1}</div>`:''}</div>`).join('')}
         </div></div>`).join('')}</div>`).join('')}
   </div>
-  <div class="box noprint"><h3>ðŸ“‹ Stelyaj varaqasi <span class="r">
-    <select id="sh_loc" style="width:200px" onchange="loadLocs()"><option value="">Barcha stelyajlar</option>${m.locations.map(l=>`<option value="${l.id}" ${String(sheetLoc)===String(l.id)?'selected':''}>${l.zone}-zona Â· ${l.code} â€” ${l.name||''}</option>`).join('')}</select>
-    <button class="btn s" onclick="window.print()">ðŸ–¨ï¸ Chopish / PDF</button></span></h3>
-    <div style="font-size:12.5px;color:var(--mut)">Har bir stelyaj alohida varaqa: katak, dori nomi, SKU, shtrix, partiya, soni, yaroqlilik. Bo'sh kataklar ham ko'rsatiladi â€” qo'lda tekshirish uchun.</div>
+  <div class="box noprint"><h3>📋 Stelyaj varaqasi <span class="r">
+    <select id="sh_loc" style="width:200px" onchange="loadLocs()"><option value="">Barcha stelyajlar</option>${m.locations.map(l=>`<option value="${l.id}" ${String(sheetLoc)===String(l.id)?'selected':''}>${l.zone}-zona · ${l.code} — ${l.name||''}</option>`).join('')}</select>
+    <button class="btn s" onclick="window.print()">🖨️ Chopish / PDF</button></span></h3>
+    <div style="font-size:12.5px;color:var(--mut)">Har bir stelyaj alohida varaqa: katak, dori nomi, SKU, shtrix, partiya, soni, yaroqlilik. Bo'sh kataklar ham ko'rsatiladi — qo'lda tekshirish uchun.</div>
   </div>
   ${(sheetLoc?m.locations.filter(l=>String(l.id)===String(sheetLoc)):m.locations).map(l=>{
     const cells=l.cells.filter(c=>c.stocks.length>0);
     return `<div class="sheet">
-      <div class="sh-head"><b style="font-size:16px">ðŸ“ ${l.code}</b> <span>${l.name||''}</span>
-        <span class="r" style="font-size:11.5px;color:var(--mut)">${l.zone}-zona Â· ${l.kind==='zona'?'butun zona pol':'stelyaj '+l.rows+'Ã—'+l.cols} Â· sig'imi ${l.cell_cap} ${'dona'} Â· ${l.used_cells}/${l.total_cells} katak band Â· jami ${num(l.total_qty)} dona Â· ${new Date().toLocaleDateString('uz-UZ')}</span></div>
+      <div class="sh-head"><b style="font-size:16px">📍 ${l.code}</b> <span>${l.name||''}</span>
+        <span class="r" style="font-size:11.5px;color:var(--mut)">${l.zone}-zona · ${l.kind==='zona'?'butun zona pol':'stelyaj '+l.rows+'×'+l.cols} · sig'imi ${l.cell_cap} ${'dona'} · ${l.used_cells}/${l.total_cells} katak band · jami ${num(l.total_qty)} dona · ${new Date().toLocaleDateString('uz-UZ')}</span></div>
       <div class="sh-grid" style="grid-template-columns:repeat(${Math.min(l.cols,5)},1fr)">
         ${l.cells.map(c=>`<div class="sh-cell ${c.qty>0?'f':''}" data-cell="${l.code}-${c.row}-${c.col}" title="Bosish bilan ma'lumot">
           <div class="t">${c.name}</div>
           ${c.stocks.length?c.stocks.map(s=>`<div class="it"><b>${s.item_name}</b>
             <div class="mono" style="font-size:10px">${s.item_sku}</div>
             <div>${s.barcode||''}</div>
-            <div><b>${num(s.qty)} ${s.unit}</b>${s.batch_no?' Â· '+s.batch_no:''}</div>
+            <div><b>${num(s.qty)} ${s.unit}</b>${s.batch_no?' · '+s.batch_no:''}</div>
             ${s.expiry?`<div style="font-size:10px;color:var(--mut)">yaroq. ${s.expiry}</div>`:''}</div>`).join('<hr style="border:0;border-top:1px dashed #cbd5e1;margin:4px 0">')
             :'<div style="color:var(--mut);font-size:11px">bo\'sh</div>'}
         </div>`).join('')}
       </div>
-      ${cells.length?`<table style="margin-top:8px"><tr><th>â„–</th><th>Katak</th><th>Dori nomi</th><th>SKU</th><th>Shtrix</th><th>Partiya</th><th>Soni</th><th>Birlik</th><th>Yaroqlilik</th><th>Min</th><th>Haqiqiy</th></tr>
-      ${cells.flatMap(c=>c.stocks).map((s,i)=>`<tr><td>${i+1}</td><td><b>${c.name}</b></td><td><b>${s.item_name}</b></td><td class="mono">${s.item_sku}</td><td class="mono">${s.barcode||'â€”'}</td><td>${s.batch_no||'â€”'}</td><td><b>${num(s.qty)}</b></td><td>${s.unit}</td><td class="${s.expiry&&new Date(s.expiry)<new Date()?'low':''}">${s.expiry||'â€”'}</td><td>${s.min_stock}</td><td style="width:70px"></td></tr>`).join('')}
+      ${cells.length?`<table style="margin-top:8px"><tr><th>№</th><th>Katak</th><th>Dori nomi</th><th>SKU</th><th>Shtrix</th><th>Partiya</th><th>Soni</th><th>Birlik</th><th>Yaroqlilik</th><th>Min</th><th>Haqiqiy</th></tr>
+      ${cells.flatMap(c=>c.stocks.map(s=>({c,s}))).map(({c,s},i)=>`<tr><td>${i+1}</td><td><b>${c.name}</b></td><td><b>${s.item_name}</b></td><td class="mono">${s.item_sku}</td><td class="mono">${s.barcode||'—'}</td><td>${s.batch_no||'—'}</td><td><b>${num(s.qty)}</b></td><td>${s.unit}</td><td class="${s.expiry&&new Date(s.expiry)<new Date()?'low':''}">${s.expiry||'—'}</td><td>${s.min_stock}</td><td style="width:70px"></td></tr>`).join('')}
       </table>`:''}
       <div style="display:flex;justify-content:space-between;gap:16px;margin-top:9px;font-size:12px;flex-wrap:wrap">
         <div>Ombor muddiri: ____________</div><div>Tekshirdi: ____________</div><div>Sana: ____________</div></div>
@@ -454,12 +457,12 @@ async function loadLocs(){
 }
 async function addLoc(){
   try{await api('/api/locations',{method:'POST',body:JSON.stringify({code:$('l_code').value,zone:$('l_zone').value,name:$('l_name').value,kind:$('l_kind').value,rows:$('l_rows').value,cols:$('l_cols').value,cell_cap:$('l_cap').value,building:$('l_bld').value,room:$('l_room').value,floor:$('l_floor').value})});
-  $('l_code').value='';$('l_name').value='';toast('âœ… Stelyaj qo\'shildi');LOC=await api('/api/locations');loadLocs()}catch(e){toast('âŒ '+e.message)}
+  $('l_code').value='';$('l_name').value='';toast('✅ Stelyaj qo\'shildi');LOC=await api('/api/locations');loadLocs()}catch(e){toast('❌ '+e.message)}
 }
-async function delLoc(id){if(!confirm('Joy arxivlanadimi?'))return;try{await api('/api/locations/'+id,{method:'DELETE'});toast('ðŸ—‘ï¸ Arxivlandi');LOC=await api('/api/locations');loadLocs()}catch(e){toast('âŒ '+e.message)}}
+async function delLoc(id){if(!confirm('Joy arxivlanadimi?'))return;try{await api('/api/locations/'+id,{method:'DELETE'});toast('🗑️ Arxivlandi');LOC=await api('/api/locations');loadLocs()}catch(e){toast('❌ '+e.message)}}
 
 /* ---------- Hujjat yaratish ---------- */
-const DN={kirish:'Kirim â€” tovarlar kiritish',chiqim:'Chiqim â€” berish/yuborish',"ko'chirish":"Ko'chirish â€” boshqa joyga", "yo'qotish":"Yo'qotish â€” hisobdan chiqarish"};
+const DN={kirish:'Kirim — tovarlar kiritish',chiqim:'Chiqim — berish/yuborish',"ko'chirish":"Ko'chirish — boshqa joyga", "yo'qotish":"Yo'qotish — hisobdan chiqarish"};
 let DL=[];
 function newDoc(t){cur='doc';document.querySelectorAll('.tab').forEach(x=>x.classList.toggle('on',x.dataset.p==='doc'));document.querySelectorAll('.pan').forEach(s=>s.classList.toggle('on',s.id==='doc'));loadDoc(t)}
 async function loadDoc(t){
@@ -467,31 +470,31 @@ async function loadDoc(t){
   const no=(await api('/api/docs/next/'+t)).no;
   DL=[];
   $('doc').innerHTML=`
-  <div class="box noprint"><h3>ðŸ“¥ Hujjat yaratish</h3>
+  <div class="box noprint"><h3>📥 Yangi hujjat</h3>
     <div class="f">
       <div><label>Hujjat turi</label><select id="dtype" onchange="loadDoc(this.value)">${Object.entries(DN).map(([k,v])=>`<option value="${k}" ${k===t?'selected':''}>${v}</option>`).join('')}</select></div>
-      <div><label>Hujjat â„–</label><input id="d_no" value="${no}" readonly></div>
+      <div><label>Hujjat №</label><input id="d_no" value="${no}" readonly></div>
       <div><label>Sana</label><input id="d_date" type="date" value="${new Date().toISOString().slice(0,10)}"></div>
-      ${t==='kirish'||t==='chiqim'?`<div><label>Yetkazib beruvchi</label><select id="d_sup"><option value="">â€”</option>${SUP.map(s=>`<option value="${s.id}">${s.name}</option>`).join('')}</select></div>`:''}
+      ${t==='kirish'||t==='chiqim'?`<div><label>Yetkazib beruvchi</label><select id="d_sup"><option value="">—</option>${SUP.map(s=>`<option value="${s.id}">${s.name}</option>`).join('')}</select></div>`:''}
       <div><label>${t==='chiqim'?'Kimga berildi':t==="ko'chirish"?"Natija":"Izoh"}</label><input id="d_dest" placeholder="${t==='chiqim'?'Apteka peshtaxtasi':''}"></div>
     </div>
   </div>
-  <div class="box noprint"><h3>ï¼‹ Qator qo'shish</h3>
+  <div class="box noprint"><h3>+ Qator qo'shish</h3>
     <div class="f">
-      <div style="grid-column:span 2"><label>Tovar (nom / shtrix)</label><input id="l_item" list="ilist" placeholder="Qidiringâ€¦" oninput="pickItem(this.value)"><datalist id="ilist">${IT.map(i=>`<option value="${i.name}">`).join('')}</datalist></div>
-      <div><label>Manba joy</label><select id="l_loc"><option value="">â€”</option>${LOC.map(l=>`<option value="${l.id}">${l.code} ${l.name?'('+l.name+')':''}</option>`).join('')}</select></div>
+      <div style="grid-column:span 2"><label>Tovar (nom / shtrix)</label><input id="l_item" list="ilist" placeholder="Qidiring…" oninput="pickItem(this.value)"><datalist id="ilist">${IT.map(i=>`<option value="${i.name}">`).join('')}</datalist></div>
+      <div><label>Manba joy</label><select id="l_loc"><option value="">—</option>${LOC.map(l=>`<option value="${l.id}">${l.code} ${l.name?'('+l.name+')':''}</option>`).join('')}</select></div>
       <div><label>Qator</label><input id="l_row" type="number" value="1" min="1"></div>
       <div><label>Ustun</label><input id="l_col" type="number" value="1" min="1"></div>
       <div><label>Soni *</label><input id="l_qty" type="number" value="1" min="0"></div>
       ${t!=="ko'chirish"?`<div><label>Partiya</label><input id="l_batch"></div><div><label>Yaroqlilik</label><input id="l_exp" type="date"></div>`:
-        `<div><label>â†’ Yangi joy</label><select id="l_tloc"><option value="">â€”</option>${LOC.map(l=>`<option value="${l.id}">${l.code}</option>`).join('')}</select></div>
-         <div><label>â†’ Qator</label><input id="l_trow" type="number" value="1" min="1"></div>
-         <div><label>â†’ Ustun</label><input id="l_tcol" type="number" value="1" min="1"></div>`}
+        `<div><label>→ Yangi joy</label><select id="l_tloc"><option value="">—</option>${LOC.map(l=>`<option value="${l.id}">${l.code}</option>`).join('')}</select></div>
+         <div><label>→ Qator</label><input id="l_trow" type="number" value="1" min="1"></div>
+         <div><label>→ Ustun</label><input id="l_tcol" type="number" value="1" min="1"></div>`}
       <div style="align-self:end"><button class="btn" onclick="addLine()">Qo'shish</button></div>
     </div>
     <div class="picker" id="pick"></div>
   </div>
-  <div class="box"><h3>ðŸ“„ Hujjat qatorlari <span class="r noprint"><button class="btn o" onclick="saveDoc()">ðŸ’¾ Saqlash (qoralama)</button><button class="btn g" style="background:var(--ok)" onclick="saveDoc(1)">âœ… Saqlash va tasdiqlash</button></span></h3>
+  <div class="box"><h3>📄 Hujjat qatorlari <span class="r noprint"><button class="btn o" onclick="saveDoc()">💾 Saqlash (qoralama)</button><button class="btn g" style="background:var(--ok)" onclick="saveDoc(1)">✅ Saqlash va tasdiqlash</button></span></h3>
     <div class="sc"><table><tr><th>#</th><th>Tovar</th><th>Manba</th><th>Katak</th><th>Natija</th><th>Soni</th><th>Partiya</th><th></th></tr>
     <tbody id="dlines"></tbody></table></div>
     <div style="text-align:right;font-size:16px;font-weight:800;margin-top:10px">Jami: <span id="dsum">0</span></div>
@@ -503,7 +506,7 @@ function pickItem(v){
   const q=v.toLowerCase();
   pickId=null;
   $('pick').innerHTML=q?IT.filter(i=>i.name.toLowerCase().includes(q)||i.barcode===q||i.sku===q).slice(0,8).map(i=>
-    `<div class="pick" onclick="pickId=${i.id};document.getElementById('l_item').value='${i.name}';document.getElementById('pick').innerHTML='';pickSrc(${i.id})"><div class="thumb">${i.image?`<img src="${i.image}">`:'ðŸ’Š'}</div><div><b>${i.name}</b><div style="font-size:11px;color:var(--mut)">${i.sku} Â· ${i.category} Â· ommada ${i.total}</div></div></div>`).join(''):'';
+    `<div class="pick" onclick="pickId=${i.id};document.getElementById('l_item').value='${i.name}';document.getElementById('pick').innerHTML='';pickSrc(${i.id})"><div class="thumb">${i.image?`<img src="${i.image}">`:'💊'}</div><div><b>${i.name}</b><div style="font-size:11px;color:var(--mut)">${i.sku} · ${i.category} · ommada ${i.total}</div></div></div>`).join(''):'';
 }
 async function pickSrc(itemId){
   const t=$('dtype').value;
@@ -512,7 +515,7 @@ async function pickSrc(itemId){
   const all=await api('/api/stocks?q=');
   STOCKS=all;
   const list=all.filter(x=>x.item_id==itemId&&x.qty>0);
-  $('pick').innerHTML=list.length?'<div style="padding:6px;font-size:11.5px;color:var(--mut);font-weight:600">Qayerdan olish (pozitsiya):</div>'+list.map(s=>
+  $('pick').innerHTML=list.length?'<div style="padding:6px;font-size:11.5px;color:var(--mut);font-weight:600">Qayerdan olish (ombor joyi):</div>'+list.map(s=>
     `<div class="pick" onclick="pickSrc2(${s.id})"><b>${s.loc_code}-${s.cell}</b> <span class="t ${s.qty<=s.min_qty?'y':'g'}">${s.qty} ${s.unit}</span> <span style="font-size:11px;color:var(--mut)">${s.batch_no||''}</span></div>`).join(''):'<div style="padding:8px;color:var(--r)">Omborda yo\'q</div>';
 }
 function pickSrc2(sid){
@@ -522,9 +525,9 @@ function pickSrc2(sid){
 }
 let stockSel=null;
 function addLine(){
-  if(!pickId)return toast('âŒ Avval tovarni tanlang');
+  if(!pickId)return toast('❌ Avval tovarni tanlang');
   const t=$('dtype').value, loc=$('l_loc').value;
-  if(!loc)return toast('âŒ Joyni tanlang');
+  if(!loc)return toast('❌ Joyni tanlang');
   const it=IT.find(x=>x.id==pickId);
   DL.push({item_id:pickId,item_name:it.name,location_id:+loc,loc_code:(LOC.find(l=>l.id==+loc)||{}).code,
     cell_row:+$('l_row').value||1,cell_col:+$('l_col').value||1,qty:+$('l_qty').value||0,
@@ -535,37 +538,37 @@ function addLine(){
 }
 function drawLines(){
   $('dlines').innerHTML=DL.map((l,i)=>`<tr><td>${i+1}</td><td><b>${l.item_name}</b></td><td>${l.loc_code}</td><td>${l.cell_row}-${l.cell_col}</td>
-    <td>${l.to_location_id?(LOC.find(x=>x.id===l.to_location_id)||{}).code+'-'+l.to_cell_row+'-'+l.to_cell_col:'â€”'}</td>
-    <td><b>${num(l.qty)}</b></td><td>${l.batch_no||'â€”'} ${l.expiry||''}</td>
-    <td><button class="btn r s" onclick="DL.splice(${i},1);drawLines()">âœ•</button></td></tr>`).join('');
+    <td>${l.to_location_id?(LOC.find(x=>x.id===l.to_location_id)||{}).code+'-'+l.to_cell_row+'-'+l.to_cell_col:'—'}</td>
+    <td><b>${num(l.qty)}</b></td><td>${l.batch_no||'—'} ${l.expiry||''}</td>
+    <td><button class="btn r s" onclick="DL.splice(${i},1);drawLines()">✕</button></td></tr>`).join('');
   $('dsum').textContent=num(DL.reduce((a,l)=>a+l.qty,0));
 }
 async function saveDoc(andConfirm){
   try{
     const t=$('dtype').value;
-    if(t!=="ko'chirish"&&DL.some(l=>!l.stock_id))return toast('âŒ Chiqim/yo\'qotish uchun pozitsiyani (manbani) tanlash shart');
+    if(t!=="ko'chirish"&&DL.some(l=>!l.stock_id))return toast('❌ Chiqim/yo\'qotish uchun o\'rinni (manbani) tanlash shart');
     const r=await api('/api/docs',{method:'POST',body:JSON.stringify({type:t,no:$('d_no').value,doc_date:$('d_date').value,supplier_id:$('d_sup')?.value,dest:$('d_dest').value,lines:DL})});
-    if(andConfirm){await api('/api/docs/'+r.id+'/confirm',{method:'POST'});toast('âœ… '+r.no+' tasdiqlandi')}
-    else toast('âœ… '+r.no+' qoralama saqlandi');
+    if(andConfirm){await api('/api/docs/'+r.id+'/confirm',{method:'POST'});toast('✅ '+r.no+' tasdiqlandi')}
+    else toast('✅ '+r.no+' qoralama saqlandi');
     STOCKS=await api('/api/stocks');LOC=await api('/api/locations');loadDoc(t);
-  }catch(e){toast('âŒ '+e.message)}
+  }catch(e){toast('❌ '+e.message)}
 }
 
 /* ---------- Hujjatlar ---------- */
 async function loadDocs(){
   const d=await api('/api/docs?type='+($('f_type')?.value||'')+'&status='+($('f_st')?.value||''));
-  $('docs').innerHTML=`<div class="box"><h3>ðŸ—‚ï¸ Hujjatlar <span class="r noprint">
+  $('docs').innerHTML=`<div class="box"><h3>🗂️ Hujjatlar <span class="r noprint">
     <select id="f_type" style="width:180px" onchange="loadDocs()"><option value="">Barcha turlar</option>${Object.entries(DN).map(([k,v])=>`<option value="${k}" ${($('f_type')?.value)===k?'selected':''}>${v}</option>`).join('')}</select>
     <select id="f_st" style="width:150px" onchange="loadDocs()"><option value="">Barcha holatlar</option><option value="draft" ${($('f_st')?.value)==='draft'?'selected':''}>Qoralama</option><option value="tasdiqlandi" ${($('f_st')?.value)==='tasdiqlandi'?'selected':''}>Tasdiqlangan</option><option value="bekor qilindi" ${($('f_st')?.value)==='bekor qilindi'?'selected':''}>Bekor</option></select>
-    <button class="btn o s" onclick="newDoc('kirish')">ï¼‹ Yangi</button></span></h3>
-    <div class="sc"><table><tr><th>â„–</th><th>Turi</th><th>Sana</th><th>Yetkazib beruvchi / Kimga</th><th>Qator</th><th>Dona</th><th>Holat</th><th>Kim</th><th></th></tr>
+    <button class="btn o s" onclick="newDoc('kirish')">+ Yangi</button></span></h3>
+    <div class="sc"><table><tr><th>№</th><th>Turi</th><th>Sana</th><th>Yetkazib beruvchi / Kimga</th><th>Qator</th><th>Dona</th><th>Holat</th><th>Kim</th><th></th></tr>
     ${d.map(x=>`<tr><td><a onclick="viewDoc(${x.id})" style="cursor:pointer;color:var(--b);font-weight:700">${x.no}</a></td>
-    <td>${DN[x.type]||x.type}</td><td>${x.doc_date}</td><td>${x.supplier||x.dest||'â€”'}</td>
+    <td>${DN[x.type]||x.type}</td><td>${x.doc_date}</td><td>${x.supplier||x.dest||'—'}</td>
     <td>${x.lines_count}</td><td>${num(x.total_qty)}</td><td>${statT(x.status)}</td><td>${x.user}</td>
     <td class="noprint" style="white-space:nowrap">
-    ${x.status==='draft'?`<button class="btn o s" onclick="confirmDoc(${x.id})">âœ… Tasdiqlash</button> <button class="btn r s" onclick="delDoc(${x.id})">ðŸ—‘ï¸</button>`:''}
-    ${x.status==='tasdiqlandi'?`<button class="btn w s" onclick="cancelDoc(${x.id})">â†©ï¸Ž Bekor</button>`:''}
-    <button class="btn d s" onclick="viewDoc(${x.id})">ðŸ‘</button></td></tr>`).join('')||'<tr><td colspan="9" style="text-align:center;color:var(--mut);padding:20px">Hujjat yo\'q</td></tr>'}
+    ${x.status==='draft'?`<button class="btn o s" onclick="confirmDoc(${x.id})">✅ Tasdiqlash</button> <button class="btn r s" onclick="delDoc(${x.id})">🗑️</button>`:''}
+    ${x.status==='tasdiqlandi'?`<button class="btn w s" onclick="cancelDoc(${x.id})">↩︎ Bekor</button>`:''}
+    <button class="btn d s" onclick="viewDoc(${x.id})">👁</button></td></tr>`).join('')||'<tr><td colspan="9" style="text-align:center;color:var(--mut);padding:20px">Hujjat yo\'q</td></tr>'}
     </table></div></div>`;
 }
 async function viewDoc(id){
@@ -574,35 +577,35 @@ async function viewDoc(id){
   $('print').style.display='';
   $('print').innerHTML=`<div class="doc">
     <div style="display:flex;justify-content:space-between;border-bottom:2px solid #0f172a;padding-bottom:8px">
-      <div><b style="font-size:17px">ðŸ­ OMBOR â€” ${DN[d.type]||d.type}</b><div style="font-size:12px">Hujjat â„– <b>${d.no}</b> Â· ${d.status}</div></div>
-      <div style="text-align:right;font-size:12px">Sana: ${d.doc_date}<br>Yetkazib beruvchi: ${d.supplier||'â€”'}<br>${d.dest?'Manzil/jo\'lovchi: '+d.dest:''}<br>Ombor muddiri: ${d.user||ME.name}</div>
+      <div><b style="font-size:17px">🏭 OMBOR — ${DN[d.type]||d.type}</b><div style="font-size:12px">Hujjat № <b>${d.no}</b> · ${d.status}</div></div>
+      <div style="text-align:right;font-size:12px">Sana: ${d.doc_date}<br>Yetkazib beruvchi: ${d.supplier||'—'}<br>${d.dest?'Manzil/jo\'lovchi: '+d.dest:''}<br>Ombor muddiri: ${d.user||ME.name}</div>
     </div>
-    <table style="margin-top:10px"><tr><th>#</th><th>Tovar</th><th>SKU</th><th>Shtrix</th><th>Joy</th><th>Katak</th>${d.type==="ko'chirish"?'<th>â†’ Joy</th>':''}<th>Soni</th><th>Partiya / Yaroqlilik</th><th>Narxi</th><th>Summa</th></tr>
-    ${d.lines.map((l,i)=>`<tr><td>${i+1}</td><td><b>${l.item_name}</b></td><td class="mono">${l.item_sku}</td><td class="mono">${l.barcode||'â€”'}</td><td>${l.loc_code}</td><td>${l.cell_row}-${l.cell_col}</td>${d.type==="ko'chirish"?`<td>${l.to_loc_code}-${l.to_cell_row}-${l.to_cell_col}</td>`:''}<td><b>${num(l.qty)}</b> ${l.unit}</td><td>${l.batch_no||'â€”'} ${l.expiry||''}</td><td>${money(l.cost)}</td><td><b>${money(l.sum)}</b></td></tr>`).join('')}
+    <table style="margin-top:10px"><tr><th>#</th><th>Tovar</th><th>SKU</th><th>Shtrix</th><th>Joy</th><th>Katak</th>${d.type==="ko'chirish"?'<th>→ Joy</th>':''}<th>Soni</th><th>Partiya / Yaroqlilik</th><th>Narxi</th><th>Summa</th></tr>
+    ${d.lines.map((l,i)=>`<tr><td>${i+1}</td><td><b>${l.item_name}</b></td><td class="mono">${l.item_sku}</td><td class="mono">${l.barcode||'—'}</td><td>${l.loc_code}</td><td>${l.cell_row}-${l.cell_col}</td>${d.type==="ko'chirish"?`<td>${l.to_loc_code}-${l.to_cell_row}-${l.to_cell_col}</td>`:''}<td><b>${num(l.qty)}</b> ${l.unit}</td><td>${l.batch_no||'—'} ${l.expiry||''}</td><td>${money(l.cost)}</td><td><b>${money(l.sum)}</b></td></tr>`).join('')}
     </table>
     <div style="display:flex;justify-content:space-between;margin-top:14px;font-size:12px">
       <div>Topshirdi: ____________<br><br>Kabul qildi: ____________</div>
       <div style="text-align:right"><b style="font-size:15px">Jami: ${num(d.total_qty)}</b>${d.total_sum?`<br>Umumiy qiymat: <b style="font-size:15px">${money(d.total_sum)}</b>`:''}${d.note?`<br style="margin-top:6px">Izoh: ${d.note}`:''}</div></div>
     <div class="noprint" style="margin-top:14px;display:flex;gap:8px">
-      <button class="btn d" onclick="go('docs')">â† Orqaga</button>
-      <button class="btn" onclick="window.print()">ðŸ–¨ï¸ Chopish</button>
-      ${d.status==='draft'?`<button class="btn o" onclick="confirmDoc(${d.id})">âœ… Tasdiqlash</button>`:''}
+      <button class="btn d" onclick="go('docs')">← Orqaga</button>
+      <button class="btn" onclick="window.print()">🖨️ Chopish</button>
+      ${d.status==='draft'?`<button class="btn o" onclick="confirmDoc(${d.id})">✅ Tasdiqlash</button>`:''}
     </div></div>`;
   go('docs');
 }
-async function confirmDoc(id){try{await api('/api/docs/'+id+'/confirm',{method:'POST'});toast('âœ… Tasdiqlandi');STOCKS=await api('/api/stocks');loadDocs()}catch(e){toast('âŒ '+e.message)}}
-async function cancelDoc(id){if(!confirm('Hujjat bekor qilinadi va omborga qaytariladi. Davom etamizmi?'))return;try{await api('/api/docs/'+id+'/cancel',{method:'POST'});toast('â†©ï¸Ž Bekor qilindi');STOCKS=await api('/api/stocks');loadDocs()}catch(e){toast('âŒ '+e.message)}}
-async function delDoc(id){if(!confirm('O\'chirilsinmi?'))return;try{await api('/api/docs/'+id,{method:'DELETE'});toast('ðŸ—‘ï¸');loadDocs()}catch(e){toast('âŒ '+e.message)}}
+async function confirmDoc(id){try{await api('/api/docs/'+id+'/confirm',{method:'POST'});toast('✅ Tasdiqlandi');STOCKS=await api('/api/stocks');loadDocs()}catch(e){toast('❌ '+e.message)}}
+async function cancelDoc(id){if(!confirm('Hujjat bekor qilinadi va omborga qaytariladi. Davom etamizmi?'))return;try{await api('/api/docs/'+id+'/cancel',{method:'POST'});toast('↩︎ Bekor qilindi');STOCKS=await api('/api/stocks');loadDocs()}catch(e){toast('❌ '+e.message)}}
+async function delDoc(id){if(!confirm('O\'chirilsinmi?'))return;try{await api('/api/docs/'+id,{method:'DELETE'});toast('🗑️');loadDocs()}catch(e){toast('❌ '+e.message)}}
 function newDocBtn(){newDoc('kirish')}
 
 /* ---------- Inventarizatsiya ---------- */
 async function loadCounts(){
   const d=await api('/api/counts');
-  $('counts').innerHTML=`<div class="box noprint"><h3>ðŸ§® Inventarizatsiya sessiyasi ochish</h3>
-    <div class="f"><div><label>Joy (bo'sh qoldirilsa â€” butun ombor)</label><select id="c_loc"><option value="">Butun ombor</option>${LOC.map(l=>`<option value="${l.id}">${l.code} ${l.name?'('+l.name+')':''}</option>`).join('')}</select></div>
+  $('counts').innerHTML=`<div class="box noprint"><h3>🧮 Inventarizatsiya sessiyasi ochish</h3>
+    <div class="f"><div><label>Joy (bo'sh qoldirilsa — butun ombor)</label><select id="c_loc"><option value="">Butun ombor</option>${LOC.map(l=>`<option value="${l.id}">${l.code} ${l.name?'('+l.name+')':''}</option>`).join('')}</select></div>
     <div><label>Izoh</label><input id="c_note" placeholder="Oylik inventarizatsiya"></div>
     <div style="align-self:end"><button class="btn" onclick="openCount()">Ochish</button></div></div></div>
-  <div class="box"><h3>ðŸ“‹ Sessiyalar</h3><div class="sc"><table><tr><th>â„–</th><th>Joy</th><th>Sana</th><th>Qator</th><th>Sanangan</th><th>Holat</th><th>Kim</th><th></th></tr>
+  <div class="box"><h3>📋 Sessiyalar</h3><div class="sc"><table><tr><th>№</th><th>Joy</th><th>Sana</th><th>Qator</th><th>Sanangan</th><th>Holat</th><th>Kim</th><th></th></tr>
   ${d.map(x=>`<tr><td><b>${x.no}</b></td><td>${x.loc_code||'butun ombor'}</td><td>${x.doc_date}</td><td>${x.lines}</td><td>${x.counted}/${x.lines}</td>
   <td><span class="t ${x.status==='yopilgan'?'g':'y'}">${x.status}</span></td><td>${x.user}</td>
   <td class="noprint"><button class="btn d s" onclick="countOpen(${x.id})">${x.status==='ochilgan'?'Davom etish':'Ko\'rish'}</button></td></tr>`).join('')||'<tr><td colspan="8" style="text-align:center;color:var(--mut);padding:20px">Sessiya yo\'q</td></tr>'}
@@ -610,46 +613,46 @@ async function loadCounts(){
 }
 async function openCount(){
   try{const r=await api('/api/counts',{method:'POST',body:JSON.stringify({location_id:$('c_loc').value,note:$('c_note').value})});
-  toast('âœ… '+r.no+' â€” '+r.lines+' pozitsiya');countOpen(r.id)}catch(e){toast('âŒ '+e.message)}
+  toast('✅ '+r.no+' — '+r.lines+' o\'rin');countOpen(r.id)}catch(e){toast('❌ '+e.message)}
 }
 async function countOpen(id){
   const d=await api('/api/counts/'+id);
   document.querySelectorAll('.pan').forEach(s=>s.classList.toggle('on',s.id==='print'));$('print').style.display='';
-  $('print').innerHTML=`<div class="box"><h3>ðŸ§® ${d.no} â€” inventarizatsiya <span class="t ${d.status==='yopilgan'?'g':'y'}">${d.status}</span></h3>
-    <p style="font-size:12.5px;color:var(--mut);margin-bottom:10px">Joy: <b>${d.loc_code||'butun ombor'}</b> Â· Sanalgan: <b>${d.counted}/${d.lines.length}</b> Â· Farqli qatorlar: <b>${d.lines.filter(l=>l.diff).length}</b></p>
+  $('print').innerHTML=`<div class="box"><h3>🧮 ${d.no} — inventarizatsiya <span class="t ${d.status==='yopilgan'?'g':'y'}">${d.status}</span></h3>
+    <p style="font-size:12.5px;color:var(--mut);margin-bottom:10px">Joy: <b>${d.loc_code||'butun ombor'}</b> · Sanalgan: <b>${d.counted}/${d.lines.length}</b> · Farqli qatorlar: <b>${d.lines.filter(l=>l.diff).length}</b></p>
     <div class="sc"><table><tr><th>Joy</th><th>Katak</th><th>Tovar</th><th>Shtrix</th><th>Tizimda</th><th>Haqiqiy</th><th>Farq</th></tr>
-    ${d.lines.map(l=>`<tr><td>${l.loc_code}</td><td><b>${l.cell}</b></td><td>${l.item_name}</td><td class="mono">${l.barcode||'â€”'}</td>
+    ${d.lines.map(l=>`<tr><td>${l.loc_code}</td><td><b>${l.cell}</b></td><td>${l.item_name}</td><td class="mono">${l.barcode||'—'}</td>
       <td><b>${l.system_qty}</b></td>
       <td>${d.status==='ochilgan'?`<input type="number" value="${l.actual_qty===null?'':l.actual_qty}" style="width:80px;padding:4px" onchange="setCount(${l.id},${d.id},this.value)">`:`<b>${l.actual_qty}</b>`}</td>
-      <td class="${l.diff<0?'low':l.diff>0?'':''}">${l.diff===null?'â€”':(l.diff>0?'+':'')+l.diff}</td></tr>`).join('')}
+      <td class="${l.diff<0?'low':l.diff>0?'':''}">${l.diff===null?'—':(l.diff>0?'+':'')+l.diff}</td></tr>`).join('')}
     </table></div>
     <div class="noprint" style="margin-top:12px;display:flex;gap:8px;flex-wrap:wrap">
-      <button class="btn d" onclick="go('counts')">â† Orqaga</button>
-      ${d.status==='ochilgan'?`<button class="btn o" onclick="closeCount(${d.id})">ðŸ”’ Yopish va farqni ta'mirlash</button>`:''}
-      ${d.doc?`<button class="btn" onclick="viewDoc(${d.doc.id})">ðŸ“„ Ta'mirlash hujjati ${d.doc.no}</button>`:''}
+      <button class="btn d" onclick="go('counts')">← Orqaga</button>
+      ${d.status==='ochilgan'?`<button class="btn o" onclick="closeCount(${d.id})">🔒 Yopish va farqni ta'mirlash</button>`:''}
+      ${d.doc?`<button class="btn" onclick="viewDoc(${d.doc.id})">📄 Ta'mirlash hujjati ${d.doc.no}</button>`:''}
     </div></div>`;
   go('counts');
 }
-async function setCount(lid,cid,v){try{await api('/api/counts/'+cid+'/lines/'+lid,{method:'PUT',body:JSON.stringify({actual_qty:v})})}catch(e){toast('âŒ '+e.message)}}
+async function setCount(lid,cid,v){try{await api('/api/counts/'+cid+'/lines/'+lid,{method:'PUT',body:JSON.stringify({actual_qty:v})})}catch(e){toast('❌ '+e.message)}}
 async function closeCount(id){
   if(!confirm('Sessiya yopilsinmi? Farq avtomatik hujjat bilan ta\'mirlanadi.'))return;
   try{const r=await api('/api/counts/'+id+'/close',{method:'POST'});
-  toast(r.diffs?`âœ… Yopildi â€” ${r.diffs} ta farq hujjatga kiritildi`:'âœ… Yopildi â€” farq yo\'q');
-  STOCKS=await api('/api/stocks');countOpen(id)}catch(e){toast('âŒ '+e.message)}
+  toast(r.diffs?`✅ Yopildi — ${r.diffs} ta farq hujjatga kiritildi`:'✅ Yopildi — farq yo\'q');
+  STOCKS=await api('/api/stocks');countOpen(id)}catch(e){toast('❌ '+e.message)}
 }
 
 /* ---------- Harakatlar ---------- */
 async function loadMoves(){
   const d=await api('/api/movements?type='+($('m_t')?.value||'')+'&q='+encodeURIComponent($('m_q')?.value||''));
-  $('moves').innerHTML=`<div class="box"><h3>ðŸ”„ Harakatlar tarixi <span class="r noprint">
+  $('moves').innerHTML=`<div class="box"><h3>🔄 Harakatlar tarixi <span class="r noprint">
     <input id="m_q" placeholder="qidirish" style="width:170px" value="${($('m_q')?.value)||''}" oninput="loadMoves()">
     <select id="m_t" style="width:170px" onchange="loadMoves()"><option value="">Barchasi</option>${Object.entries(DN).map(([k,v])=>`<option value="${k}" ${($('m_t')?.value)===k?'selected':''}>${v}</option>`).join('')}</select>
     <button class="btn d s" onclick="csv('movements')">CSV</button></span></h3>
     <div class="sc"><table><tr><th>Sana</th><th>Hujjat</th><th>Turi</th><th>Tovar</th><th>Yo'nalish</th><th>Soni</th><th>Qoldi</th><th>Kim</th></tr>
     ${d.map(m=>`<tr><td>${dt(m.created_at)}</td><td><a onclick="viewDoc(${m.doc_id})" style="cursor:pointer;color:var(--b)">${m.doc_no}</a></td>
     <td>${DN[m.doc_type]||m.doc_type}</td><td>${m.item_name}</td>
-    <td>${m.direction==='in'?'<span class="t g">ï¼‹ Kirish</span>':'<span class="t r">ï¼ Chiqim</span>'} ${m.loc_code||''}${m.to_loc_code?' â†’ '+m.to_loc_code:''}</td>
-    <td><b>${m.direction==='in'?'+':''}${num(m.qty)}</b></td><td>${m.balance_after===null?'â€”':num(m.balance_after)}</td><td>${m.user}</td></tr>`).join('')||'<tr><td colspan="8" style="text-align:center;color:var(--mut);padding:20px">Harakat yo\'q</td></tr>'}
+    <td>${m.direction==='in'?'<span class="t g">+ Kirish</span>':'<span class="t r">- Chiqim</span>'} ${m.loc_code||''}${m.to_loc_code?' → '+m.to_loc_code:''}</td>
+    <td><b>${m.direction==='in'?'+':''}${num(m.qty)}</b></td><td>${m.balance_after===null?'—':num(m.balance_after)}</td><td>${m.user}</td></tr>`).join('')||'<tr><td colspan="8" style="text-align:center;color:var(--mut);padding:20px">Harakat yo\'q</td></tr>'}
     </table></div></div>`;
 }
 
@@ -658,17 +661,17 @@ async function loadRep(){
   const b=await api('/api/report/balance?loc='+($('r_loc')?.value||''));
   const t=await api('/api/report/turnover');
   $('rep').innerHTML=`
-  <div class="box"><h3>ðŸ“ˆ Ombor qoldig'i <span class="r noprint">
+  <div class="box"><h3>📈 Ombor qoldig'i <span class="r noprint">
     <select id="r_loc" style="width:150px" onchange="loadRep()"><option value="">Barcha joylar</option>${LOC.map(l=>`<option ${($('r_loc')?.value)===l.code?'selected':''}>${l.code}</option>`).join('')}</select>
-    <button class="btn d s" onclick="window.print()">ðŸ–¨ï¸</button><button class="btn d s" onclick="csv('items')">CSV</button></span></h3>
-    <div style="font-size:12.5px;color:var(--mut);margin-bottom:8px">Qatorlar: <b>${b.rows.length}</b> Â· Jami: <b>${num(b.sum_qty)}</b> dona Â· Qiymat: <b>${money(b.sum_value)}</b></div>
+    <button class="btn d s" onclick="window.print()">🖨️</button><button class="btn d s" onclick="csv('items')">CSV</button></span></h3>
+    <div style="font-size:12.5px;color:var(--mut);margin-bottom:8px">Qatorlar: <b>${b.rows.length}</b> · Jami: <b>${num(b.sum_qty)}</b> dona · Qiymat: <b>${money(b.sum_value)}</b></div>
     <div class="sc"><table><tr><th>Joy</th><th>Katak</th><th>Tovar</th><th>Kategoriya</th><th>Soni</th><th>Tannarx</th><th>Summa</th><th>Partiya / Yaroqlilik</th></tr>
     ${b.rows.map(r=>`<tr><td>${r.loc_code}</td><td>${r.cell_row}-${r.cell_col}</td><td><b>${r.name}</b></td><td>${r.category}</td>
-    <td><b>${num(r.qty)}</b> ${r.unit}</td><td>${money(r.cost)}</td><td>${money(r.qty*r.cost)}</td><td>${r.batch_no||'â€”'} ${r.expiry||''}</td></tr>`).join('')}
+    <td><b>${num(r.qty)}</b> ${r.unit}</td><td>${money(r.cost)}</td><td>${money(r.qty*r.cost)}</td><td>${r.batch_no||'—'} ${r.expiry||''}</td></tr>`).join('')}
     </table></div></div>
-  <div class="box"><h3>ðŸ” Aylanma (kirim / chiqim)</h3>
+  <div class="box"><h3>🔁 Aylanma (kirim / chiqim)</h3>
     <div class="sc"><table><tr><th>Tovar</th><th>Kategoriya</th><th>Kirim</th><th>Chiqim</th><th>Farq</th></tr>
-    ${t.map(r=>`<tr><td><b>${r.name}</b></td><td>${r.category}</td><td style="color:var(--ok)">+${num(r.kirim)}</td><td style="color:var(--r)">âˆ’${num(r.chiqim)}</td>
+    ${t.map(r=>`<tr><td><b>${r.name}</b></td><td>${r.category}</td><td style="color:var(--ok)">+${num(r.kirim)}</td><td style="color:var(--r)">−${num(r.chiqim)}</td>
     <td><b>${num(r.kirim-r.chiqim)}</b></td></tr>`).join('')||'<tr><td colspan="5" style="text-align:center;color:var(--mut);padding:20px">Ma\'lumot yo\'q</td></tr>'}
     </table></div></div>`;
 }
@@ -701,6 +704,7 @@ function setRack(c){
   else V3.sc=0.5;
   resetDrug(false);
   renderW3D();camFit();syncSliders();applyCam();syncRack();syncDrug();
+  if(V3.rack)rackPanel(V3.rack); else if(V3.zone)zonePanel(V3.zone); else sideDefault();
 }
 function stepRack(d){
   const R=RACKS(); if(!R.length)return;
@@ -721,8 +725,8 @@ function drugList(){
       if(!c.stocks||!c.stocks.length)return;
       c.stocks.forEach(s=>{
         out.push({key:l.code+'|'+c.row+'|'+c.col+'|'+s.id,loc:l.code,zone:l.zone,r:c.row,c:c.col,
-          row:c.name,qty:c.qty,cap:c.cap,name:s.item_name,unit:s.unit,batch:s.batch_no||'â€”',
-          exp:s.expiry||'â€”',sku:s.item_sku||'',bc:s.barcode||'',cost:s.cost||0,min:s.min_stock||0,sq:s.qty});
+          row:c.name,qty:c.qty,cap:c.cap,name:s.item_name,unit:s.unit,batch:s.batch_no||'—',
+          exp:s.expiry||'—',sku:s.item_sku||'',bc:s.barcode||'',cost:s.cost||0,min:s.min_stock||0,sq:s.qty});
       });
     });
   });
@@ -764,13 +768,13 @@ function syncDrug(){
     const e=L[i];
     if(!e){t.innerHTML='<span style="color:var(--mut)">bu doim dor yo\'q</span>';return}
     const today=new Date().toISOString().slice(0,10);
-    const late=(e.exp&&e.exp!=='â€”'&&e.exp<today);
-    const soon=(!late&&e.exp&&e.exp!=='â€”'&&e.exp<new Date(Date.now()+90*864e5).toISOString().slice(0,10));
+    const late=(e.exp&&e.exp!=='—'&&e.exp<today);
+    const soon=(!late&&e.exp&&e.exp!=='—'&&e.exp<new Date(Date.now()+90*864e5).toISOString().slice(0,10));
     t.innerHTML=`<b>${e.name}</b>
-      <span class="t b" style="margin-left:6px">${e.zone}-zona Â· ${e.loc} Â· ${e.row}</span>
+      <span class="t b" style="margin-left:6px">${e.zone}-zona · ${e.loc} · ${e.row}</span>
       <span class="t ${late?'r':'g'}" style="margin-left:4px">${num(e.sq)} ${e.unit}</span>
       <span class="t" style="margin-left:4px">partiya ${e.batch}</span>
-      <span class="t ${late||soon?'r':''}" style="margin-left:4px">${late?'âš ï¸ muddati o\'tgan':soon?'âš ï¸ yaqin '+e.exp:e.exp}</span>
+      <span class="t ${late||soon?'r':''}" style="margin-left:4px">${late?'⚠️ muddati o\'tgan':soon?'⚠️ yaqin '+e.exp:e.exp}</span>
       <span class="t" style="margin-left:4px">min ${num(e.min)}</span>
       <span class="t" style="margin-left:4px">${money(e.sq*e.cost)}</span>`;
   }
@@ -796,6 +800,7 @@ function setZone(z){
   V3.sc=V3.zone?0.62:0.5;
   resetDrug(false);
   renderW3D();camFit();syncSliders();applyCam();syncRack();syncDrug();
+  if(V3.zone)zonePanel(V3.zone); else sideDefault();
 }
 
 function cube3(x,y,z,W,D,H,c,loc,r,col,tip,op){
@@ -828,12 +833,12 @@ function renderPlan(){
   let out='';
   [...rooms.keys()].forEach(k=>{
     const ls=rooms.get(k);
-    out+=`<div class="p-room"><div class="p-rh">🏢 ${k} <span>qavat ${ls[0].floor||1} &middot; ${ls.length} stelyaj &middot; ${num(ls.reduce((a,b)=>a+(b.total_qty||0),0))} dona</span></div>`;
+    out+=`<div class="p-room"><div class="p-rh" onclick="roomInfo('${k}')" title="Xona ma'lumotini ko'rish">🏢 ${k} <span>qavat ${ls[0].floor||1} &middot; ${ls.length} stelyaj &middot; ${num(ls.reduce((a,b)=>a+(b.total_qty||0),0))} dona</span></div>`;
     zorder(ls).forEach(z=>{
       const zs=ls.filter(l=>l.zone===z);
-      out+=`<div class="p-zone"><div class="p-zh" style="border-color:${ZC[z]||'#1d4ed8'};color:${ZC[z]||'#1d4ed8'}">${z}-zona <span>${zs.length} stelyaj</span></div><div class="p-racks">`;
+      out+=`<div class="p-zone"><div class="p-zh" onclick="zoneInfo('${z}')" title="Zona ma'lumotini ko'rish" style="border-color:${ZC[z]||'#1d4ed8'};color:${ZC[z]||'#1d4ed8'}">${z}-zona <span>${zs.length} stelyaj</span></div><div class="p-racks">`;
       zs.forEach(l=>{
-        out+=`<div class="p-rack"><div class="p-rn">${l.code} <span>${l.name||''}</span></div><div class="p-cells" style="grid-template-columns:repeat(${l.cols||1},1fr)">`;
+        out+=`<div class="p-rack"><div class="p-rn" onclick="rackInfo('${l.code}')" title="Stelyaj ma'lumotini ko'rish">${l.code} <span>${l.name||''}</span></div><div class="p-cells" style="grid-template-columns:repeat(${l.cols||1},1fr)">`;
         (l.cells||[]).forEach(c=>{
           const tip=c.stocks&&c.stocks.length
             ? c.stocks.map(s=>s.item_name+' - '+num(s.qty)+' '+s.unit+(s.batch_no?' ('+s.batch_no+')':'')).join(' | ')
@@ -862,7 +867,7 @@ function setMode(m){
     if(h){
       h.style.display='';
       h.innerHTML=V3.mode==='2d'
-        ? "Katakni bosing &mdash; ma'lumot o'ngdagi panelda &middot; <b>&#8592; &#8594;</b> = dori &middot; <b>Shift</b> = stelyaj &middot; <b>Ctrl</b> = zona"
+        ? "Xona, zona, stelyaj yoki katakni bosing &mdash; ma'lumot o'ngdagi panelda &middot; <b>&#8592; &#8594;</b> = dori &middot; <b>Shift</b> = stelyaj &middot; <b>Ctrl</b> = zona"
         : "&#128433;&#65039; Sudrab aylantiring &middot; g'ildirak = kattalashtirish &middot; <b>&#8592; &#8594;</b> = dori &middot; <b>Shift</b> = stelyaj &middot; <b>Ctrl</b> = zona";
     }
   }
@@ -915,12 +920,12 @@ function renderW3D(){
       l.cells.forEach(c=>{
         const h=Math.max(c.qty>0?7:2, Math.min(LH-6,(c.qty/c.cap)*(LH-6)));
         const cl=c.state==="to'liq"?"to'liq":c.state==="kam"?"kam":c.qty>0?"normal":"bosh";
-        const tip=c.stocks.length?c.stocks.map(s=>`${s.item_name} â€” ${s.qty} ${s.unit}`+(s.batch_no?` (${s.batch_no})`:'')).join(' Â· '):'Bo\'sh katak';
+        const tip=c.stocks.length?c.stocks.map(s=>`${s.item_name} — ${s.qty} ${s.unit}`+(s.batch_no?` (${s.batch_no})`:'')).join(' · '):'Bo\'sh katak';
         out+=cube3(x+(c.col-1)*CW, -(c.row-1)*LH, fz+CD, CW-5, CD-5, h, CLR[cl], l.code, c.row, c.col, tip, op);
       });
-      /* stelyaj yorlig'i â€” tartib raqami bilan */
+      /* stelyaj yorlig'i — tartib raqami bilan */
       if(V3.nl!==false)out+=`<div class="lb" style="transform:translate3d(${x+6}px,${-rows*LH-42}px,${fz}px);${tp}">
-        <div style="background:${ZC[z]||'#0f172a'};font-size:${V3.rack?20:13}px">${V3.rack?'ðŸ“Œ '+l.code:(li+1)+'. '+l.code}<span style="font-weight:400;opacity:.85"> ${l.name||''}</span></div></div>`;
+        <div style="background:${ZC[z]||'#0f172a'};font-size:${V3.rack?20:13}px">${V3.rack?'📌 '+l.code:(li+1)+'. '+l.code}<span style="font-weight:400;opacity:.85"> ${l.name||''}</span></div></div>`;
       x+=RW+RP;
     });
     fx=Math.max(fx,x);
@@ -935,14 +940,14 @@ function renderW3D(){
         <div class="f" style="width:${cx+110-gap}px;height:64px;background:linear-gradient(180deg,#e2e8f0,#94a3b8);transform:translateY(-64px)"></div></div>`;
       out+=`<div class="pl" style="transform:translate3d(${cx+gap}px,0px,${zW}px)">
         <div class="f" style="width:${fx+90-cx-gap}px;height:64px;background:linear-gradient(180deg,#e2e8f0,#94a3b8);transform:translateY(-64px)"></div></div>`;
-      out+=`<div class="lb" style="transform:translate3d(${cx-46}px,-4px,${zW}px)"><div style="background:#0f172a;font-size:11px">â¬Œ o'tish joyi</div></div>`;
+      out+=`<div class="lb" style="transform:translate3d(${cx-46}px,-4px,${zW}px)"><div style="background:#0f172a;font-size:11px">⬌ o'tish joyi</div></div>`;
     }
     if(!V3.first){
       const fc=l0.cells.find(c=>c.stocks.length);
       if(fc)V3.first={loc:l0.code,r:fc.row,c:fc.col};
     }
   });
-  /* POL â€” z0 dan -Z tomonga cho'ziladi, shuning uchun z0=farq+60 qilinadi */
+  /* POL — z0 dan -Z tomonga cho'ziladi, shuning uchun z0=farq+60 qilinadi */
   V3.b={fx:fx,nz:nz,cz:(V3.rack?60:nz*ZP/2)};
   const FW=fx+200, FD=nz*ZP+140;
   out=`<div class="pl" style="transform:translate3d(${-110}px,0px,${nz*ZP+60}px)">
@@ -967,7 +972,7 @@ function renderW3D(){
   if(V3.zl!==false)zones.forEach((z,i)=>{
     const op=(V3.zone&&z!==V3.zone)?.28:1;
     out+=`<div class="lb" style="transform:translate3d(${-70}px,-1px,${i*ZP+206}px);opacity:${op}">
-      <div style="background:${ZC[z]||'#0f172a'};font-size:15px">${z}-ZONA Â· ${src.filter(l=>l.zone===z).length} stelyaj</div></div>`;
+      <div style="background:${ZC[z]||'#0f172a'};font-size:15px">${z}-ZONA · ${src.filter(l=>l.zone===z).length} stelyaj</div></div>`;
   });
   w.innerHTML=out;
   w.style.transform=`translate3d(${V3.lx}px,${V3.lz}px,0) rotateX(${V3.rx}deg) rotateZ(${V3.rz}deg) scale(${V3.sc})`;
@@ -990,17 +995,17 @@ function markSel(){
   $('w_side').innerHTML=`
     <div style="display:flex;justify-content:space-between;align-items:flex-start;gap:6px">
       <div><div style="font-size:16px;font-weight:800">${s.loc}-${s.r}-${s.c}</div>
-      <div style="color:var(--mut);font-size:11.5px">${l.name||''} Â· ${l.zone}-zona</div></div>
-      <button class="btn s" onclick="V3.sel=null;markSel();renderW3D()">âœ•</button>
+      <div style="color:var(--mut);font-size:11.5px">${l.name||''} · ${l.zone}-zona</div></div>
+      <button class="btn s" onclick="V3.sel=null;markSel();renderW3D()">✕</button>
     </div>
     <div style="display:flex;gap:5px;margin:8px 0;flex-wrap:wrap">
-      <span class="t ${c.qty<=0?'':c.state==="kam"?'y':c.state==="to'liq"?'r':'g'}">${stt} Â· ${pct}%</span>
+      <span class="t ${c.qty<=0?'':c.state==="kam"?'y':c.state==="to'liq"?'r':'g'}">${stt} · ${pct}%</span>
       <span class="t b">sig'im ${c.cap}</span>
-      <span class="t">${l.kind==='zona'?'butun zona':'stelyaj '+(l.rows||1)+'Ã—'+(l.cols||1)}</span>
+      <span class="t">${l.kind==='zona'?'butun zona':'stelyaj '+(l.rows||1)+'×'+(l.cols||1)}</span>
     </div>
     ${c.stocks.length?c.stocks.map(s2=>`<div style="border-top:1px solid var(--ln);padding:7px 0">
       <b style="font-size:13.5px">${s2.item_name}</b>
-      <div class="mono" style="font-size:11px;color:var(--mut)">SKU ${s2.item_sku}${s2.barcode?' Â· '+s2.barcode:''}</div>
+      <div class="mono" style="font-size:11px;color:var(--mut)">SKU ${s2.item_sku}${s2.barcode?' · '+s2.barcode:''}</div>
       <div style="margin-top:4px"><b style="font-size:18px;color:#15803d">${num(s2.qty)}</b> <span style="font-size:12px">${s2.unit}</span></div>
       <div class="bar2" style="height:7px;margin-top:5px"><div style="width:${pct}%;background:${c.state==="to'liq"?'#dc2626':c.state==="kam"?'#d97706':'#16a34a'}"></div></div>
       <div style="margin-top:6px;font-size:12px;display:grid;grid-template-columns:auto 1fr;gap:2px 8px">
@@ -1010,12 +1015,12 @@ function markSel(){
         ${s2.cost?`<span style="color:var(--mut)">Tannarx</span><span>${money(s2.cost)}</span><span style="color:var(--mut)">Qiymati</span><b>${money(s2.qty*s2.cost)}</b>`:''}
         ${s2.code?`<span style="color:var(--mut)">SKU kodi</span><span class="mono">${s2.code}</span>`:''}
       </div>
-      ${new Date(s2.expiry)<new Date()?'<div style="margin-top:6px;color:var(--r);font-size:12px">âš ï¸ Muddati o\'tgan</div>':''}
+      ${new Date(s2.expiry)<new Date()?'<div style="margin-top:6px;color:var(--r);font-size:12px">⚠️ Muddati o\'tgan</div>':''}
     </div>`).join('')
     :'<div style="color:var(--mut);padding:8px 0">Bu katak bo\'sh. Yangi kirim hujjati orqali tovar joylashtiring.</div>'}
     <div style="border-top:1px solid var(--ln);padding-top:8px;display:flex;gap:6px;flex-wrap:wrap">
-      <button class="btn s" onclick="newDoc('kirish')">ðŸ“¥ Bu katakka kirim</button>
-      <button class="btn s" onclick="go('locs');setTimeout(()=>toast('ðŸ“ '+'${s.loc}'),200)">ðŸ“ Stelyaj varaqasi</button>
+      <button class="btn s" onclick="newDoc('kirish')">📥 Bu katakka kirim</button>
+      <button class="btn s" onclick="go('locs');setTimeout(()=>toast('📍 '+'${s.loc}'),200)">📍 Stelyaj varaqasi</button>
     </div>`;
 }
 
@@ -1023,6 +1028,88 @@ function pick3(loc,r,c){
   V3.sel={loc,r:Number(r),c:Number(c)};
   markSel();
 }
+
+function sideClear(){document.querySelectorAll('#w_world .bx.sel,#w_plan .pcell.sel').forEach(e=>e.classList.remove('sel'))}
+function roomKey(l){return (l.building||'Bino-1')+' / '+(l.room||'Xona-1')}
+function locQty(ls){return (ls||[]).reduce((a,l)=>a+(l.total_qty||0),0)}
+function locItems(ls,lim){
+  const m={};
+  (ls||[]).forEach(l=>(l.cells||[]).forEach(c=>(c.stocks||[]).forEach(s=>{m[s.item_name]=(m[s.item_name]||0)+s.qty})));
+  return Object.entries(m).sort((a,b)=>b[1]-a[1]).slice(0,lim||6);
+}
+function sideHead(t,s,close){
+  return `<div style="display:flex;justify-content:space-between;align-items:flex-start;gap:6px">
+    <div><div style="font-size:15.5px;font-weight:800;line-height:1.25">${t}</div>
+    <div style="color:var(--mut);font-size:11.5px;margin-top:2px">${s}</div></div>
+    ${close?`<button class="btn s" onclick="${close}" title="Yopish">&#10005;</button>`:''}</div>`;
+}
+function sideChips(arr){
+  return `<div style="display:flex;gap:5px;flex-wrap:wrap;margin:9px 0 3px">${arr.map(a=>`<span class="t ${a[1]||''}">${a[0]}</span>`).join('')}</div>`;
+}
+function sideItems(items){
+  if(!items.length)return '';
+  return `<div style="border-top:1px solid var(--ln);margin-top:9px;padding-top:7px;font-size:12.5px">
+    <b>Eng ko'p tovarlar:</b>${items.map(([n,q])=>`<div style="display:flex;justify-content:space-between;gap:9px;padding:2px 0"><span>${n}</span><b>${num(q)}</b></div>`).join('')}</div>`;
+}
+function sideDefault(){
+  sideClear();
+  const s=$('w_side'); if(!s)return;
+  s.innerHTML=`<b>&#129530; Ombor</b><div style="color:var(--mut);margin-top:6px">Xona, zona yoki stelyaj sarlavhasini bosing &mdash; ma'lumot shu yerda chiqadi. Katakni bosib tovarni ko'ring.</div>`;
+}
+function sideSet(html){
+  V3.sel=null;
+  sideClear();
+  const s=$('w_side'); if(s)s.innerHTML=html;
+}
+function roomInfo(k){
+  if(V3.M)setZone('');
+  if(!V3.M)return;
+  const ls=V3.M.locations.filter(l=>roomKey(l)===k);
+  if(!ls.length)return;
+  const zs=zorder(ls), items=locItems(ls), f=ls[0].floor||1;
+  sideSet(sideHead('&#127970; '+k,'qavat '+f+' &middot; '+ls.length+' stelyaj &middot; '+zs.length+' zona &middot; '+num(locQty(ls))+' dona','sideDefault()')
+   +sideChips(zs.map(z=>[z+'-zona']))
+   +`<div style="display:flex;gap:5px;flex-wrap:wrap;margin-top:6px">${zs.map(z=>`<button class="btn s" onclick="zoneInfo('${z}')" style="border-left:5px solid ${ZC[z]||'#1d4ed8'}">&#128193; ${z}-zona</button>`).join('')}</div>`
+   +`<div style="font-size:12px;color:var(--mut);margin:10px 0 4px">Stelyajlar:</div>`
+   +`<div style="display:flex;gap:5px;flex-wrap:wrap">${ls.map(l=>`<button class="btn s" onclick="rackInfo('${l.code}')" title="${l.name||''}">&#128230; ${l.code}<span style="opacity:.65;font-weight:400"> ${num(l.total_qty)}</span></button>`).join('')}</div>`
+   +sideItems(items)
+   +`<div style="border-top:1px solid var(--ln);margin-top:9px;padding-top:8px;display:flex;gap:6px;flex-wrap:wrap">
+      <button class="btn s" onclick="sideDefault()">&#9664; Yopish</button>
+      <button class="btn s" onclick="window.print()">&#128424;&#65039; Chopish / PDF</button></div>`);
+}
+function zonePanel(z){
+  if(!V3.M)return;
+  const ls=V3.M.locations.filter(l=>l.zone===z);
+  if(!ls.length)return;
+  const items=locItems(ls), f=ls[0].floor||1;
+  sideSet(sideHead('&#128193; '+z+'-zona',(ls[0]?roomKey(ls[0]):'')+' &middot; qavat '+f+' &middot; '+ls.length+' stelyaj &middot; '+num(locQty(ls))+' dona','sideDefault()')
+   +sideChips([[ZC[z]?'&#9679; '+z:''],[ls.length+' stelyaj'],[num(locQty(ls))+' dona'],[(ls||[]).reduce((a,l)=>a+(l.used_cells||0),0)+' katak band']])
+   +`<div style="display:flex;gap:5px;flex-wrap:wrap;margin-top:6px">${ls.map(l=>`<button class="btn s" onclick="rackInfo('${l.code}')" title="${l.name||''}">&#128230; ${l.code}<span style="opacity:.65;font-weight:400"> ${num(l.total_qty)}</span></button>`).join('')}</div>`
+   +sideItems(items)
+   +`<div style="border-top:1px solid var(--ln);margin-top:9px;padding-top:8px;display:flex;gap:6px;flex-wrap:wrap">
+      ${ls[0]?`<button class="btn s" onclick="roomInfo('${roomKey(ls[0])}')">&#127970; Xona</button>`:''}
+      <button class="btn s" onclick="sideDefault()">&#9664; Yopish</button></div>`);
+}
+function rackPanel(c){
+  if(!V3.M)return;
+  const l=V3.M.locations.find(x=>x.code===c);
+  if(!l)return;
+  const all=(l.cells||[]), filled=all.filter(x=>x.qty>0);
+  sideSet(sideHead('&#128230; '+l.code,(l.name||'')+' &middot; '+l.zone+'-zona &middot; '+roomKey(l)+' &middot; qavat '+(l.floor||1),'sideDefault()')
+   +sideChips([[(l.rows||1)+'&#215;'+(l.cols||1)+' katak'],[filled.length+'/'+all.length+' band'],[num(l.total_qty)+' dona'],[l.kind==='zona'?'butun zona':'stelyaj']])
+   +`<div style="display:flex;gap:5px;flex-wrap:wrap;margin-top:6px">
+      <button class="btn s" onclick="zoneInfo('${l.zone}')" style="border-left:5px solid ${ZC[l.zone]||'#1d4ed8'}">&#128193; ${l.zone}-zona</button>
+      <button class="btn s" onclick="roomInfo('${roomKey(l)}')">&#127970; Xona</button></div>`
+   +(filled.length?`<div style="font-size:12px;color:var(--mut);margin:10px 0 4px">Band kataklar:</div>
+      <div style="display:flex;gap:5px;flex-wrap:wrap">${filled.map(x=>`<button class="btn s" onclick="pick3('${l.code}',${x.row},${x.col})" title="${x.stocks.map(s2=>s2.item_name).join(', ')}">&#9632; ${x.name}<span style="opacity:.65;font-weight:400"> ${num(x.qty)}</span></button>`).join('')}</div>`
+     :`<div style="color:var(--mut);padding:9px 0">Bu stelyaj bo'sh &mdash; katak band emas.</div>`)
+   +`<div style="border-top:1px solid var(--ln);margin-top:9px;padding-top:8px;display:flex;gap:6px;flex-wrap:wrap">
+      <button class="btn s" onclick="sideDefault()">&#9664; Yopish</button>
+      <button class="btn s" onclick="go('locs');setTimeout(()=>toast('${l.code}'),200)">&#128203; Stelyaj varaqasi</button></div>`);
+}
+
+function zoneInfo(z){setZone(z)}
+function rackInfo(c){setRack(c)}
 
 function w3dView(v){
   if(v==='iso'){V3.rx=56;V3.rz=34}
@@ -1048,77 +1135,77 @@ async function loadW3D(){
   resetDrug(false);
   const zones=zorder(m.locations);
   $('w3d').innerHTML=`
-  <div class="box noprint"><h3>ðŸ§Š Ombor ko'rinishi <span class="r">
+  <div class="box noprint"><h3>🧊 Ombor ko'rinishi <span class="r">
     <button class="btn s" id="m2d" onclick="setMode('2d')">&#128241; 2D rejasi</button>
     <button class="btn s" id="m3d" onclick="setMode('3d')">&#129306; 3D</button>
     <span id="w_3donly">
-    <button class="btn s" onclick="w3dView('iso')">ðŸ”· Izometrik</button>
-    <button class="btn s" onclick="w3dView('top')">â¬†ï¸ Yuqoridan</button>
-    <button class="btn s" onclick="w3dView('front')">â¬…ï¸ Oldindan</button>
-    <button class="btn s" onclick="w3dView('side')">âž¡ï¸ Yondan</button>
-    <button class="btn s" onclick="V3.sc=Math.min(3,V3.sc+.2);applyCam()">ðŸ”+</button>
-    <button class="btn s" onclick="V3.sc=Math.max(.25,V3.sc-.2);applyCam()">ðŸ”âˆ’</button>
+    <button class="btn s" onclick="w3dView('iso')">🔷 Izometrik</button>
+    <button class="btn s" onclick="w3dView('top')">⬆️ Yuqoridan</button>
+    <button class="btn s" onclick="w3dView('front')">⬅️ Oldindan</button>
+    <button class="btn s" onclick="w3dView('side')">➡️ Yondan</button>
+    <button class="btn s" onclick="V3.sc=Math.min(3,V3.sc+.2);applyCam()">🔍+</button>
+    <button class="btn s" onclick="V3.sc=Math.max(.25,V3.sc-.2);applyCam()">🔍−</button>
     </span>
   </span></h3>
   <div class="w3d-ctl">
-    <label>ðŸ”„ Aylantirish X <input type="range" min="8" max="89" value="${V3.rx}" oninput="V3.rx=+this.value;applyCam()"></label>
+    <label>🔄 Aylantirish X <input type="range" min="8" max="89" value="${V3.rx}" oninput="V3.rx=+this.value;applyCam()"></label>
     <label>Z <input type="range" min="-90" max="90" value="${V3.rz}" oninput="V3.rz=+this.value;applyCam()"></label>
-    <label>ðŸ” Kattalik <input type="range" min="25" max="300" value="${V3.sc*100}" oninput="V3.sc=this.value/100;applyCam()"></label>
-    <label>â†”ï¸ <input type="range" min="-700" max="200" value="${V3.lx}" oninput="V3.lx=+this.value;applyCam()"></label>
-    <label>â†•ï¸ <input type="range" min="-200" max="600" value="${V3.lz}" oninput="V3.lz=+this.value;applyCam()"></label>
+    <label>🔍 Kattalik <input type="range" min="25" max="300" value="${V3.sc*100}" oninput="V3.sc=this.value/100;applyCam()"></label>
+    <label>↔️ <input type="range" min="-700" max="200" value="${V3.lx}" oninput="V3.lx=+this.value;applyCam()"></label>
+    <label>↕️ <input type="range" min="-200" max="600" value="${V3.lz}" oninput="V3.lz=+this.value;applyCam()"></label>
     <label style="cursor:pointer"><input type="checkbox" ${V3.zl?'checked':''} onchange="V3.zl=this.checked;renderW3D()"> zona/koridor yorlig'i</label>
     <label style="cursor:pointer"><input type="checkbox" ${V3.nl?'checked':''} onchange="V3.nl=this.checked;renderW3D()"> stelyaj nomlari</label>
     <label style="cursor:pointer"><input type="checkbox" ${V3.sel?'checked':''} onchange="if(this.checked&&!V3.sel){V3.sel=V3.first;markSel();renderW3D()}else if(!this.checked){V3.sel=null;markSel();renderW3D()}"> birinchi tovardan boshlash</label>
   </div>
   <div id="w_zbtns" style="display:flex;gap:8px;flex-wrap:wrap;align-items:center;margin-top:10px;padding-top:9px;border-top:1px dashed var(--bd,#e2e8f0)">
-    <b style="font-size:12.5px;color:var(--mut)">ðŸ—‚ï¸ ZONA (ketma-ket):</b>
-    <button class="btn s" onclick="stepZone(-1)" title="Oldingi zona">â€¹</button>
-    <button class="btn s" onclick="stepZone(1)" title="Keyingi zona">â€º</button>
+    <b style="font-size:12.5px;color:var(--mut)">🗂️ ZONA (ketma-ket):</b>
+    <button class="btn s" onclick="stepZone(-1)" title="Oldingi zona">‹</button>
+    <button class="btn s" onclick="stepZone(1)" title="Keyingi zona">›</button>
     <span id="w_zoneN" style="font-size:12px;color:var(--mut)"></span>
     <span style="width:6px"></span>
-    <button class="btn s wz" data-z="" onclick="setZone('')" style="border-left:5px solid #64748b">ðŸ—‚ï¸ Hammasi</button>
+    <button class="btn s wz" data-z="" onclick="setZone('')" style="border-left:5px solid #64748b">🗂️ Hammasi</button>
     ${zones.map(z=>{
       const ls=m.locations.filter(l=>l.zone===z);
       const q=ls.reduce((s,l)=>s+l.cells.reduce((a,c)=>a+c.qty,0),0);
       return `<button class="btn s wz" data-z="${z}" onclick="setZone('${z}')" style="border-left:5px solid ${ZC[z]||'#1d4ed8'}">
-        ${z}-zona <span style="opacity:.7;font-weight:400">Â· ${ls.length} stelyaj Â· ${num(q)}</span></button>`;
+        ${z}-zona <span style="opacity:.7;font-weight:400">· ${ls.length} stelyaj · ${num(q)}</span></button>`;
     }).join('')}
   </div>
   <div id="w_rackbar" style="display:flex;gap:7px;flex-wrap:wrap;align-items:center;margin-top:9px;padding-top:9px;border-top:1px dashed var(--bd,#e2e8f0)">
-    <b style="font-size:12.5px;color:var(--mut)">ðŸ“Œ STELYAJ (ketma-ket):</b>
-    <button class="btn s" onclick="stepRack(-1)" title="Oldingi">â€¹</button>
+    <b style="font-size:12.5px;color:var(--mut)">📌 STELYAJ (ketma-ket):</b>
+    <button class="btn s" onclick="stepRack(-1)" title="Oldingi">‹</button>
     <select id="w_rack" onchange="setRack(this.value)" style="width:130px">
-      <option value="">ðŸ—‚ï¸ Hammasi</option>
+      <option value="">🗂️ Hammasi</option>
       ${RACKS().map(c=>`<option ${c===V3.rack?'selected':''}>${c}</option>`).join('')}
     </select>
-    <button class="btn s" onclick="stepRack(1)" title="Keyingi">â€º</button>
+    <button class="btn s" onclick="stepRack(1)" title="Keyingi">›</button>
     <span id="w_rackn" style="font-size:12px;color:var(--mut)"></span>
     <span style="flex:1"></span>
-    <button class="btn s rk" data-r="A-1" onclick="setRack('A-1')" style="border-left:5px solid ${ZC.A}">ðŸ…°ï¸ A-1</button>
-    <button class="btn s rk" data-r="B-1" onclick="setRack('B-1')" style="border-left:5px solid ${ZC.B}">ðŸ…±ï¸ B-1</button>
-    <button class="btn s rk" data-r="C-1" onclick="setRack('C-1')" style="border-left:5px solid ${ZC.C}">ðŸ†‘ C-1</button>
-    <button class="btn s rk" data-r="D-1" onclick="setRack('D-1')" style="border-left:5px solid ${ZC.D}">ðŸ…³ D-1</button>
+    <button class="btn s rk" data-r="A-1" onclick="setRack('A-1')" style="border-left:5px solid ${ZC.A}">🅰️ A-1</button>
+    <button class="btn s rk" data-r="B-1" onclick="setRack('B-1')" style="border-left:5px solid ${ZC.B}">🅱️ B-1</button>
+    <button class="btn s rk" data-r="C-1" onclick="setRack('C-1')" style="border-left:5px solid ${ZC.C}">🆑 C-1</button>
+    <button class="btn s rk" data-r="D-1" onclick="setRack('D-1')" style="border-left:5px solid ${ZC.D}">🅳 D-1</button>
   </div>
   <div id="w_drugbar" style="display:flex;gap:7px;flex-wrap:wrap;align-items:center;margin-top:9px;padding-top:9px;border-top:1px dashed var(--bd,#e2e8f0)">
-    <b style="font-size:12.5px;color:var(--mut)">ðŸ’Š DORI (ketma-ket):</b>
-    <button class="btn s" onclick="stepDrug(-1)" title="Oldingi dori">â€¹</button>
-    <button class="btn s" onclick="stepDrug(1)" title="Keyingi dori">â€º</button>
+    <b style="font-size:12.5px;color:var(--mut)">💊 DORI (ketma-ket):</b>
+    <button class="btn s" onclick="stepDrug(-1)" title="Oldingi dori">‹</button>
+    <button class="btn s" onclick="stepDrug(1)" title="Keyingi dori">›</button>
     <span id="w_drugn" style="font-size:12px;color:var(--mut);min-width:58px"></span>
-    <button class="btn s" id="w_dz" onclick="toggleDrugAll()" title="A->D barcha zonalar bo'yicha" style="border-left:5px solid #7c3aed">ðŸŒ Aâ†’D</button>
+    <button class="btn s" id="w_dz" onclick="toggleDrugAll()" title="A->D barcha zonalar bo'yicha" style="border-left:5px solid #7c3aed">🌍 A→D</button>
     <span id="w_drugi" style="font-size:12.5px;display:flex;gap:4px;flex-wrap:wrap;align-items:center"></span>
   </div>
   <div style="display:flex;gap:14px;flex-wrap:wrap;font-size:11.5px;margin-top:8px">
     <span><i style="display:inline-block;width:12px;height:12px;background:#e8edf3;border:1px solid #b6c2d1;border-radius:2px"></i> Bo'sh</span>
     <span><i style="display:inline-block;width:12px;height:12px;background:#86efac;border:1px solid #15803d;border-radius:2px"></i> Normal</span>
-    <span><i style="display:inline-block;width:12px;height:12px;background:#fde68a;border:1px solid #d97706;border-radius:2px"></i> Kam (â‰¤5)</span>
+    <span><i style="display:inline-block;width:12px;height:12px;background:#fde68a;border:1px solid #d97706;border-radius:2px"></i> Kam (≤5)</span>
     <span><i style="display:inline-block;width:12px;height:12px;background:#fca5a5;border:1px solid #b91c1c;border-radius:2px"></i> To'liq</span>
     <span style="color:var(--mut)">Kub balandligi = katakda qancha tovar bor</span>
   </div>
-  <div style="font-size:12.5px;color:var(--mut);margin-top:6px">Joylar: <b>${m.locations.length}</b> Â· pozitsiyalar: <b>${m.positions}</b> Â· dona: <b>${num(m.total_qty)}</b> Â· ogohlantirish: <b style="color:var(--w)">${m.alerts.length}</b></div>
+  <div style="font-size:12.5px;color:var(--mut);margin-top:6px">Joylar: <b>${m.locations.length}</b> · o'rinlar: <b>${m.positions}</b> · dona: <b>${num(m.total_qty)}</b> · ogohlantirish: <b style="color:var(--w)">${m.alerts.length}</b></div>
   </div>
   <div class="v3" id="w_view"><div id="w_plan" style="display:none"></div><div class="world" id="w_world"></div>
-    <div class="hint">ðŸ–±ï¸ Sudrab aylantiring Â· g'ildirak = kattalashtirish Â· <b>â† â†’</b>=dori Â· <b>Shift+â† â†’</b>=stelyaj Â· <b>Ctrl+â† â†’</b>=zona</div>
-    <div class="side" id="w_side"><b>ðŸ§Š Ombor</b><div style="color:var(--mut);margin-top:6px">Istalgan kubni bosing â€” dori ma'lumotlari shu yerda chiqadi.</div></div>
+    <div class="hint">🖱️ Sudrab aylantiring · g'ildirak = kattalashtirish · <b>← →</b>=dori · <b>Shift+← →</b>=stelyaj · <b>Ctrl+← →</b>=zona</div>
+    <div class="side" id="w_side"><b>🧊 Ombor</b><div style="color:var(--mut);margin-top:6px">Istalgan kubni bosing — dori ma'lumotlari shu yerda chiqadi.</div></div>
   </div>`;
   renderW3D();camFit();syncSliders();applyCam();syncRack();syncDrug();
   const v=$('w_view');
@@ -1199,33 +1286,33 @@ async function loadPlace(){
 
   let body='';
   if(mode==='item'){
-    body=`<table><tr><th>â„–</th><th>Dori nomi</th><th>SKU</th><th>Shtrix</th><th>Kategoriya</th><th>Birlik</th><th>Jami</th><th>Joylashuvi (stelyaj-katak)</th><th>Min</th></tr>
-    ${d.items.map((it,i)=>`<tr><td>${i+1}</td><td><b>${it.name}</b></td><td class="mono">${it.sku}</td><td class="mono">${it.barcode||'â€”'}</td><td>${it.category}</td><td>${it.unit}</td>
+    body=`<table><tr><th>№</th><th>Dori nomi</th><th>SKU</th><th>Shtrix</th><th>Kategoriya</th><th>Birlik</th><th>Jami</th><th>Joylashuvi (stelyaj-katak)</th><th>Min</th></tr>
+    ${d.items.map((it,i)=>`<tr><td>${i+1}</td><td><b>${it.name}</b></td><td class="mono">${it.sku}</td><td class="mono">${it.barcode||'—'}</td><td>${it.category}</td><td>${it.unit}</td>
     <td class="${it.total<=it.min_stock?'low':''}"><b>${num(it.total)}</b></td>
     <td>${it.positions.map(p=>`<b>${p.loc}-${p.cell}</b> (${num(p.qty)})${p.batch_no?' <span style="color:var(--mut);font-size:11px">'+p.batch_no+'</span>':''}`).join('<br>')}</td>
     <td>${it.min_stock}</td></tr>`).join('')}</table>`;
   }else{
-    body=d.zones.map(z=>`<h3 style="margin:12px 0 6px">ðŸ…°ï¸ ${z}-zona</h3>`+Object.keys(byLoc[z]||{}).sort().map(loc=>{
+    body=d.zones.map(z=>`<h3 style="margin:12px 0 6px">🅰️ ${z}-zona</h3>`+Object.keys(byLoc[z]||{}).sort().map(loc=>{
       const list=byLoc[z][loc];
-      return `<div class="box" style="padding:9px"><h3 style="font-size:13px;margin-bottom:6px">ðŸ“ ${loc} <span style="font-weight:400;font-size:11.5px;color:var(--mut)">${(LOC.find(l=>l.code===loc)||{}).name||''} Â· ${list.length} pozitsiya Â· ${num(list.reduce((a,x)=>a+x.p.qty,0))} dona</span></h3>
-      <table><tr><th>â„–</th><th>Katak</th><th>Dori nomi</th><th>SKU</th><th>Shtrix</th><th>Kategoriya</th><th>Soni</th><th>Partiya</th><th>Yaroqlilik</th><th>Ishorali</th></tr>
-      ${list.map((x,i)=>`<tr><td>${i+1}</td><td><b>${x.p.cell}</b></td><td><b>${x.it.name}</b></td><td class="mono">${x.it.sku}</td><td class="mono">${x.it.barcode||'â€”'}</td>
-      <td>${x.it.category}</td><td><b>${num(x.p.qty)}</b> ${x.it.unit}</td><td>${x.p.batch_no||'â€”'}</td>
-      <td class="${x.p.expiry&&new Date(x.p.expiry)<new Date()?'low':''}">${x.p.expiry||'â€”'}</td><td style="width:60px"></td></tr>`).join('')}
+      return `<div class="box" style="padding:9px"><h3 style="font-size:13px;margin-bottom:6px">📍 ${loc} <span style="font-weight:400;font-size:11.5px;color:var(--mut)">${(LOC.find(l=>l.code===loc)||{}).name||''} · ${list.length} pozitsiya · ${num(list.reduce((a,x)=>a+x.p.qty,0))} dona</span></h3>
+      <table><tr><th>№</th><th>Katak</th><th>Dori nomi</th><th>SKU</th><th>Shtrix</th><th>Kategoriya</th><th>Soni</th><th>Partiya</th><th>Yaroqlilik</th><th>Ishorali</th></tr>
+      ${list.map((x,i)=>`<tr><td>${i+1}</td><td><b>${x.p.cell}</b></td><td><b>${x.it.name}</b></td><td class="mono">${x.it.sku}</td><td class="mono">${x.it.barcode||'—'}</td>
+      <td>${x.it.category}</td><td><b>${num(x.p.qty)}</b> ${x.it.unit}</td><td>${x.p.batch_no||'—'}</td>
+      <td class="${x.p.expiry&&new Date(x.p.expiry)<new Date()?'low':''}">${x.p.expiry||'—'}</td><td style="width:60px"></td></tr>`).join('')}
       </table></div>`}).join('')).join('');
   }
 
   $('place').innerHTML=`
-  <div class="box noprint"><h3>ðŸ“ Joylashuv ro'yxati <span class="r">
+  <div class="box noprint"><h3>📍 Joylashuv ro'yxati <span class="r">
     <select id="pl_mode" style="width:190px" onchange="pMode=this.value;loadPlace()">
       <option value="zone" ${mode==='zone'?'selected':''}>Stelyaj bo'yicha (varaq)</option>
       <option value="item" ${mode==='item'?'selected':''}>Dori bo'yicha (qisqa)</option></select>
     <input id="pl_q" placeholder="nom / SKU / shtrix" style="width:160px" value="${($('pl_q')?.value)||''}" oninput="loadPlace()">
     <select id="pl_loc" style="width:130px" onchange="loadPlace()"><option value="">Barcha joylar</option>${LOC.map(l=>`<option ${($('pl_loc')?.value)===l.code?'selected':''}>${l.code}</option>`).join('')}</select>
     <select id="pl_cat" style="width:170px" onchange="loadPlace()"><option value="">Barcha kategoriya</option>${d.cats.map(c=>`<option ${($('pl_cat')?.value)===c?'selected':''}>${c}</option>`).join('')}</select>
-    <button class="btn s" onclick="window.print()">ðŸ–¨ï¸ Chopish / PDF</button>
+    <button class="btn s" onclick="window.print()">🖨️ Chopish / PDF</button>
     <button class="btn d s" onclick="csvPlace()">CSV</button></span></h3>
-    <div style="font-size:12.5px;color:var(--mut)">Dorilar: <b>${d.items.length}</b> Â· Pozitsiyalar: <b>${d.rows}</b> Â· Jami: <b>${num(d.total_qty)}</b> dona Â· Qiymat: <b>${money(d.total_value)}</b> Â· Sanalgani: <b>${new Date().toLocaleDateString('uz-UZ')}</b></div>
+    <div style="font-size:12.5px;color:var(--mut)">Dorilar: <b>${d.items.length}</b> · O'rinlar: <b>${d.rows}</b> · Jami: <b>${num(d.total_qty)}</b> dona · Qiymat: <b>${money(d.total_value)}</b> · Sanalgani: <b>${new Date().toLocaleDateString('uz-UZ')}</b></div>
   </div>
   <div>${body}</div>
   <div class="box noprint" style="margin-top:10px;font-size:12.5px;display:flex;justify-content:space-between;gap:20px;flex-wrap:wrap">
@@ -1242,22 +1329,22 @@ async function csvPlace(){
 
 /* ---------- Yetkazib beruvchilar ---------- */
 async function loadSup(){
-  $('sup').innerHTML=`<div class="box"><h3>ðŸšš Yangi yetkazib beruvchi</h3>
+  $('sup').innerHTML=`<div class="box"><h3>🚚 Yangi yetkazib beruvchi</h3>
     <div class="f"><div><label>Nomi *</label><input id="s_n"></div><div><label>Telefon</label><input id="s_p"></div>
-    <div><label>Manzil</label><input id="s_a"></div><div style="align-self:end"><button class="btn" onclick="addSup()">ï¼‹ Qo'shish</button></div></div></div>
+    <div><label>Manzil</label><input id="s_a"></div><div style="align-self:end"><button class="btn" onclick="addSup()">+ Qo'shish</button></div></div></div>
   <div class="box"><table><tr><th>Nomi</th><th>Telefon</th><th>Manzil</th><th></th></tr>
-  ${SUP.map(s=>`<tr><td><b>${s.name}</b></td><td>${s.phone}</td><td>${s.address}</td><td><button class="btn r s" onclick="delSup(${s.id})">âœ•</button></td></tr>`).join('')}
+  ${SUP.map(s=>`<tr><td><b>${s.name}</b></td><td>${s.phone}</td><td>${s.address}</td><td><button class="btn r s" onclick="delSup(${s.id})">✕</button></td></tr>`).join('')}
   </table></div>`;
 }
-async function addSup(){try{await api('/api/suppliers',{method:'POST',body:JSON.stringify({name:$('s_n').value,phone:$('s_p').value,address:$('s_a').value})});toast('âœ…');SUP=await api('/api/suppliers');loadSup()}catch(e){toast('âŒ '+e.message)}}
-async function delSup(id){if(!confirm('O\'chirilsinmi?'))return;try{await api('/api/suppliers/'+id,{method:'DELETE'});SUP=await api('/api/suppliers');loadSup()}catch(e){toast('âŒ '+e.message)}}
+async function addSup(){try{await api('/api/suppliers',{method:'POST',body:JSON.stringify({name:$('s_n').value,phone:$('s_p').value,address:$('s_a').value})});toast('✅');SUP=await api('/api/suppliers');loadSup()}catch(e){toast('❌ '+e.message)}}
+async function delSup(id){if(!confirm('O\'chirilsinmi?'))return;try{await api('/api/suppliers/'+id,{method:'DELETE'});SUP=await api('/api/suppliers');loadSup()}catch(e){toast('❌ '+e.message)}}
 
 /* ---------- Global qidiruv ---------- */
 async function globalSearch(v){
   v=v.trim();if(!v)return;
   go('stocks');await loadStocks();
   $('s_q').value=v;await loadStocks();
-  if(!STOCKS.length){toast('Pozitsiyada topilmadi â€” nomenklaturada qidiring');go('items');$('i_q').value=v;loadItems()}
+  if(!STOCKS.length){toast('Omborda topilmadi — tovarlar ro\'yxatida qidiring');go('items');$('i_q').value=v;loadItems()}
 }
 
 if(T)fetch('/api/me',{headers:{'Authorization':'Bearer '+T}}).then(r=>r.json()).then(u=>boot(u)).catch(()=>localStorage.removeItem('om_t'));

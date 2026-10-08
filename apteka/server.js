@@ -115,7 +115,7 @@ app.put("/api/items/:id", auth, wrap((req, res) => {
 
 app.delete("/api/items/:id", auth, wrap((req, res) => {
   const used = one("SELECT COUNT(*) c FROM stocks WHERE item_id=? AND qty>0", Number(req.params.id));
-  if (used) throw new Error(`Omborda ${used} ta pozitsiyada qoldi â€” avval chiqim qiling`);
+  if (used) throw new Error(`Omborda ${used} ta pozitsiyada qoldi — avval chiqim qiling`);
   db.prepare("UPDATE items SET active=0 WHERE id=?").run(Number(req.params.id));
   res.json({ ok: true });
 }));
@@ -200,7 +200,7 @@ app.put("/api/locations/:id", auth, wrap((req, res) => {
 
 app.delete("/api/locations/:id", auth, wrap((req, res) => {
   const q = one("SELECT COUNT(*) c FROM stocks WHERE location_id=? AND qty>0", Number(req.params.id));
-  if (q) throw new Error(`Bu joyda ${q} ta tovar bor â€” avval ko'chiring yoki chiqim qiling`);
+  if (q) throw new Error(`Bu joyda ${q} ta tovar bor — avval ko'chiring yoki chiqim qiling`);
   db.prepare("UPDATE locations SET active=0 WHERE id=?").run(Number(req.params.id));
   res.json({ ok: true });
 }));
@@ -533,7 +533,7 @@ app.post("/api/counts/:id/close", auth, wrap((req, res) => {
     const d = db
       .prepare("INSERT INTO docs (no,type,status,supplier_id,dest,doc_date,note,lines_count,total_qty,user,confirmed_at) VALUES (?,?,?,?,?,?,?,?,?,?,datetime('now'))")
       .run(no, "inventarizatsiya", "tasdiqlandi", null, c.location_id ? "" : "butun ombor", new Date().toISOString().slice(0, 10),
-        `${c.no} â€” inventarizatsiya farqi`, diffs.length, diffs.reduce((a, l) => a + Math.abs(l.actual_qty - l.system_qty), 0), req.user.name);
+        `${c.no} — inventarizatsiya farqi`, diffs.length, diffs.reduce((a, l) => a + Math.abs(l.actual_qty - l.system_qty), 0), req.user.name);
     const docId = Number(d.lastInsertRowid);
     const ins = db.prepare(
       "INSERT INTO doc_lines (doc_id,stock_id,item_id,location_id,cell_row,cell_col,qty,note) VALUES (?,?,?,?,?,?,?,?)"
