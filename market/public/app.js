@@ -55,7 +55,7 @@ setTimeout(() => {
   $("#app").classList.remove("hidden");
 }, 2000);
 
-/* ================= TABLAR (4 bo'lim) ================= */
+/* ================= TABLAR (3 bo'lim) ================= */
 $$(".tab").forEach((btn) =>
   btn.addEventListener("click", () => switchTab(btn.dataset.tab))
 );
@@ -64,9 +64,19 @@ function switchTab(tab) {
   $$(".view").forEach((v) => v.classList.add("hidden"));
   $("#view-" + tab).classList.remove("hidden");
   $("#searchWrap").style.visibility = tab === "shop" ? "visible" : "hidden";
-  if (tab === "cart") renderCart();
   if (tab === "taxi") renderTaxi();
 }
+
+/* Savat — faqat «Savatga» tugmasi yoki 🛒 tugmasi orqali ochiladi */
+function openCart() {
+  $$(".tab").forEach((b) => b.classList.remove("active"));
+  $$(".view").forEach((v) => v.classList.add("hidden"));
+  $("#view-cart").classList.remove("hidden");
+  $("#searchWrap").style.visibility = "hidden";
+  renderCart();
+}
+$("#cartBtn").addEventListener("click", openCart);
+$("#cartBack").addEventListener("click", () => switchTab("shop"));
 
 /* ================= MODALLAR ================= */
 function openModal(id) { $(id).classList.remove("hidden"); }
@@ -264,6 +274,7 @@ function addToCart(kind, id) {
   else state.cart.push({ kind, id, name: src.name, price: src.price, emoji: src.emoji, qty: 1 });
   saveCart();
   toast(`«${src.name}» savatga qo'shildi`);
+  openCart();
 }
 
 /* ================= TAOM ================= */

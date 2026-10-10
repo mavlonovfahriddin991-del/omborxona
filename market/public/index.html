@@ -43,15 +43,15 @@
       <div class="search-wrap" id="searchWrap">
         <input id="search" type="text" placeholder="Tovar qidirish...">
       </div>
+      <button class="avatar" id="cartBtn">🛒<b class="badge hidden" id="cartBadge">0</b></button>
       <button class="avatar" id="profileBtn">👤</button>
     </div>
 
-    <!-- 4 ta bo'lim (tab) -->
+    <!-- 3 ta bo'lim (tab) -->
     <nav class="tabs">
       <button class="tab active" data-tab="shop">🛍️<span>Do'kon</span></button>
       <button class="tab" data-tab="food">🍔<span>Taom</span></button>
       <button class="tab" data-tab="taxi">🚕<span>Taksi</span></button>
-      <button class="tab" data-tab="cart">🛒<span>Savat</span><b class="badge hidden" id="cartBadge">0</b></button>
     </nav>
   </header>
 
@@ -86,6 +86,7 @@
 
     <!-- ====== SAVAT ====== -->
     <section id="view-cart" class="view hidden">
+      <button class="btn ghost" id="cartBack" style="margin-bottom:12px">← Xaridni davom ettirish</button>
       <div class="card">
         <h2>🛒 Savat</h2>
         <div id="cartItems"></div>

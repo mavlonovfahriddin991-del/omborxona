@@ -267,7 +267,145 @@ function seedTires() {
   });
 }
 
+const MORE_PRODUCTS = [
+  // Kiyim-kechak
+  ["Kiyim-kechak", "Ayollar bluzkasi", 129000, "👚"],
+  ["Kiyim-kechak", "Erkaklar klassik shimi", 219000, "👖"],
+  ["Kiyim-kechak", "Ayollar yubkasi", 159000, "👗"],
+  ["Kiyim-kechak", "Jun sviter", 179000, "🧶"],
+  ["Kiyim-kechak", "Erkaklar sport kostyumi", 299000, "🥋"],
+  ["Kiyim-kechak", "Ayollar pijamasi", 139000, "🛌"],
+  ["Kiyim-kechak", "Erkaklar ichki ko'ylagi (3 dona)", 99000, "👕"],
+  ["Kiyim-kechak", "Bola kiyimi to'plami", 149000, "🧒"],
+  ["Kiyim-kechak", "Erkaklar kamzuli (jun)", 239000, "🧥"],
+  ["Kiyim-kechak", "Ayollar paltosi", 549000, "🧥"],
+  ["Kiyim-kechak", "Ayollar jinsi shimi", 189000, "👖"],
+  ["Kiyim-kechak", "Erkaklar bodi turtleneck", 159000, "👔"],
+  // Oyoq kiyim
+  ["Oyoq kiyim", "Ayollar tuflisi", 329000, "👠"],
+  ["Oyoq kiyim", "Ayollar krossovkasi", 289000, "👟"],
+  ["Oyoq kiyim", "Erkaklar klassik tuflisi", 449000, "👞"],
+  ["Oyoq kiyim", "Bola krossovkasi", 199000, "👟"],
+  ["Oyoq kiyim", "Rezina shippak", 49000, "🩴"],
+  ["Oyoq kiyim", "Erkaklar sandali", 179000, "👡"],
+  ["Oyoq kiyim", "Ayollar etigi", 399000, "👢"],
+  ["Oyoq kiyim", "Sport butsi (tog' uchun)", 499000, "🥾"],
+  // Kitoblar
+  ["Kitoblar", "«O'tkan kunlar» — A. Qodiriy", 55000, "📕"],
+  ["Kitoblar", "«Mehrobdan chayon» — A. Qodiriy", 59000, "📗"],
+  ["Kitoblar", "O'zbekiston tarixi", 89000, "📘"],
+  ["Kitoblar", "«Chol va dengiz»", 45000, "📖"],
+  ["Kitoblar", "«Atom odatlari»", 119000, "📙"],
+  ["Kitoblar", "Ingliz tili grammatikasi", 99000, "📚"],
+  ["Kitoblar", "«Boy ota, kambag'al ota»", 129000, "📙"],
+  ["Kitoblar", "Matematika masalalar to'plami", 69000, "📐"],
+  ["Kitoblar", "Bolalar rasmli lug'ati", 79000, "🖍️"],
+  // Futbol formalar
+  ["Futbol formalar", "«Bunyodkor» futbolka", 189000, "🎽"],
+  ["Futbol formalar", "Manchester City forma", 329000, "🎽"],
+  ["Futbol formalar", "Real Madrid forma", 349000, "🎽"],
+  ["Futbol formalar", "Bolalar futbol formasi", 149000, "🎽"],
+  ["Futbol formalar", "Forma to'plami (mayka + short)", 269000, "👕"],
+  ["Futbol formalar", "Darvozabon qo'lqopi", 129000, "🧤"],
+  // Koptoklar
+  ["Koptoklar", "Tennis to'pi (3 dona)", 39000, "🎾"],
+  ["Koptoklar", "Stol tennisi to'plami", 89000, "🏓"],
+  ["Koptoklar", "Futbol to'pi (size 4)", 99000, "⚽"],
+  ["Koptoklar", "Basketbol to'pi (professional)", 289000, "🏀"],
+  ["Koptoklar", "Rezina koptok", 45000, "🏐"],
+  ["Koptoklar", "Yig'ma futbol darvozasi", 599000, "🥅"],
+  // O'yinchoqlar
+  ["O'yinchoqlar", "Robot o'yinchoq", 249000, "🤖"],
+  ["O'yinchoqlar", "Rubik kubigi", 89000, "🧩"],
+  ["O'yinchoqlar", "Katta Lego konstruktor", 269000, "🧱"],
+  ["O'yinchoqlar", "Yumshoq quyon", 79000, "🐰"],
+  ["O'yinchoqlar", "Temir yo'l o'yinchog'i", 349000, "🚂"],
+  ["O'yinchoqlar", "Samolyot modeli", 129000, "✈️"],
+  ["O'yinchoqlar", "Suv tabancasi", 69000, "🔫"],
+  ["O'yinchoqlar", "Nutq o'yinchoq (so'zlovchi)", 189000, "🗣️"],
+  // Sumkalar
+  ["Sumkalar", "Erkaklar hamyoni", 129000, "👛"],
+  ["Sumkalar", "Maktab ryukzaki (qattiq)", 199000, "🎒"],
+  ["Sumkalar", "Ayollar clutch", 159000, "👛"],
+  ["Sumkalar", "Sayohat sumkasi (katta)", 399000, "🧳"],
+  ["Sumkalar", "Termo sumka", 219000, "🧊"],
+  ["Sumkalar", "Belbog' sumkasi", 89000, "👝"],
+  // Kabellar
+  ["Kabellar", "Micro USB kabel", 19000, "🔌"],
+  ["Kabellar", "Type-C kabel (2m)", 39000, "🔌"],
+  ["Kabellar", "Quvvat bank 10000mAh", 159000, "🔋"],
+  ["Kabellar", "Simli quloqchin", 39000, "🎧"],
+  ["Kabellar", "Bluetooth quloqchin", 199000, "🎧"],
+  ["Kabellar", "USB flesh 64GB", 89000, "💾"],
+  ["Kabellar", "USB-C — HDMI adapter", 59000, "🔗"],
+  ["Kabellar", "Avto quvvatlagich (2 port)", 65000, "🚗"],
+  // Uy soatlari
+  ["Uy soatlari", "Ostona soati", 89000, "🕰️"],
+  ["Uy soatlari", "Elektron devor soati", 119000, "⏰"],
+  ["Uy soatlari", "Qum soati (dekorativ)", 69000, "⌛"],
+  ["Uy soatlari", "Budilnik (mexanik)", 99000, "⏰"],
+  ["Uy soatlari", "Devor soati 3D", 139000, "🕰️"],
+  // Qo'l soatlar
+  ["Qo'l soatlar", "Smart soat", 599000, "⌚"],
+  ["Qo'l soatlar", "Bolalar smart soati", 399000, "⌚"],
+  ["Qo'l soatlar", "Ayollar qo'l soati", 249000, "⌚"],
+  ["Qo'l soatlar", "Sport smart soat (GPS)", 899000, "⌚"],
+  ["Qo'l soatlar", "Charm remeshokli soat", 329000, "⌚"],
+  ["Qo'l soatlar", "Elektron soat (ikki tugmali)", 89000, "⌚"],
+  // Maktab formalar
+  ["Maktab formalar", "O'g'il bolalar ko'ylagi (oq)", 129000, "👕"],
+  ["Maktab formalar", "Qizlar sarafani", 219000, "👗"],
+  ["Maktab formalar", "Maktab jomadoni", 249000, "🎒"],
+  ["Maktab formalar", "Ruchka to'plami", 25000, "🖊️"],
+  ["Maktab formalar", "Daftar to'plami (10 dona)", 45000, "📒"],
+  ["Maktab formalar", "Maktab formasi to'plami", 499000, "🎽"],
+  // Zargarlik
+  ["Zargarlik", "Oltin uzuk (585)", 1490000, "💍"],
+  ["Zargarlik", "Oltin zanjir", 2190000, "📿"],
+  ["Zargarlik", "Kumush sirg'a", 279000, "💎"],
+  ["Zargarlik", "Tilla bilaguzuk", 1790000, "📿"],
+  ["Zargarlik", "Sedana to'plami", 349000, "💎"],
+  ["Zargarlik", "Marjon to'plami", 459000, "📿"],
+  // Lampochkalar
+  ["Lampochkalar", "LED chiroq (24W)", 45000, "💡"],
+  ["Lampochkalar", "Spot chiroq (7W)", 55000, "🔆"],
+  ["Lampochkalar", "Lyustra (qandil)", 599000, "💡"],
+  ["Lampochkalar", "LED lenta (5m)", 89000, "🌈"],
+  ["Lampochkalar", "Stol lampasi", 149000, "🛋️"],
+  ["Lampochkalar", "Quyosh paneli lampasi", 189000, "☀️"],
+  // Sarakanoshkalar
+  ["Sarakanoshkalar", "Bolalar sarakanoshkasi", 199000, "👟"],
+  ["Sarakanoshkalar", "Qishki sarakanoshka", 349000, "🥾"],
+  ["Sarakanoshkalar", "Yugurish sarakanoshkasi", 269000, "👟"],
+  ["Sarakanoshkalar", "Teri sarakanoshka", 419000, "👞"],
+  ["Sarakanoshkalar", "Slip-on sarakanoshka", 229000, "👟"],
+  // Mashina balonlari
+  ["Mashina balonlari", "Pirelli 245/40 R18", 1090000, "🛞"],
+  ["Mashina balonlari", "Michelin 225/55 R17", 949000, "🛞"],
+  ["Mashina balonlari", "Hankook 195/60 R15", 549000, "🛞"],
+  ["Mashina balonlari", "Yokohama 215/65 R16", 789000, "🛞"],
+  ["Mashina balonlari", "Dunlop qishki 205/60 R16", 719000, "❄️"],
+];
+
+function seedMoreProducts() {
+  const catId = {};
+  db.prepare("SELECT id, name FROM categories").all().forEach((r) => (catId[r.name] = r.id));
+  const whs = db.prepare("SELECT id FROM warehouses").all().map((r) => r.id);
+  const has = db.prepare("SELECT 1 FROM products WHERE name = ?");
+  const p = db.prepare("INSERT INTO products (category_id, name, price, emoji) VALUES (?, ?, ?, ?)");
+  const s = db.prepare("INSERT INTO stocks (product_id, warehouse_id, qty) VALUES (?, ?, ?)");
+  let i = 0;
+  for (const [cat, name, price, emoji] of MORE_PRODUCTS) {
+    if (!catId[cat] || has.get(name)) continue;
+    const pid = Number(p.run(catId[cat], name, price, emoji).lastInsertRowid);
+    s.run(pid, whs[i % whs.length], 15 + ((i * 5) % 50));
+    s.run(pid, whs[(i + 1) % whs.length], 10 + ((i * 3) % 35));
+    i++;
+  }
+}
+
 seed();
 seedTires();
+seedMoreProducts();
 
 module.exports = { db, ORDER_STATUS, TAXI_STATUS, deliveryRange };
