@@ -90,6 +90,10 @@ tr:hover td{background:#fafcff}
 .v3 .bx{cursor:pointer}
 .v3 .bx:hover .f{filter:brightness(1.18)}
 .v3 .bx.sel .f{outline:2px solid #2563eb;outline-offset:-2px}
+.v3 .bx .f{overflow:hidden}
+.v3 .bx .f .cn{position:absolute;left:0;right:0;bottom:1px;font-size:7.5px;font-weight:700;color:#0f172a;
+  text-align:center;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;padding:0 2px;
+  box-sizing:border-box;pointer-events:none;letter-spacing:.2px}
 .v3 .lb div{position:absolute;transform:rotateX(-90deg) rotateZ(0deg);background:#0f172a;color:#fff;font-size:13px;font-weight:700;
   padding:2px 7px;border-radius:4px;white-space:nowrap;box-shadow:0 2px 6px rgba(0,0,0,.3)}
 .v3 .fl-z{position:absolute;transform-style:preserve-3d;left:0;top:0;width:0;height:0}
@@ -117,12 +121,18 @@ tr:hover td{background:#fafcff}
 .v3 #w_plan .p-rn{font-size:12px;font-weight:800;margin-bottom:6px;display:flex;gap:6px;align-items:baseline}
 .v3 #w_plan .p-rn span{font-weight:400;color:var(--mut);font-size:10.5px}
 .v3 #w_plan .p-cells{display:grid;gap:3px}
-.v3 .pcell{width:47px;height:39px;border-radius:5px;border:1px solid #cbd5e1;background:#fff;
-  display:flex;flex-direction:column;align-items:center;justify-content:center;font-size:9.5px;
-  cursor:pointer;line-height:1.15;transition:filter .1s}
+.v3 .pcell{width:70px;height:60px;border-radius:5px;border:1px solid #cbd5e1;background:#fff;
+  display:flex;flex-direction:column;align-items:center;justify-content:center;gap:1px;font-size:9.5px;
+  cursor:pointer;line-height:1.15;transition:filter .1s;overflow:hidden;padding:2px 2px 1px}
 .v3 .pcell span{color:var(--mut)}
 .v3 .pcell b{font-size:11.5px}
 .v3 .pcell i{color:#94a3b8;font-style:normal}
+.v3 .pcell .pn{font-size:8.5px;opacity:.75;letter-spacing:.3px}
+.v3 .pcell .pnm{display:block;max-width:100%;font-size:10px;font-weight:700;color:#0f172a;
+  overflow:hidden;text-overflow:ellipsis;white-space:nowrap;text-align:center;padding:0 2px}
+.v3 .pcell .pnm.none{font-weight:400;color:#94a3b8}
+.v3 .pcell .pq{font-size:9.5px;color:#334155}
+.v3 .pcell .pq i{font-style:normal;opacity:.7}
 .v3 .pcell.normal{background:#dcfce7;border-color:#86efac}
 .v3 .pcell.kam{background:#fef9c3;border-color:#fde047}
 .v3 .pcell.full{background:#fee2e2;border-color:#fca5a5}
@@ -404,7 +414,7 @@ async function loadLocs(){
         <div class="cells" style="grid-template-columns:repeat(${Math.min(l.cols,6)},1fr)">
         ${l.cells.map(c=>`<div class="cell ${c.state==="to'liq"?"full":c.state}" data-cell="${l.code}-${c.row}-${c.col}" title="${c.stocks.map(s=>s.item_name+' — '+s.qty+' '+s.unit+(s.batch_no?' ('+s.batch_no+')':'')).join('\n')||'Bo\'sh'}">
           <span class="cl">${c.name}</span>
-          ${c.stocks[0]?`<b>${c.stocks[0].item_name.slice(0,9)}</b><div class="q">${c.qty}</div>`:`<span>—</span>`}
+          ${c.stocks[0]?`<b title="${c.stocks[0].item_name}">${c.stocks[0].item_name}</b><div class="q">${c.qty}</div>`:`<span>—</span>`}
           <div class="bar2"><div style="width:${Math.min(100,c.qty/c.cap*100)}%;background:${c.state==="full"?'#dc2626':c.state==="kam"?'#d97706':'#16a34a'}"></div></div>
           ${c.stocks.length>1?`<div style="font-size:8.5px">+${c.stocks.length-1}</div>`:''}</div>`).join('')}
         </div></div>`).join('')}</div>`).join('')}
@@ -803,12 +813,12 @@ function setZone(z){
   if(V3.zone)zonePanel(V3.zone); else sideDefault();
 }
 
-function cube3(x,y,z,W,D,H,c,loc,r,col,tip,op){
+function cube3(x,y,z,W,D,H,c,loc,r,col,tip,op,nm){
   const[t,f,s]=c;
   return `<div class="bx" data-loc="${loc}" data-r="${r}" data-c="${col}" title="${loc}-${r}-${col}: ${tip}"
     style="transform:translate3d(${x}px,${y}px,${z}px);opacity:${op===undefined?1:op}">
     <div class="f" style="width:${W}px;height:${D}px;background:${t};transform:translateY(${-H}px) rotateX(-90deg)"></div>
-    <div class="f" style="width:${W}px;height:${H}px;background:linear-gradient(180deg,${f},${s});transform:translateY(${-H}px)"></div>
+    <div class="f" style="width:${W}px;height:${H}px;background:linear-gradient(180deg,${f},${s});transform:translateY(${-H}px)">${nm?`<span class="cn">${nm}</span>`:''}</div>
     <div class="f" style="width:${D}px;height:${H}px;background:linear-gradient(90deg,${s},${t});transform:translate(${W}px,${-H}px) rotateY(90deg)"></div>
   </div>`;
 }
@@ -843,8 +853,11 @@ function renderPlan(){
           const tip=c.stocks&&c.stocks.length
             ? c.stocks.map(s=>s.item_name+' - '+num(s.qty)+' '+s.unit+(s.batch_no?' ('+s.batch_no+')':'')).join(' | ')
             : "Bo'sh katak (sig'im "+c.cap+")";
-          out+=`<div class="pcell ${pcellCls(c.state)}" data-cell="${l.code}-${c.row}-${c.col}" title="${String(tip).replace(/"/g,'&quot;')}">`
-             +`<span>${c.name}</span>${c.qty>0?'<b>'+num(c.qty)+'</b>':'<i>-</i>'}</div>`;
+out+=`<div class="pcell ${pcellCls(c.state)}" data-cell="${l.code}-${c.row}-${c.col}" title="${String(tip).replace(/"/g,'&quot;')}">`
+               +`<span class="pn">${c.name}</span>`
+               +(c.stocks.length?`<b class="pnm">${c.stocks[0].item_name}</b>`:`<i class="pnm none">bo'sh</i>`)
+               +`<span class="pq">${num(c.qty)}${c.stocks.length>1?`<i>+${c.stocks.length-1}</i>`:''}</span>`
+               +`</div>`;
         });
         out+=`</div></div>`;
       });
@@ -921,7 +934,8 @@ function renderW3D(){
         const h=Math.max(c.qty>0?7:2, Math.min(LH-6,(c.qty/c.cap)*(LH-6)));
         const cl=c.state==="to'liq"?"to'liq":c.state==="kam"?"kam":c.qty>0?"normal":"bosh";
         const tip=c.stocks.length?c.stocks.map(s=>`${s.item_name} — ${s.qty} ${s.unit}`+(s.batch_no?` (${s.batch_no})`:'')).join(' · '):'Bo\'sh katak';
-        out+=cube3(x+(c.col-1)*CW, -(c.row-1)*LH, fz+CD, CW-5, CD-5, h, CLR[cl], l.code, c.row, c.col, tip, op);
+        const nm=c.stocks.length?c.stocks[0].item_name:'';
+        out+=cube3(x+(c.col-1)*CW, -(c.row-1)*LH, fz+CD, CW-5, CD-5, h, CLR[cl], l.code, c.row, c.col, tip, op, nm);
       });
       /* stelyaj yorlig'i — tartib raqami bilan */
       if(V3.nl!==false)out+=`<div class="lb" style="transform:translate3d(${x+6}px,${-rows*LH-42}px,${fz}px);${tp}">

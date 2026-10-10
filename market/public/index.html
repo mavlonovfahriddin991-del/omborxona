@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html lang="uz">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>BozorGo — bozor, taom, taksi</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<!-- ====== SPLASH (faqat dasturga kirganda) ====== -->
+<div id="splash">
+  <div class="splash-logo">🛍️</div>
+  <div class="splash-name">BozorGo</div>
+  <div class="splash-bar"><span></span></div>
+</div>
+
+<!-- ====== KIRISH OLDI: AKKAUNT + GOOGLE ====== -->
+<div id="gate" class="gate hidden">
+  <div class="gate-box">
+    <div class="gate-logo">🛍️</div>
+    <h1>BozorGo</h1>
+    <p class="gate-sub">Dasturdan foydalanish uchun o'z akkauntingiz bo'lishi shart</p>
+
+    <div id="gbtnWrap">
+      <button class="gbtn" id="googleBtn"><span class="gicon">G</span> Google orqali kirish</button>
+    </div>
+
+    <div class="divider"><span>yoki</span></div>
+
+    <button class="btn primary full" id="gatePass">📝 Login va parol bilan akkaunt ochish</button>
+
+    <p class="gate-note">Google akkauntingiz so'ralsa — ilova shu hisob bilan tasdiqlanadi. Birinchi kirishda akkaunt avtomatik ochiladi.</p>
+  </div>
+</div>
+
+<div id="app" class="hidden">
+
+  <!-- ====== YUQORI QISM ====== -->
+  <header class="header">
+    <div class="top">
+      <div class="brand"><span class="brand-logo">🛍️</span> BozorGo</div>
+      <div class="search-wrap" id="searchWrap">
+        <input id="search" type="text" placeholder="Tovar qidirish...">
+      </div>
+      <button class="avatar" id="profileBtn">👤</button>
+    </div>
+
+    <!-- 4 ta bo'lim (tab) -->
+    <nav class="tabs">
+      <button class="tab active" data-tab="shop">🛍️<span>Do'kon</span></button>
+      <button class="tab" data-tab="food">🍔<span>Taom</span></button>
+      <button class="tab" data-tab="taxi">🚕<span>Taksi</span></button>
+      <button class="tab" data-tab="cart">🛒<span>Savat</span><b class="badge hidden" id="cartBadge">0</b></button>
+    </nav>
+  </header>
+
+  <main class="main">
+
+    <!-- ====== DO'KON ====== -->
+    <section id="view-shop" class="view">
+      <div class="cats" id="cats"></div>
+      <div class="grid" id="products"></div>
+    </section>
+
+    <!-- ====== TAOM ====== -->
+    <section id="view-food" class="view hidden">
+      <div id="places"></div>
+    </section>
+
+    <!-- ====== TAKSI ====== -->
+    <section id="view-taxi" class="view hidden">
+      <div class="card">
+        <h2>🚕 Taksi chaqirish</h2>
+        <label>Qayerdan</label>
+        <input id="txFrom" type="text" placeholder="Masalan: Chilonzor 12">
+        <label>Qayerga</label>
+        <input id="txTo" type="text" placeholder="Masalan: Yunusobod bozori">
+        <label>Avto sinfi</label>
+        <div class="classes" id="txClasses"></div>
+        <div class="estimate hidden" id="txEstimate"></div>
+        <button class="btn primary full" id="txCall">Haydachini chaqirish</button>
+      </div>
+      <div id="taxiOrders"></div>
+    </section>
+
+    <!-- ====== SAVAT ====== -->
+    <section id="view-cart" class="view hidden">
+      <div class="card">
+        <h2>🛒 Savat</h2>
+        <div id="cartItems"></div>
+      </div>
+
+      <div class="card" id="addrCard">
+        <h3>📍 Manzil <small class="req">— buyurtma berishdan oldin majburiy</small></h3>
+        <div id="addrList" class="addr-list"><p class="muted">Yuklanmoqda...</p></div>
+        <button class="btn ghost full" id="addAddrBtn">+ Yangi manzil qo'shish</button>
+      </div>
+
+      <div class="card total-card hidden" id="totalCard">
+        <div class="delivery-est hidden" id="deliveryEst"></div>
+        <div class="row"><span>Mahsulotlar</span><b id="totalSum">0 so'm</b></div>
+        <button class="btn primary full" id="checkoutBtn">✅ Buyurtmani tasdiqlash</button>
+        <p class="muted small">Buyurtmani keyin ro'yxatdan bekor qilishingiz mumkin.</p>
+      </div>
+
+      <div class="card">
+        <h3>📦 Mening buyurtmalarim</h3>
+        <div id="myOrders"><p class="muted">Buyurtmalar yo'q</p></div>
+      </div>
+    </section>
+  </main>
+</div>
+
+<!-- ====== AUTH MODAL ====== -->
+<div class="modal hidden" id="authModal">
+  <div class="modal-box">
+    <button class="x" data-close>&times;</button>
+    <div class="auth-tabs">
+      <button class="auth-tab active" data-auth="login">Kirish</button>
+      <button class="auth-tab" data-auth="register">Parol yaratish</button>
+    </div>
+    <form id="authForm">
+      <label>Login</label>
+      <input id="authUser" type="text" placeholder="login (3-20 harf)" autocomplete="username">
+      <label>Parol</label>
+      <input id="authPass" type="password" placeholder="parol (kamida 5 belgi)" autocomplete="current-password">
+      <label class="hidden" id="pass2Label">Parolni takrorlang</label>
+      <input id="authPass2" type="password" placeholder="parolni takrorlang" autocomplete="new-password">
+      <p class="err hidden" id="authErr"></p>
+      <button class="btn primary full" type="submit" id="authSubmit">Kirish</button>
+    </form>
+    <p class="muted small center">O'zingizga login va parol yarating — dastur shu parol bilan ishlaydi.</p>
+  </div>
+</div>
+
+<!-- ====== MANZIL MODAL ====== -->
+<div class="modal hidden" id="addrModal">
+  <div class="modal-box">
+    <button class="x" data-close>&times;</button>
+    <h3>📍 Yangi manzil</h3>
+    <form id="addrForm">
+      <label>Manzil nomi</label>
+      <input id="addrTitle" type="text" placeholder="Uy, Ish, Ota-ona...">
+      <label>Manzil</label>
+      <input id="addrText" type="text" placeholder="Toshkent, Chilonzor 12, 45-xonadon">
+      <label>Telefon</label>
+      <input id="addrPhone" type="text" placeholder="+998 90 123 45 67">
+      <p class="err hidden" id="addrErr"></p>
+      <button class="btn primary full" type="submit">Saqlash</button>
+    </form>
+  </div>
+</div>
+
+<!-- ====== PROFIL MODAL ====== -->
+<div class="modal hidden" id="profileModal">
+  <div class="modal-box">
+    <button class="x" data-close>&times;</button>
+    <h3>👤 Profil</h3>
+    <div id="profileBody"></div>
+  </div>
+</div>
+
+<!-- ====== GOOGLE MODAL ====== -->
+<div class="modal hidden" id="googleModal">
+  <div class="modal-box">
+    <button class="x" data-close>&times;</button>
+    <div class="ghead"><span class="gicon big">G</span><h3>Google orqali kirish</h3></div>
+    <p class="muted small">Ilova sizdan Google akkauntingizni so'raydi. Kirish uchun uni tasdiqlang.</p>
+    <form id="googleForm">
+      <label>Google pochta</label>
+      <input id="gEmail" type="text" placeholder="ism.familiya@gmail.com">
+      <label>Ismingiz</label>
+      <input id="gName" type="text" placeholder="Ism Familiya">
+      <p class="err hidden" id="gErr"></p>
+      <button class="btn primary full" type="submit">✅ Tasdiqlash va kirish</button>
+    </form>
+    <p class="muted small center" style="margin-top:10px">Akkaunt yo'q bo'lsa — birinchi kirishingizda avtomatik ochiladi.</p>
+  </div>
+</div>
+
+<div id="toast" class="toast hidden"></div>
+
+<script src="app.js"></script>
+</body>
+</html>

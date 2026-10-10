@@ -8,7 +8,8 @@
     "start": "node server.js",
     "bot": "node bot-start.js",
     "web": "node -e \"process.env.DISABLE_BOT='1';require('./server.js')\"",
-    "apteka": "node apteka/server.js"
+    "apteka": "node apteka/server.js",
+    "market": "node market/server.js"
   },
   "dependencies": {
     "bcryptjs": "^2.4.3",

@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="uz">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>BozorGo — Admin</title>
+<link rel="stylesheet" href="style.css">
+<style>
+  .anav { display: flex; gap: 6px; flex-wrap: wrap; margin-bottom: 14px; }
+  .anav button { border: none; background: #fff; padding: 9px 14px; border-radius: 99px; font-weight: 700; cursor: pointer; font-size: 13px; }
+  .anav button.active { background: var(--purple); color: #fff; }
+  .stats { display: grid; grid-template-columns: repeat(auto-fit, minmax(130px, 1fr)); gap: 10px; margin-bottom: 14px; }
+  .stat { background: #fff; border-radius: 14px; padding: 14px; text-align: center; }
+  .stat b { display: block; font-size: 20px; color: var(--purple); }
+  .stat span { font-size: 12px; color: var(--muted); }
+  table { width: 100%; border-collapse: collapse; font-size: 13px; background: #fff; border-radius: 14px; overflow: hidden; }
+  th, td { padding: 9px 10px; text-align: left; border-bottom: 1px solid #f0ecf9; }
+  th { background: #f3ebff; color: var(--purple); font-size: 12px; }
+  select { padding: 7px; border-radius: 8px; border: 1.5px solid #e4ddf3; font-size: 12px; }
+  .two { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+  @media (max-width: 700px) { .two { grid-template-columns: 1fr; } }
+</style>
+</head>
+<body>
+<div id="app">
+  <header class="header">
+    <div class="top">
+      <div class="brand"><span class="brand-logo">🛠</span> BozorGo Admin</div>
+      <div style="flex:1"></div>
+      <button class="avatar" onclick="location.href='/'">🛍️</button>
+    </div>
+  </header>
+  <main class="main">
+    <div class="anav" id="anav">
+      <button data-p="stats" class="active">📊 Statistika</button>
+      <button data-p="us">👥 Foydalanuvchilar</button>
+      <button data-p="wh">🏬 Omborlar</button>
+      <button data-p="pr">📦 Tovarlar</button>
+      <button data-p="cat">📂 Kategoriyalar</button>
+      <button data-p="or">🧾 Buyurtmalar</button>
+      <button data-p="fd">🍔 Taomlar</button>
+      <button data-p="tx">🚕 Taksi</button>
+    </div>
+
+    <div class="card hidden" id="denied">
+      <p class="empty">❌ Bu sahifa faqat admin uchun.<br>
+      <a href="/" style="color:var(--purple)">← Dasturga qaytish</a> — tizimga admin hisobi bilan kiring.</p>
+    </div>
+
+    <section id="p-stats"><div class="stats" id="stats"></div></section>
+
+    <section id="p-us" class="hidden">
+      <div class="card">
+        <h3>🔍 Qidirish</h3>
+        <input type="text" id="usQ" placeholder="Login yoki Google pochta bo'yicha qidirish..." style="max-width:400px">
+        <div id="usList" style="margin-top:12px"></div>
+      </div>
+    </section>
+
+    <section id="p-cat" class="hidden">
+      <div class="card">
+        <h3>📂 Yangi kategoriya</h3>
+        <div class="two">
+          <div><label>Nomi</label><input type="text" id="catName" placeholder="Elektronika"></div>
+          <div><label>Emoji</label><input type="text" id="catEmoji" placeholder="📱"></div>
+        </div>
+        <button class="btn primary" id="catAdd" style="margin-top:10px">Qo'shish</button>
+      </div>
+      <div class="card"><h3>Barcha kategoriyalar</h3><div id="catList"></div></div>
+    </section>
+
+    <section id="p-fd" class="hidden">
+      <div class="card">
+        <h3>🏪 Yangi restoran</h3>
+        <div class="two">
+          <div><label>Nomi</label><input type="text" id="fdName" placeholder="Lag'mon Saroy"></div>
+          <div><label>Emoji</label><input type="text" id="fdEmoji" placeholder="🍜"></div>
+          <div><label>Reyting</label><input type="text" id="fdRating" placeholder="4.5"></div>
+          <div><label>Yetkazish (daqiqa)</label><input type="text" id="fdMins" placeholder="30"></div>
+        </div>
+        <button class="btn primary" id="fdAdd" style="margin-top:10px">Qo'shish</button>
+      </div>
+      <div class="card">
+        <h3>🍽️ Yangi taom</h3>
+        <div class="two">
+          <div><label>Restoran</label><select id="fdPlace"></select></div>
+          <div><label>Taom nomi</label><input type="text" id="fdItemName" placeholder="Norin"></div>
+          <div><label>Narxi (so'm)</label><input type="text" id="fdItemPrice" placeholder="25000"></div>
+          <div><label>Emoji</label><input type="text" id="fdItemEmoji" placeholder="🍝"></div>
+        </div>
+        <button class="btn primary" id="fdItemAdd" style="margin-top:10px">Qo'shish</button>
+      </div>
+      <div class="card"><h3>Restoranlar va taomlar</h3><div id="fdList"></div></div>
+    </section>
+
+    <section id="p-wh" class="hidden">
+      <div class="card">
+        <h3>🏬 Yangi ombor qo'shish</h3>
+        <div class="two">
+          <div><label>Nomi</label><input type="text" id="whName" placeholder="Namangan ombori"></div>
+          <div><label>Manzil</label><input type="text" id="whAddr" placeholder="Navoiy ko'chasi 3"></div>
+        </div>
+        <button class="btn primary" id="whAdd" style="margin-top:10px">Qo'shish</button>
+      </div>
+      <div class="card"><h3>Mavjud omborlar</h3><div id="whList"></div></div>
+    </section>
+
+    <section id="p-pr" class="hidden">
+      <div class="card">
+        <h3>📦 Yangi tovar qo'shish</h3>
+        <div class="two">
+          <div><label>Nomi</label><input type="text" id="prName" placeholder="Tovar nomi"></div>
+          <div><label>Narxi (so'm)</label><input type="text" id="prPrice" placeholder="149000"></div>
+          <div><label>Kategoriya</label><select id="prCat"></select></div>
+          <div><label>Emoji</label><input type="text" id="prEmoji" placeholder="📦"></div>
+          <div><label>Ombor</label><select id="prWh"></select></div>
+          <div><label>Soni (dona)</label><input type="text" id="prQty" placeholder="50"></div>
+        </div>
+        <button class="btn primary" id="prAdd" style="margin-top:10px">Qo'shish</button>
+      </div>
+      <div class="card"><h3>Barcha tovarlar</h3><div id="prList"></div></div>
+    </section>
+
+    <section id="p-or" class="hidden"><div class="card"><h3>🧾 Buyurtmalar</h3><div id="orList"></div></div></section>
+    <section id="p-tx" class="hidden"><div class="card"><h3>🚕 Taksi buyurtmalari</h3><div id="txList"></div></div></section>
+  </main>
+</div>
+<div id="toast" class="toast hidden"></div>
+<script src="admin.js"></script>
+</body>
+</html>
